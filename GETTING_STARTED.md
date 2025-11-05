@@ -2,7 +2,9 @@
 
 Panduan lengkap untuk memulai menggunakan Platform Komando dan Kontrol Kesehatan Puskesau.
 
-## 🚀 Quick Start (5 Menit)
+⚠️ **PERHATIAN**: Aplikasi ini adalah **DEMO TANPA BACKEND**. Semua data disimpan di browser menggunakan localStorage.
+
+## 🚀 Quick Start (3 Menit)
 
 ### 1. Clone dan Install
 ```bash
@@ -11,12 +13,15 @@ cd puskesau-dashboard
 npm install
 ```
 
-### 2. Setup Environment
+### 2. (Opsional) Setup AI Features
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` dan isi dengan kredensial Anda (lihat setup detail di bawah).
+Edit `.env` jika ingin menggunakan fitur AI (optional):
+```env
+REACT_APP_OPENAI_API_KEY=your-openai-api-key
+```
 
 ### 3. Jalankan Development Server
 ```bash
@@ -33,78 +38,6 @@ Sebelum memulai, pastikan sudah terinstall:
 - Git
 - Text editor (VSCode recommended)
 
-## 🔧 Setup Firebase
-
-### 1. Buat Firebase Project
-
-1. Kunjungi [Firebase Console](https://console.firebase.google.com)
-2. Klik "Add project" atau "Create a project"
-3. Beri nama project: `puskesau-dashboard` (atau nama lain)
-4. Google Analytics optional (bisa diaktifkan atau tidak)
-5. Tunggu project dibuat
-
-### 2. Aktifkan Firestore Database
-
-1. Di sidebar, pilih **Firestore Database**
-2. Klik "Create database"
-3. Pilih location: `asia-southeast1 (Singapore)` untuk Indonesia
-4. Start in **production mode** (aturan akan kita set nanti)
-5. Tunggu database dibuat
-
-### 3. Setup Authentication
-
-1. Di sidebar, pilih **Authentication**
-2. Klik "Get started"
-3. Di tab "Sign-in method":
-   - Klik "Email/Password"
-   - Enable toggle "Email/Password"
-   - Save
-4. Di tab "Users", klik "Add user" untuk membuat user pertama
-
-### 4. Aktifkan Storage
-
-1. Di sidebar, pilih **Storage**
-2. Klik "Get started"
-3. Start in **production mode**
-4. Pilih location yang sama dengan Firestore
-5. Done
-
-### 5. Dapatkan Firebase Config
-
-1. Di Project Settings (⚙️ icon di sidebar)
-2. Scroll ke bawah ke "Your apps"
-3. Klik icon Web (`</>`)
-4. Register app dengan nickname: "Puskesau Web"
-5. Copy semua config values:
-   ```javascript
-   const firebaseConfig = {
-     apiKey: "...",
-     authDomain: "...",
-     projectId: "...",
-     storageBucket: "...",
-     messagingSenderId: "...",
-     appId: "..."
-   };
-   ```
-
-### 6. Setup Firestore Rules
-
-Di Firestore → Rules, paste ini:
-
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Allow authenticated users
-    match /{document=**} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}
-```
-
-Publish rules.
-
 ## 🤖 Setup OpenAI (Optional - untuk fitur AI)
 
 1. Kunjungi [OpenAI Platform](https://platform.openai.com)
@@ -116,24 +49,16 @@ Publish rules.
 
 ## 🔐 Configure Environment Variables
 
-Edit file `.env`:
+Edit file `.env` (optional, hanya untuk AI features):
 
 ```env
-# Firebase Configuration
-REACT_APP_FIREBASE_API_KEY=AIzaSyC...
-REACT_APP_FIREBASE_AUTH_DOMAIN=puskesau-dashboard.firebaseapp.com
-REACT_APP_FIREBASE_PROJECT_ID=puskesau-dashboard
-REACT_APP_FIREBASE_STORAGE_BUCKET=puskesau-dashboard.appspot.com
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=123456789
-REACT_APP_FIREBASE_APP_ID=1:123456789:web:abc123
-
 # OpenAI (Optional - untuk fitur AI)
 REACT_APP_OPENAI_API_KEY=sk-...
 ```
 
 **⚠️ PENTING**: 
 - Jangan commit file `.env` ke Git (sudah ada di .gitignore)
-- Semua variable harus diawali `REACT_APP_`
+- Fitur AI bersifat optional, aplikasi tetap berjalan tanpa OpenAI API key
 
 ## 🏃 Running the App
 
@@ -160,9 +85,11 @@ npx serve -s build
 
 ## 🎯 First Use
 
-### 1. Login / Create Account
+### 1. No Login Required
 
-Saat pertama kali, gunakan user yang dibuat di Firebase Authentication atau buat akun baru melalui form register (jika fitur register sudah diaktifkan).
+Aplikasi langsung bisa digunakan tanpa login. Mock user sudah tersedia:
+- Email: user@puskesau.mil.id
+- Name: Demo User
 
 ### 2. Switch Role
 
@@ -180,17 +107,27 @@ Gunakan sidebar untuk navigasi:
 - ✅ IGD - Triage digital dengan kategori warna
 - 🚧 Module lainnya - Coming soon
 
-## 💾 Initialize Sample Data (Optional)
+## 💾 Data Storage
 
-Untuk testing, bisa load sample data:
+### Sample Data
 
-1. Buka browser console di aplikasi
-2. Paste dan run:
-```javascript
-import('./utils/sampleData').then(m => m.initializeSampleData());
-```
+Aplikasi sudah dilengkapi dengan sample data yang otomatis ter-load:
+- 3 Faskes (RSAU Jakarta, Bandung, dan Klinik Halim)
+- 3 Pasien sample
 
-Atau tambahkan button di UI untuk trigger ini.
+### Reset Data
+
+Untuk reset semua data ke default:
+1. Buka browser console (F12)
+2. Run: `localStorage.clear()`
+3. Refresh halaman
+
+### Data Persistence
+
+- Data disimpan di browser localStorage
+- Bersifat lokal per browser/device
+- Tidak hilang saat refresh
+- Hilang jika browser cache dibersihkan
 
 ## 🎨 Customize Branding
 
@@ -220,6 +157,8 @@ Aplikasi mendukung whitelabel. Untuk customize:
 
 3. Responsive design akan menyesuaikan
 
+**Note**: Data di device berbeda akan terpisah karena menggunakan localStorage.
+
 ## 🐛 Troubleshooting
 
 ### Build Error: "Module not found"
@@ -227,11 +166,6 @@ Aplikasi mendukung whitelabel. Untuk customize:
 rm -rf node_modules package-lock.json
 npm install
 ```
-
-### Firebase "Permission denied"
-- Check Firestore rules
-- Make sure user is authenticated
-- Check if collection name correct
 
 ### OpenAI "Invalid API key"
 - Verify key di .env
@@ -248,11 +182,10 @@ npm install
 - Make sure `netlify.toml` exists
 - Check redirects configuration
 
-### Real-time Updates Not Working
-- Check internet connection
-- Check Firebase quota not exceeded
+### Data Tidak Muncul
 - Check browser console for errors
-- Verify Firestore rules allow read
+- Try reset data dengan `localStorage.clear()`
+- Refresh halaman
 
 ## 📚 Learn More
 
@@ -263,18 +196,18 @@ npm install
 
 ### External Resources
 - [React Documentation](https://react.dev)
-- [Firebase Documentation](https://firebase.google.com/docs)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [React Router](https://reactrouter.com)
+- [Recharts](https://recharts.org)
 
 ## 🤝 Getting Help
 
 ### Debugging Steps
 1. Check browser console for errors
-2. Check Firebase Console for quota/errors
-3. Check Network tab for failed requests
-4. Try in incognito mode
-5. Clear cache and reload
+2. Check Network tab for failed requests
+3. Try in incognito mode
+4. Clear localStorage and reload
+5. Check if sample data loaded
 
 ### Common Questions
 
@@ -282,13 +215,16 @@ npm install
 A: Pastikan REACT_APP_OPENAI_API_KEY sudah di-set dan API key valid dengan credit tersedia.
 
 **Q: Data tidak muncul?**
-A: Check Firestore rules dan pastikan sudah authenticated.
+A: Check browser console dan coba reset data dengan `localStorage.clear()`.
 
 **Q: Role switch tidak bekerja?**
-A: Ini hanya mengubah tampilan dashboard, bukan permission. Implementasi permission di Firestore rules.
+A: Ini hanya mengubah tampilan dashboard. Switch role di header untuk melihat dashboard yang berbeda.
 
-**Q: Bagaimana cara add user baru?**
-A: Buat di Firebase Console → Authentication → Users, atau implement register page.
+**Q: Data hilang setelah refresh?**
+A: Data seharusnya persist di localStorage. Jika hilang, kemungkinan browser membersihkan cache.
+
+**Q: Bagaimana cara berbagi data antar device?**
+A: Tidak bisa, karena data disimpan lokal di browser. Untuk production dengan data sharing, butuh backend real.
 
 ## ✅ Next Steps
 
@@ -300,10 +236,7 @@ Setelah setup selesai:
 4. ✅ Test rekam medis dengan AI
 5. ✅ Test IGD triage
 6. 🚀 Deploy ke Netlify (lihat DEPLOYMENT.md)
-7. 🔒 Setup proper Firestore security rules
-8. 👥 Add team members
-9. 📊 Monitor usage di Firebase Console
-10. 🚧 Implement module yang masih placeholder
+7. 🚧 Implement module yang masih placeholder
 
 ## 🎉 You're Ready!
 

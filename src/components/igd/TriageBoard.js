@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, updateDoc, doc, addDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, query, where, onSnapshot, updateDoc, doc, addDoc } from '../../mockDb';
+import { db } from '../../mockDb';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
 import { aiService } from '../../services/aiService';

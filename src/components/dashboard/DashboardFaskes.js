@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Clock, AlertTriangle, Activity, FileText, Pill, TestTube, Calendar } from 'lucide-react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, getDocs, query, where } from '../../mockDb';
+import { db } from '../../mockDb';
 import { useAuth } from '../../contexts/AuthContext';
 import StatCard from '../common/StatCard';
 import Card from '../common/Card';

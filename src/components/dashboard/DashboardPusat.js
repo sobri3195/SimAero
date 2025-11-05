@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Activity, Package, TrendingUp, AlertCircle } from 'lucide-react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, getDocs, query, where } from '../../mockDb';
+import { db } from '../../mockDb';
 import StatCard from '../common/StatCard';
 import Card from '../common/Card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, ResponsiveContainer } from 'recharts';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, query, where, onSnapshot, updateDoc, doc } from '../../mockDb';
+import { db } from '../../mockDb';
 import { useAuth } from '../../contexts/AuthContext';
 import { Clock } from 'lucide-react';
 import Card from '../common/Card';
