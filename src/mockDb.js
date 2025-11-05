@@ -73,10 +73,64 @@ class MockDB {
       this.saveCollection('registrations', []);
       this.saveCollection('medical_records', []);
       this.saveCollection('igd_patients', []);
+      this.saveCollection('beds', this.generateBeds());
+      this.saveCollection('inpatients', []);
+      this.saveCollection('operating_rooms', this.generateOperatingRooms());
+      this.saveCollection('surgeries', []);
+      this.saveCollection('cssd_instruments', []);
+      this.saveCollection('sterilization_cycles', []);
+      this.saveCollection('blood_inventory', []);
+      this.saveCollection('blood_requests', []);
+      this.saveCollection('blood_donations', []);
+      this.saveCollection('drugs', []);
+      this.saveCollection('prescriptions', []);
+      this.saveCollection('lab_orders', []);
+      this.saveCollection('radiology_orders', []);
+      this.saveCollection('employees', []);
+      this.saveCollection('schedules', []);
+      this.saveCollection('assets', []);
+      this.saveCollection('calibrations', []);
+      this.saveCollection('supplies', []);
+      this.saveCollection('supply_orders', []);
       this.saveCollection('logistics', []);
+      this.saveCollection('incidents', []);
+      this.saveCollection('bridging_logs', []);
+      this.saveCollection('broadcasts', []);
 
       localStorage.setItem(this.prefix + 'initialized', 'true');
     }
+  }
+
+  generateBeds() {
+    const beds = [];
+    const roomTypes = ['VIP', 'Kelas 1', 'Kelas 2', 'Kelas 3', 'ICU'];
+    let bedId = 1;
+
+    roomTypes.forEach(roomType => {
+      const bedCount = roomType === 'VIP' ? 5 : roomType === 'ICU' ? 4 : 10;
+      for (let i = 1; i <= bedCount; i++) {
+        beds.push({
+          id: `bed_${bedId}`,
+          roomType: roomType,
+          roomNumber: `${roomType}-${Math.ceil(i / 2)}`,
+          bedNumber: `Bed-${i}`,
+          status: 'kosong',
+          occupiedBy: null,
+          faskesId: 'RSAU Dr. Esnawan Antariksa'
+        });
+        bedId++;
+      }
+    });
+
+    return beds;
+  }
+
+  generateOperatingRooms() {
+    return [
+      { id: 'or_1', name: 'Ruang Operasi 1', status: 'available', faskesId: 'RSAU Dr. Esnawan Antariksa' },
+      { id: 'or_2', name: 'Ruang Operasi 2', status: 'available', faskesId: 'RSAU Dr. Esnawan Antariksa' },
+      { id: 'or_3', name: 'Ruang Operasi 3', status: 'available', faskesId: 'RSAU Dr. Esnawan Antariksa' }
+    ];
   }
 
   getCollection(collectionName) {
