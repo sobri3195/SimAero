@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, addDoc } from '../../mockDb';
+import { db } from '../../mockDb';
 import { useApp } from '../../contexts/AppContext';
 import { aiService } from '../../services/aiService';
 import { Sparkles, Save } from 'lucide-react';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, addDoc, query, where, getDocs } from '../../mockDb';
+import { db } from '../../mockDb';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
 import { Search, Camera, Save } from 'lucide-react';

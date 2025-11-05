@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { collection, getDocs } from '../mockDb';
+import { db } from '../mockDb';
 import { Search } from 'lucide-react';
 import Card from '../components/common/Card';
 

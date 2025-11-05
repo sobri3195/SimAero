@@ -1,6 +1,8 @@
 # Platform Komando dan Kontrol Kesehatan Puskesau
 
-Platform terintegrasi untuk TNI Angkatan Udara yang mengintegrasikan seluruh aspek operasional kesehatan dari Pusat hingga Faskes (Rumah Sakit dan Klinik) dengan teknologi real-time Firebase Firestore.
+Platform terintegrasi untuk TNI Angkatan Udara yang mengintegrasikan seluruh aspek operasional kesehatan dari Pusat hingga Faskes (Rumah Sakit dan Klinik).
+
+⚠️ **PERHATIAN**: Aplikasi ini adalah **DEMO TANPA BACKEND**. Semua data disimpan di browser menggunakan localStorage. Data akan hilang jika browser cache dibersihkan.
 
 ## 🎯 Fitur Utama
 
@@ -22,7 +24,7 @@ Platform terintegrasi untuk TNI Angkatan Udara yang mengintegrasikan seluruh asp
 - 🚧 **Laboratorium**: Manajemen order dan input hasil
 - 🚧 **Radiologi**: Analisis gambar dengan AI
 
-### Fitur AI
+### Fitur AI (Opsional)
 - 🤖 Pengisian otomatis Form SOAP berdasarkan keluhan
 - 🤖 Saran triase IGD berdasarkan keluhan dan vital signs
 - 🤖 Rekomendasi tempat tidur untuk rawat inap
@@ -45,8 +47,7 @@ Platform terintegrasi untuk TNI Angkatan Udara yang mengintegrasikan seluruh asp
 
 ### Prerequisites
 - Node.js v18 atau lebih tinggi
-- Firebase Project dengan Firestore
-- API Key OpenAI (untuk fitur AI)
+- (Opsional) API Key OpenAI - untuk fitur AI
 
 ### Instalasi Lokal
 
@@ -61,30 +62,17 @@ cd <project-folder>
 npm install
 ```
 
-3. Setup Firebase:
-   - Buat project baru di [Firebase Console](https://console.firebase.google.com)
-   - Aktifkan Firestore Database
-   - Aktifkan Authentication (Email/Password)
-   - Aktifkan Storage
-   - Copy konfigurasi Firebase
-
-4. Setup Environment Variables:
+3. (Opsional) Setup AI Features:
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` dan isi dengan kredensial Firebase dan OpenAI:
+Edit `.env` dan isi dengan API Key OpenAI jika ingin menggunakan fitur AI:
 ```
-REACT_APP_FIREBASE_API_KEY=your-api-key
-REACT_APP_FIREBASE_AUTH_DOMAIN=your-auth-domain
-REACT_APP_FIREBASE_PROJECT_ID=your-project-id
-REACT_APP_FIREBASE_STORAGE_BUCKET=your-storage-bucket
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
-REACT_APP_FIREBASE_APP_ID=your-app-id
 REACT_APP_OPENAI_API_KEY=your-openai-api-key
 ```
 
-5. Jalankan development server:
+4. Jalankan development server:
 ```bash
 npm start
 ```
@@ -99,9 +87,8 @@ Aplikasi akan berjalan di `http://localhost:3000`
 2. Login ke [Netlify](https://netlify.com)
 3. Click "New site from Git"
 4. Pilih repository
-5. Tambahkan environment variables di Netlify:
+5. (Opsional) Tambahkan `REACT_APP_OPENAI_API_KEY` di Netlify:
    - Settings → Build & deploy → Environment
-   - Tambahkan semua variabel dari `.env`
 6. Deploy!
 
 ### Deploy Manual
@@ -111,26 +98,27 @@ npm run build
 netlify deploy --prod
 ```
 
-## 📊 Struktur Database Firestore
+## 💾 Penyimpanan Data
 
-### Collections:
-- `patients`: Data pasien
-- `faskes`: Data fasilitas kesehatan
-- `registrations`: Pendaftaran dan antrean
-- `medical_records`: Rekam medis SOAP
-- `igd_patients`: Pasien IGD dengan triase
-- `inpatient_beds`: Data tempat tidur rawat inap
-- `surgeries`: Jadwal operasi
-- `blood_bank`: Stok darah
-- `pharmacy_inventory`: Inventaris farmasi
-- `prescriptions`: Resep obat
-- `lab_orders`: Order laboratorium
-- `radiology_orders`: Order radiologi
-- `staff`: Data pegawai
-- `schedules`: Jadwal shift
-- `assets`: Aset medis
-- `logistics`: Order logistik
-- `incidents`: Laporan insiden
+Aplikasi ini **TIDAK menggunakan backend atau database eksternal**. Semua data disimpan di browser menggunakan `localStorage`:
+
+- Data akan tetap ada selama browser tidak membersihkan cache
+- Data bersifat lokal untuk setiap browser/device
+- Cocok untuk demo dan testing
+- **TIDAK untuk production** - data tidak persistent dan tidak terbackup
+
+### Sample Data
+Aplikasi sudah dilengkapi dengan sample data:
+- 3 Faskes (RSAU Jakarta, Bandung, dan Klinik Halim)
+- 3 Pasien sample
+- Data akan otomatis ter-load saat pertama kali membuka aplikasi
+
+### Reset Data
+Untuk reset semua data, buka browser console dan jalankan:
+```javascript
+localStorage.clear()
+```
+Kemudian refresh halaman.
 
 ## 🎨 Kustomisasi
 
@@ -146,14 +134,13 @@ Switch role di header aplikasi untuk melihat tampilan yang berbeda.
 
 ## 🔧 Teknologi
 
-- **Frontend**: React.js
-- **Routing**: React Router v6
-- **Database**: Firebase Firestore (Real-time)
-- **Authentication**: Firebase Auth
-- **Storage**: Firebase Storage
+- **Frontend**: React.js 19
+- **Routing**: React Router v7
+- **Storage**: localStorage (Mock Database)
 - **Charts**: Recharts
 - **Icons**: Lucide React
-- **AI**: OpenAI GPT-4 API
+- **Styling**: Tailwind CSS
+- **AI**: OpenAI GPT-4 API (opsional)
 - **Hosting**: Netlify
 
 ## 📝 Catatan Pengembangan
@@ -165,6 +152,12 @@ Aplikasi ini adalah versi MVP dengan modul-modul utama yang sudah berfungsi:
 - ✅ IGD Triase dengan AI
 
 Modul lainnya masih dalam tahap pengembangan dan menampilkan placeholder.
+
+### Mengintegrasikan Backend
+Untuk mengintegrasikan dengan backend real:
+1. Replace `src/mockDb.js` dengan API calls ke backend Anda
+2. Update semua import dari `mockDb` ke service API baru
+3. Implementasikan authentication dengan backend
 
 ## 🤝 Kontribusi
 

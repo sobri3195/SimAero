@@ -1,6 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '../firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
@@ -13,19 +11,14 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser] = useState({ 
+    uid: 'mock-user-123',
+    email: 'user@puskesau.mil.id',
+    displayName: 'Demo User'
+  });
   const [userRole, setUserRole] = useState('PUSAT');
-  const [selectedFaskes, setSelectedFaskes] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-
-    return unsubscribe;
-  }, []);
+  const [selectedFaskes, setSelectedFaskes] = useState('RSAU Dr. Esnawan Antariksa');
+  const loading = false;
 
   const value = {
     currentUser,
@@ -38,7 +31,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
