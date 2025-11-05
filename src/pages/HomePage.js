@@ -1,14 +1,26 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import DashboardPusat from '../components/dashboard/DashboardPusat';
+import DashboardPuskesau from '../components/dashboard/DashboardPuskesau';
 import DashboardFaskes from '../components/dashboard/DashboardFaskes';
 
 const HomePage = () => {
   const { userRole } = useAuth();
 
+  const renderDashboard = () => {
+    switch (userRole) {
+      case 'PUSKESAU':
+        return <DashboardPuskesau />;
+      case 'RSAU':
+      case 'FKTP':
+        return <DashboardFaskes />;
+      default:
+        return <DashboardPuskesau />;
+    }
+  };
+
   return (
     <div>
-      {userRole === 'PUSAT' ? <DashboardPusat /> : <DashboardFaskes />}
+      {renderDashboard()}
     </div>
   );
 };

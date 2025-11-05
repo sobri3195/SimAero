@@ -16,9 +16,28 @@ export const AuthProvider = ({ children }) => {
     email: 'user@puskesau.mil.id',
     displayName: 'Demo User'
   });
-  const [userRole, setUserRole] = useState('PUSAT');
-  const [selectedFaskes, setSelectedFaskes] = useState('RSAU Dr. Esnawan Antariksa');
+  const [userRole, setUserRole] = useState('PUSKESAU');
+  const [selectedFaskes, setSelectedFaskes] = useState(null);
+  const [facilityType, setFacilityType] = useState(null);
   const loading = false;
+
+  const switchToRSAU = (faskesName) => {
+    setUserRole('RSAU');
+    setSelectedFaskes(faskesName);
+    setFacilityType('rsau');
+  };
+
+  const switchToFKTP = (faskesName) => {
+    setUserRole('FKTP');
+    setSelectedFaskes(faskesName);
+    setFacilityType('fktp');
+  };
+
+  const switchToPuskesau = () => {
+    setUserRole('PUSKESAU');
+    setSelectedFaskes(null);
+    setFacilityType(null);
+  };
 
   const value = {
     currentUser,
@@ -26,6 +45,11 @@ export const AuthProvider = ({ children }) => {
     setUserRole,
     selectedFaskes,
     setSelectedFaskes,
+    facilityType,
+    setFacilityType,
+    switchToRSAU,
+    switchToFKTP,
+    switchToPuskesau,
     loading
   };
 

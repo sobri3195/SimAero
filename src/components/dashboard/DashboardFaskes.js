@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Clock, AlertTriangle, Activity, FileText, Pill, TestTube, Calendar } from 'lucide-react';
+import { Users, Clock, AlertTriangle, Activity, FileText, Pill, TestTube, Calendar, BedDouble, Droplet } from 'lucide-react';
 import { collection, getDocs, query, where } from '../../mockDb';
 import { db } from '../../mockDb';
 import { useAuth } from '../../contexts/AuthContext';
@@ -8,7 +8,7 @@ import Card from '../common/Card';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardFaskes = () => {
-  const { selectedFaskes } = useAuth();
+  const { selectedFaskes, userRole } = useAuth();
   const navigate = useNavigate();
   
   const [stats, setStats] = useState({
@@ -25,14 +25,25 @@ const DashboardFaskes = () => {
     { id: 4, type: 'inpatient', title: 'Pasien siap pulang', count: 4, priority: 'low' }
   ]);
 
-  const quickAccess = [
+  const rsauQuickAccess = [
     { icon: FileText, label: 'Pendaftaran', path: '/registration', color: 'bg-blue-500' },
     { icon: Activity, label: 'IGD', path: '/igd', color: 'bg-red-500' },
-    { icon: Users, label: 'Rawat Inap', path: '/inpatient', color: 'bg-green-500' },
+    { icon: BedDouble, label: 'Rawat Inap', path: '/inpatient', color: 'bg-green-500' },
+    { icon: Calendar, label: 'Jadwal Operasi', path: '/surgery', color: 'bg-indigo-500' },
+    { icon: Droplet, label: 'Bank Darah', path: '/bloodbank', color: 'bg-rose-500' },
     { icon: Pill, label: 'Farmasi', path: '/pharmacy', color: 'bg-purple-500' },
     { icon: TestTube, label: 'Laboratorium', path: '/lab', color: 'bg-yellow-500' },
-    { icon: Calendar, label: 'Jadwal Operasi', path: '/surgery', color: 'bg-indigo-500' }
+    { icon: Activity, label: 'CSSD', path: '/cssd', color: 'bg-teal-500' }
   ];
+
+  const fktpQuickAccess = [
+    { icon: FileText, label: 'Pendaftaran', path: '/registration', color: 'bg-blue-500' },
+    { icon: Users, label: 'Database Pasien', path: '/patients', color: 'bg-green-500' },
+    { icon: Pill, label: 'Farmasi', path: '/pharmacy', color: 'bg-purple-500' },
+    { icon: TestTube, label: 'Laboratorium', path: '/lab', color: 'bg-yellow-500' }
+  ];
+
+  const quickAccess = userRole === 'RSAU' ? rsauQuickAccess : fktpQuickAccess;
 
   useEffect(() => {
     loadStats();
@@ -75,7 +86,9 @@ const DashboardFaskes = () => {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">Dashboard Operasional</h1>
+        <h1 className="text-2xl font-bold mb-2">
+          Dashboard {userRole === 'RSAU' ? 'SIMRS' : 'SIM Klinik'}
+        </h1>
         <p className="text-gray-600">{selectedFaskes || 'Pilih Faskes dari header'}</p>
       </div>
 
@@ -111,7 +124,7 @@ const DashboardFaskes = () => {
 
       {/* Quick Access */}
       <Card title="Akses Cepat Modul" className="mb-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className={`grid grid-cols-2 md:grid-cols-3 ${userRole === 'RSAU' ? 'lg:grid-cols-4' : 'lg:grid-cols-4'} gap-4`}>
           {quickAccess.map((item, idx) => (
             <button
               key={idx}

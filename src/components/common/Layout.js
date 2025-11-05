@@ -6,17 +6,23 @@ import {
   Menu, X, Home, Users, ClipboardList, FileText, Activity, 
   BedDouble, Calendar, Droplet, Heart, Pill, TestTube, 
   UserCheck, Package, AlertTriangle, BarChart3, Settings,
-  Radio, MessageSquare, ChevronDown 
+  Radio, MessageSquare, ChevronDown, Shield 
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { userRole, setUserRole, selectedFaskes } = useAuth();
+  const { userRole, selectedFaskes, switchToPuskesau } = useAuth();
   const { theme } = useApp();
   const navigate = useNavigate();
 
-  const menuItems = [
+  const puskesauMenuItems = [
+    { icon: Home, label: 'Dashboard Pengawasan', path: '/' },
+    { icon: BarChart3, label: 'Laporan Konsolidasi', path: '/reports' },
+    { icon: Settings, label: 'Pengaturan', path: '/settings' },
+  ];
+
+  const rsauMenuItems = [
     { icon: Home, label: 'Dashboard', path: '/' },
     { icon: Users, label: 'Database Pasien', path: '/patients' },
     { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
@@ -40,6 +46,37 @@ const Layout = ({ children }) => {
     { icon: Settings, label: 'Pengaturan', path: '/settings' },
   ];
 
+  const fktpMenuItems = [
+    { icon: Home, label: 'Dashboard', path: '/' },
+    { icon: Users, label: 'Database Pasien', path: '/patients' },
+    { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
+    { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
+    { icon: Heart, label: 'Rikkes', path: '/rikkes' },
+    { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
+    { icon: TestTube, label: 'Laboratorium', path: '/lab' },
+    { icon: UserCheck, label: 'SDM & Jadwal', path: '/hr' },
+    { icon: Package, label: 'Logistik', path: '/logistics' },
+    { icon: AlertTriangle, label: 'Laporan Insiden', path: '/incidents' },
+    { icon: BarChart3, label: 'Laporan & Analitik', path: '/reports' },
+    { icon: MessageSquare, label: 'Broadcast', path: '/broadcast' },
+    { icon: Settings, label: 'Pengaturan', path: '/settings' },
+  ];
+
+  const getMenuItems = () => {
+    switch (userRole) {
+      case 'PUSKESAU':
+        return puskesauMenuItems;
+      case 'RSAU':
+        return rsauMenuItems;
+      case 'FKTP':
+        return fktpMenuItems;
+      default:
+        return puskesauMenuItems;
+    }
+  };
+
+  const menuItems = getMenuItems();
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -49,8 +86,12 @@ const Layout = ({ children }) => {
       >
         <div className="p-4 flex items-center justify-between" style={{ backgroundColor: theme.primaryColor }}>
           <div className={`${sidebarOpen ? 'block' : 'hidden'}`}>
-            <h1 className="text-white font-bold text-xl">Puskesau</h1>
-            <p className="text-white text-xs opacity-90">Komando Kesehatan</p>
+            <h1 className="text-white font-bold text-xl">
+              {userRole === 'PUSKESAU' ? 'PUSKESAU' : userRole === 'RSAU' ? 'SIMRS' : 'SIM Klinik'}
+            </h1>
+            <p className="text-white text-xs opacity-90">
+              {userRole === 'PUSKESAU' ? 'Komando Kesehatan TNI AU' : 'TNI Angkatan Udara'}
+            </p>
           </div>
           <button 
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -60,17 +101,21 @@ const Layout = ({ children }) => {
           </button>
         </div>
 
-        {/* Role Switcher */}
-        <div className="p-4 border-b">
-          <select 
-            value={userRole}
-            onChange={(e) => setUserRole(e.target.value)}
-            className="w-full p-2 border rounded text-sm"
-          >
-            <option value="PUSAT">🏛️ Pusat (Puskesau)</option>
-            <option value="FASKES">🏥 Faskes (RSAU/Klinik)</option>
-          </select>
-        </div>
+        {/* Back to Puskesau Button (only shown when in RSAU or FKTP) */}
+        {userRole !== 'PUSKESAU' && (
+          <div className="p-4 border-b">
+            <button
+              onClick={() => {
+                switchToPuskesau();
+                navigate('/');
+              }}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+            >
+              <Shield size={16} />
+              <span className="text-sm">Kembali ke Puskesau</span>
+            </button>
+          </div>
+        )}
 
         <nav className="p-2">
           {menuItems.map((item, index) => (
@@ -94,9 +139,21 @@ const Layout = ({ children }) => {
           <div className="flex items-center justify-between p-4">
             <div>
               <h2 className="text-xl font-bold" style={{ color: theme.primaryColor }}>
-                {userRole === 'PUSAT' ? 'Dashboard Komando Pusat' : `Faskes: ${selectedFaskes || 'Pilih Faskes'}`}
+                {userRole === 'PUSKESAU' 
+                  ? 'Dashboard Pengawasan Puskesau' 
+                  : userRole === 'RSAU'
+                  ? `SIMRS - ${selectedFaskes}`
+                  : `SIM Klinik - ${selectedFaskes}`
+                }
               </h2>
-              <p className="text-sm text-gray-600">TNI Angkatan Udara</p>
+              <p className="text-sm text-gray-600">
+                {userRole === 'PUSKESAU' 
+                  ? 'Pusat Kesehatan Angkatan Udara' 
+                  : userRole === 'RSAU'
+                  ? 'Sistem Informasi Manajemen Rumah Sakit'
+                  : 'Sistem Informasi Manajemen Klinik'
+                }
+              </p>
             </div>
             
             <div className="flex items-center gap-4">
