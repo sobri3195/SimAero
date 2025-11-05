@@ -7,33 +7,221 @@ class MockDB {
 
   initializeData() {
     if (!localStorage.getItem(this.prefix + 'initialized')) {
-      // Sample Faskes
-      this.saveCollection('faskes', [
+      // Faskes TNI AU - RSAU (Rumah Sakit Angkatan Udara)
+      const rsauData = [
         {
-          id: '1',
-          nama: 'RSAU Dr. Esnawan Antariksa',
-          lokasi: 'Jakarta',
-          tipe: 'rumah_sakit',
-          kapasitas: 200,
-          status: 'aktif'
+          id: 'rsau_1',
+          nama: 'RSAU dr. Esnawan Antariksa',
+          lokasi: 'Jakarta Timur',
+          alamat: 'Jl. Halim Perdanakusuma, Jakarta Timur 13610',
+          tipe: 'rsau',
+          tingkat: 'A',
+          kapasitas: 250,
+          status: 'aktif',
+          lanud: 'Lanud Halim Perdanakusuma',
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'Operasi', 'Hemodialisa', 'CSSD', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Kulit', 'Jiwa', 'Jantung', 'Paru']
         },
         {
-          id: '2',
-          nama: 'RSAU Dr. M. Salamun',
+          id: 'rsau_2',
+          nama: 'RSAU dr. M. Salamun',
           lokasi: 'Bandung',
-          tipe: 'rumah_sakit',
-          kapasitas: 150,
-          status: 'aktif'
+          alamat: 'Jl. Dr. Cipto No. 3, Bandung 40171',
+          tipe: 'rsau',
+          tingkat: 'A',
+          kapasitas: 200,
+          status: 'aktif',
+          lanud: 'Lanud Sulaiman',
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'Operasi', 'Hemodialisa', 'CSSD', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Kulit', 'Jiwa']
         },
         {
-          id: '3',
-          nama: 'Klinik Kesehatan Lanud Halim',
-          lokasi: 'Jakarta',
-          tipe: 'klinik',
-          kapasitas: 50,
-          status: 'aktif'
+          id: 'rsau_3',
+          nama: 'RSAU dr. Siswondo Parman',
+          lokasi: 'Malang',
+          alamat: 'Lanud Abdulrachman Saleh, Malang',
+          tipe: 'rsau',
+          tingkat: 'B',
+          kapasitas: 120,
+          status: 'aktif',
+          lanud: 'Lanud Abdulrachman Saleh',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT']
         }
-      ]);
+      ];
+
+      // Faskes TNI AU - FKTP (Fasilitas Kesehatan Tingkat Pertama / Klinik)
+      const fktpData = [
+        {
+          id: 'fktp_1',
+          nama: 'Klinik Kesehatan Lanud Halim Perdanakusuma',
+          lokasi: 'Jakarta Timur',
+          alamat: 'Lanud Halim Perdanakusuma, Jakarta Timur',
+          tipe: 'fktp',
+          kapasitas: 50,
+          status: 'aktif',
+          lanud: 'Lanud Halim Perdanakusuma',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_2',
+          nama: 'Klinik Kesehatan Lanud Sulaiman',
+          lokasi: 'Bandung',
+          alamat: 'Lanud Sulaiman, Margahayu, Bandung',
+          tipe: 'fktp',
+          kapasitas: 40,
+          status: 'aktif',
+          lanud: 'Lanud Sulaiman',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_3',
+          nama: 'Klinik Kesehatan Lanud Abdulrachman Saleh',
+          lokasi: 'Malang',
+          alamat: 'Lanud Abdulrachman Saleh, Malang',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Abdulrachman Saleh',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_4',
+          nama: 'Klinik Kesehatan Lanud Iswahjudi',
+          lokasi: 'Madiun',
+          alamat: 'Lanud Iswahjudi, Madiun, Jawa Timur',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Iswahjudi',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_5',
+          nama: 'Klinik Kesehatan Lanud Adisutjipto',
+          lokasi: 'Yogyakarta',
+          alamat: 'Lanud Adisutjipto, Yogyakarta',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Adisutjipto',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_6',
+          nama: 'Klinik Kesehatan Lanud Ngurah Rai',
+          lokasi: 'Bali',
+          alamat: 'Lanud Ngurah Rai, Tuban, Bali',
+          tipe: 'fktp',
+          kapasitas: 40,
+          status: 'aktif',
+          lanud: 'Lanud Ngurah Rai',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_7',
+          nama: 'Klinik Kesehatan Lanud Sultan Hasanuddin',
+          lokasi: 'Makassar',
+          alamat: 'Lanud Sultan Hasanuddin, Makassar',
+          tipe: 'fktp',
+          kapasitas: 45,
+          status: 'aktif',
+          lanud: 'Lanud Sultan Hasanuddin',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_8',
+          nama: 'Klinik Kesehatan Lanud Sam Ratulangi',
+          lokasi: 'Manado',
+          alamat: 'Lanud Sam Ratulangi, Manado',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Sam Ratulangi',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_9',
+          nama: 'Klinik Kesehatan Lanud Roesmin Nurjadin',
+          lokasi: 'Pekanbaru',
+          alamat: 'Lanud Roesmin Nurjadin, Pekanbaru',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Roesmin Nurjadin',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_10',
+          nama: 'Klinik Kesehatan Lanud Sultan Mahmud Badaruddin II',
+          lokasi: 'Palembang',
+          alamat: 'Lanud SMB II, Palembang',
+          tipe: 'fktp',
+          kapasitas: 40,
+          status: 'aktif',
+          lanud: 'Lanud Sultan Mahmud Badaruddin II',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_11',
+          nama: 'Klinik Kesehatan Lanud Soewondo',
+          lokasi: 'Medan',
+          alamat: 'Lanud Soewondo, Medan',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Soewondo',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_12',
+          nama: 'Klinik Kesehatan Lanud Sjamsudin Noor',
+          lokasi: 'Banjarmasin',
+          alamat: 'Lanud Sjamsudin Noor, Banjarmasin',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Sjamsudin Noor',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_13',
+          nama: 'Klinik Kesehatan Lanud Supadio',
+          lokasi: 'Pontianak',
+          alamat: 'Lanud Supadio, Pontianak',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Supadio',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_14',
+          nama: 'Klinik Kesehatan Lanud Pattimura',
+          lokasi: 'Ambon',
+          alamat: 'Lanud Pattimura, Ambon',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Pattimura',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_15',
+          nama: 'Klinik Kesehatan Lanud Manuhua',
+          lokasi: 'Biak',
+          alamat: 'Lanud Manuhua, Biak, Papua',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Manuhua',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        }
+      ];
+
+      // Gabungkan semua faskes
+      const allFaskes = [...rsauData, ...fktpData];
+      this.saveCollection('faskes', allFaskes);
 
       // Sample Patients
       this.saveCollection('patients', [
