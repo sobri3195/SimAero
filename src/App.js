@@ -24,6 +24,8 @@ import ReportsPage from './pages/ReportsPage';
 import BridgingPage from './pages/BridgingPage';
 import BroadcastPage from './pages/BroadcastPage';
 import SettingsPage from './pages/SettingsPage';
+import PoliPage from './pages/PoliPage';
+import BillingPage from './pages/BillingPage';
 import PlaceholderPage from './pages/PlaceholderPage';
 
 import './App.css';
@@ -58,6 +60,8 @@ function App() {
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/bridging" element={<BridgingPage />} />
               <Route path="/broadcast" element={<BroadcastPage />} />
+              <Route path="/poli" element={<PoliPage />} />
+              <Route path="/billing" element={<BillingPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </Layout>

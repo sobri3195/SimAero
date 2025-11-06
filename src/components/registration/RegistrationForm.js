@@ -11,16 +11,25 @@ const RegistrationForm = () => {
   const { addNotification } = useApp();
   
   const [formData, setFormData] = useState({
+    identitasType: 'nik',
     nik: '',
+    nrp: '',
     nama: '',
     tanggalLahir: '',
     jenisKelamin: '',
     alamat: '',
     telepon: '',
+    statusPasien: 'prajurit',
+    namaKeluarga: '',
+    hubunganKeluarga: '',
     poliTujuan: '',
     jenisKunjungan: 'umum',
     nomorBPJS: '',
-    keluhanUtama: ''
+    keluhanUtama: '',
+    isRujukan: false,
+    asalRujukan: '',
+    nomorRujukan: '',
+    diagnosisRujukan: ''
   });
 
   const [existingPatient, setExistingPatient] = useState(null);
@@ -29,14 +38,19 @@ const RegistrationForm = () => {
   const poliOptions = [
     'Poli Umum',
     'Poli Gigi',
+    'KIA (Kesehatan Ibu & Anak)',
+    'MTBS (Manajemen Terpadu Balita Sakit)',
+    'Penapisan PTM (Penyakit Tidak Menular)',
     'Poli Mata',
-    'Poli THT',
-    'Poli Kulit',
-    'Poli Penyakit Dalam',
-    'Poli Bedah',
-    'Poli Anak',
-    'Poli Jantung',
-    'Poli Paru'
+    'Poli THT'
+  ];
+
+  const hubunganKeluargaOptions = [
+    'Suami/Istri',
+    'Anak Kandung',
+    'Orang Tua',
+    'Saudara Kandung',
+    'Lainnya'
   ];
 
   const handleChange = (e) => {
@@ -44,15 +58,19 @@ const RegistrationForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const searchByNIK = async () => {
-    if (!formData.nik) {
-      addNotification({ type: 'warning', message: 'Masukkan NIK terlebih dahulu' });
+  const searchByIdentity = async () => {
+    const searchValue = formData.identitasType === 'nik' ? formData.nik : formData.nrp;
+    if (!searchValue) {
+      addNotification({ type: 'warning', message: `Masukkan ${formData.identitasType.toUpperCase()} terlebih dahulu` });
       return;
     }
 
     setLoading(true);
     try {
-      const q = query(collection(db, 'patients'), where('nik', '==', formData.nik));
+      const q = query(
+        collection(db, 'patients'), 
+        where(formData.identitasType, '==', searchValue)
+      );
       const querySnapshot = await getDocs(q);
       
       if (!querySnapshot.empty) {
@@ -102,13 +120,19 @@ const RegistrationForm = () => {
 
       if (!existingPatient) {
         await addDoc(collection(db, 'patients'), {
+          identitasType: formData.identitasType,
           nik: formData.nik,
+          nrp: formData.nrp,
           nama: formData.nama,
           tanggalLahir: formData.tanggalLahir,
           jenisKelamin: formData.jenisKelamin,
           alamat: formData.alamat,
           telepon: formData.telepon,
+          statusPasien: formData.statusPasien,
+          namaKeluarga: formData.namaKeluarga,
+          hubunganKeluarga: formData.hubunganKeluarga,
           nomorBPJS: formData.nomorBPJS,
+          faskesId: selectedFaskes || 'default',
           createdAt: new Date()
         });
       }
@@ -119,16 +143,25 @@ const RegistrationForm = () => {
       });
 
       setFormData({
+        identitasType: 'nik',
         nik: '',
+        nrp: '',
         nama: '',
         tanggalLahir: '',
         jenisKelamin: '',
         alamat: '',
         telepon: '',
+        statusPasien: 'prajurit',
+        namaKeluarga: '',
+        hubunganKeluarga: '',
         poliTujuan: '',
         jenisKunjungan: 'umum',
         nomorBPJS: '',
-        keluhanUtama: ''
+        keluhanUtama: '',
+        isRujukan: false,
+        asalRujukan: '',
+        nomorRujukan: '',
+        diagnosisRujukan: ''
       });
       setExistingPatient(null);
     } catch (error) {
@@ -142,22 +175,44 @@ const RegistrationForm = () => {
   return (
     <Card title="Formulir Pendaftaran Pasien">
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* NIK Search */}
+        {/* Identity Type & Search */}
         <div>
-          <label className="block text-sm font-medium mb-2">NIK</label>
+          <label className="block text-sm font-medium mb-2">Tipe Identitas</label>
+          <div className="flex gap-4 mb-2">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="identitasType"
+                value="nik"
+                checked={formData.identitasType === 'nik'}
+                onChange={handleChange}
+              />
+              NIK (Nomor Induk Kependudukan)
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="identitasType"
+                value="nrp"
+                checked={formData.identitasType === 'nrp'}
+                onChange={handleChange}
+              />
+              NRP (Nomor Registrasi Prajurit)
+            </label>
+          </div>
           <div className="flex gap-2">
             <input
               type="text"
-              name="nik"
-              value={formData.nik}
+              name={formData.identitasType}
+              value={formData.identitasType === 'nik' ? formData.nik : formData.nrp}
               onChange={handleChange}
               className="flex-1 p-2 border rounded"
-              placeholder="Nomor Induk Kependudukan"
+              placeholder={formData.identitasType === 'nik' ? 'Nomor Induk Kependudukan' : 'Nomor Registrasi Prajurit'}
               required
             />
             <button
               type="button"
-              onClick={searchByNIK}
+              onClick={searchByIdentity}
               disabled={loading}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-2"
             >
@@ -189,6 +244,22 @@ const RegistrationForm = () => {
               className="w-full p-2 border rounded"
               required
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Status Pasien</label>
+            <select
+              name="statusPasien"
+              value={formData.statusPasien}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+              required
+            >
+              <option value="prajurit">Prajurit TNI AU</option>
+              <option value="pns">PNS TNI AU</option>
+              <option value="keluarga">Keluarga/Ahli Waris</option>
+              <option value="umum">Umum</option>
+            </select>
           </div>
 
           <div>
@@ -230,6 +301,40 @@ const RegistrationForm = () => {
             />
           </div>
         </div>
+
+        {/* Family Member Fields */}
+        {formData.statusPasien === 'keluarga' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg">
+            <div className="md:col-span-2">
+              <h4 className="font-medium text-sm mb-2">Data Keluarga/Ahli Waris</h4>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Nama Prajurit/PNS</label>
+              <input
+                type="text"
+                name="namaKeluarga"
+                value={formData.namaKeluarga}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+                placeholder="Nama kepala keluarga (Prajurit/PNS)"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Hubungan Keluarga</label>
+              <select
+                name="hubunganKeluarga"
+                value={formData.hubunganKeluarga}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+              >
+                <option value="">Pilih...</option>
+                {hubunganKeluargaOptions.map((option, idx) => (
+                  <option key={idx} value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium mb-2">Alamat</label>
@@ -300,21 +405,80 @@ const RegistrationForm = () => {
           />
         </div>
 
+        {/* Referral Section */}
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <label className="flex items-center gap-2 mb-3">
+            <input
+              type="checkbox"
+              checked={formData.isRujukan}
+              onChange={(e) => setFormData(prev => ({ ...prev, isRujukan: e.target.checked }))}
+            />
+            <span className="font-medium">Pasien Rujukan</span>
+          </label>
+          
+          {formData.isRujukan && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Asal Rujukan</label>
+                <input
+                  type="text"
+                  name="asalRujukan"
+                  value={formData.asalRujukan}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded"
+                  placeholder="Nama faskes asal rujukan"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Nomor Rujukan</label>
+                <input
+                  type="text"
+                  name="nomorRujukan"
+                  value={formData.nomorRujukan}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded"
+                  placeholder="Nomor surat rujukan"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium mb-2">Diagnosis Rujukan</label>
+                <textarea
+                  name="diagnosisRujukan"
+                  value={formData.diagnosisRujukan}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded"
+                  rows="2"
+                  placeholder="Diagnosis dari faskes perujuk"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="flex justify-end gap-2">
           <button
             type="button"
             onClick={() => {
               setFormData({
+                identitasType: 'nik',
                 nik: '',
+                nrp: '',
                 nama: '',
                 tanggalLahir: '',
                 jenisKelamin: '',
                 alamat: '',
                 telepon: '',
+                statusPasien: 'prajurit',
+                namaKeluarga: '',
+                hubunganKeluarga: '',
                 poliTujuan: '',
                 jenisKunjungan: 'umum',
                 nomorBPJS: '',
-                keluhanUtama: ''
+                keluhanUtama: '',
+                isRujukan: false,
+                asalRujukan: '',
+                nomorRujukan: '',
+                diagnosisRujukan: ''
               });
               setExistingPatient(null);
             }}
