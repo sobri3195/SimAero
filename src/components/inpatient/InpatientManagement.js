@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, updateDoc, doc, addDoc } from '../../mockDb';
+import { collection, query, where, onSnapshot, updateDoc, doc, addDoc, getDocs } from '../../mockDb';
 import { db } from '../../mockDb';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
-import { Bed, UserPlus, FileText } from 'lucide-react';
+import { UserPlus, FileText, LayoutGrid, BarChart3 } from 'lucide-react';
 import Card from '../common/Card';
+import BedLayout from './BedLayout';
+import BORStatistics from './BORStatistics';
 
 const InpatientManagement = () => {
   const { selectedFaskes } = useAuth();
@@ -12,9 +14,11 @@ const InpatientManagement = () => {
   
   const [beds, setBeds] = useState([]);
   const [inpatients, setInpatients] = useState([]);
-  const [selectedBed, setSelectedBed] = useState(null);
+  const [dischargedPatients, setDischargedPatients] = useState([]);
   const [showAdmitForm, setShowAdmitForm] = useState(false);
   const [showNurseNotes, setShowNurseNotes] = useState(null);
+  const [activeTab, setActiveTab] = useState('layout');
+  const [selectedRoom, setSelectedRoom] = useState(null);
   
   const [admitForm, setAdmitForm] = useState({
     patientId: '',
@@ -63,6 +67,22 @@ const InpatientManagement = () => {
       });
       setInpatients(inpatientsData);
     });
+
+    const loadDischargedPatients = async () => {
+      const dischargedQuery = query(
+        collection(db, 'inpatients'),
+        where('faskesId', '==', selectedFaskes),
+        where('status', '==', 'keluar')
+      );
+      const snapshot = await getDocs(dischargedQuery);
+      const discharged = [];
+      snapshot.forEach((doc) => {
+        discharged.push({ id: doc.id, ...doc.data() });
+      });
+      setDischargedPatients(discharged);
+    };
+
+    loadDischargedPatients();
 
     return () => {
       unsubscribeBeds();
@@ -162,20 +182,49 @@ const InpatientManagement = () => {
     }
   };
 
-  const getBedStatusColor = (status) => {
-    switch (status) {
-      case 'kosong': return 'bg-green-100 text-green-800';
-      case 'terisi': return 'bg-red-100 text-red-800';
-      case 'maintenance': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+  const moveBed = async (inpatient, targetBed) => {
+    try {
+      const oldBed = beds.find(b => b.id === inpatient.bedId);
+
+      await updateDoc(doc(db, 'beds', oldBed.id), {
+        status: 'dibersihkan',
+        occupiedBy: null
+      });
+
+      await updateDoc(doc(db, 'beds', targetBed.id), {
+        status: 'terisi',
+        occupiedBy: inpatient.patientName
+      });
+
+      await updateDoc(doc(db, 'inpatients', inpatient.id), {
+        bedId: targetBed.id,
+        roomNumber: targetBed.roomNumber,
+        bedNumber: targetBed.bedNumber,
+        transferHistory: [...(inpatient.transferHistory || []), {
+          from: `${oldBed.roomNumber} - ${oldBed.bedNumber}`,
+          to: `${targetBed.roomNumber} - ${targetBed.bedNumber}`,
+          timestamp: new Date().toISOString()
+        }]
+      });
+
+      addNotification({ type: 'success', message: 'Pasien berhasil dipindahkan' });
+    } catch (error) {
+      console.error('Error moving patient:', error);
+      addNotification({ type: 'error', message: 'Gagal memindahkan pasien' });
     }
   };
 
-  const bedsByRoom = beds.reduce((acc, bed) => {
-    if (!acc[bed.roomType]) acc[bed.roomType] = [];
-    acc[bed.roomType].push(bed);
-    return acc;
-  }, {});
+  const setBedStatus = async (bedId, status) => {
+    try {
+      await updateDoc(doc(db, 'beds', bedId), { status });
+      addNotification({ type: 'success', message: 'Status tempat tidur berhasil diupdate' });
+    } catch (error) {
+      console.error('Error updating bed status:', error);
+      addNotification({ type: 'error', message: 'Gagal mengupdate status' });
+    }
+  };
+
+  const roomTypes = [...new Set(beds.map(b => b.roomType))].filter(Boolean);
 
   return (
     <div className="space-y-6">
@@ -191,6 +240,42 @@ const InpatientManagement = () => {
           </button>
         }
       >
+        <div className="mb-6 flex border-b">
+          <button
+            onClick={() => setActiveTab('layout')}
+            className={`px-4 py-2 font-medium flex items-center gap-2 border-b-2 transition-colors ${
+              activeTab === 'layout' 
+                ? 'border-blue-500 text-blue-600' 
+                : 'border-transparent text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            <LayoutGrid size={18} />
+            Denah Tempat Tidur
+          </button>
+          <button
+            onClick={() => setActiveTab('list')}
+            className={`px-4 py-2 font-medium flex items-center gap-2 border-b-2 transition-colors ${
+              activeTab === 'list' 
+                ? 'border-blue-500 text-blue-600' 
+                : 'border-transparent text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            <FileText size={18} />
+            Daftar Pasien
+          </button>
+          <button
+            onClick={() => setActiveTab('statistics')}
+            className={`px-4 py-2 font-medium flex items-center gap-2 border-b-2 transition-colors ${
+              activeTab === 'statistics' 
+                ? 'border-blue-500 text-blue-600' 
+                : 'border-transparent text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            <BarChart3 size={18} />
+            Statistik BOR
+          </button>
+        </div>
+
         {showAdmitForm && (
           <div className="mb-6 p-4 bg-gray-50 rounded-lg">
             <h4 className="font-medium mb-3">Form Rawat Inap</h4>
@@ -245,35 +330,57 @@ const InpatientManagement = () => {
           </div>
         )}
 
-        <div className="mb-6">
-          <h3 className="font-medium mb-3">Status Tempat Tidur</h3>
-          {Object.entries(bedsByRoom).map(([roomType, roomBeds]) => (
-            <div key={roomType} className="mb-4">
-              <h4 className="text-sm font-medium text-gray-600 mb-2">{roomType}</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                {roomBeds.map(bed => (
-                  <div
-                    key={bed.id}
-                    className={`p-3 rounded border-2 cursor-pointer ${getBedStatusColor(bed.status)} ${selectedBed === bed.id ? 'border-blue-500' : 'border-transparent'}`}
-                    onClick={() => setSelectedBed(bed.id)}
+        {activeTab === 'layout' && (
+          <div>
+            {roomTypes.length > 0 && (
+              <div className="mb-4 flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setSelectedRoom(null)}
+                  className={`px-3 py-1 rounded text-sm ${
+                    selectedRoom === null 
+                      ? 'bg-blue-500 text-white' 
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Semua Ruangan
+                </button>
+                {roomTypes.map(roomType => (
+                  <button
+                    key={roomType}
+                    onClick={() => setSelectedRoom(roomType)}
+                    className={`px-3 py-1 rounded text-sm ${
+                      selectedRoom === roomType 
+                        ? 'bg-blue-500 text-white' 
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
                   >
-                    <div className="flex items-center gap-2 mb-1">
-                      <Bed size={16} />
-                      <span className="font-medium">{bed.bedNumber}</span>
-                    </div>
-                    <div className="text-xs">{bed.roomNumber}</div>
-                    {bed.occupiedBy && (
-                      <div className="text-xs mt-1 font-medium">{bed.occupiedBy}</div>
-                    )}
-                  </div>
+                    {roomType}
+                  </button>
                 ))}
               </div>
-            </div>
-          ))}
-        </div>
+            )}
+            <BedLayout 
+              beds={beds}
+              inpatients={inpatients}
+              onMoveBed={moveBed}
+              onDischarge={dischargePatient}
+              onSetBedStatus={setBedStatus}
+              selectedRoom={selectedRoom}
+            />
+          </div>
+        )}
 
-        <div>
-          <h3 className="font-medium mb-3">Pasien Rawat Inap Aktif</h3>
+        {activeTab === 'statistics' && (
+          <BORStatistics 
+            beds={beds}
+            inpatients={inpatients}
+            dischargedPatients={dischargedPatients}
+          />
+        )}
+
+        {activeTab === 'list' && (
+          <div>
+            <h3 className="font-medium mb-3">Pasien Rawat Inap Aktif</h3>
           <div className="space-y-3">
             {inpatients.map(inpatient => (
               <div key={inpatient.id} className="p-4 bg-white border rounded-lg">
@@ -388,7 +495,8 @@ const InpatientManagement = () => {
               </div>
             )}
           </div>
-        </div>
+          </div>
+        )}
       </Card>
     </div>
   );

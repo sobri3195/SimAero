@@ -1,53 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
-import { collection, getDocs, query, where } from '../../mockDb';
-import { db } from '../../mockDb';
 import { 
   Menu, X, Home, Users, ClipboardList, FileText, Activity, 
   BedDouble, Calendar, Droplet, Heart, Pill, TestTube, 
   UserCheck, Package, AlertTriangle, BarChart3, Settings,
-  Radio, MessageSquare, ChevronDown, Shield, Building2, DollarSign 
+  Radio, MessageSquare, ChevronDown, Shield, Stethoscope 
 } from 'lucide-react';
+import { collection, getDocs, query, where } from '../../mockDb';
+import { db } from '../../mockDb';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [facilityDropdownOpen, setFacilityDropdownOpen] = useState(false);
-  const [rsauList, setRsauList] = useState([]);
-  const [fktpList, setFktpList] = useState([]);
-  const { userRole, selectedFaskes, switchToPuskesau, switchToRSAU, switchToFKTP } = useAuth();
+  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
+  const [availableFacilities, setAvailableFacilities] = useState([]);
+  const { userRole, selectedFaskes, switchToPuskesau, switchToRSAU, switchToFKTP, facilityType, rikkesRole, setRikkesRole } = useAuth();
   const { theme } = useApp();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const loadFacilities = async () => {
-      try {
-        // Load RSAU
-        const rsauQuery = query(
-          collection(db, 'faskes'),
-          where('tipe', '==', 'rsau')
-        );
-        const rsauSnapshot = await getDocs(rsauQuery);
-        const rsauData = rsauSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setRsauList(rsauData);
-
-        // Load FKTP
-        const fktpQuery = query(
-          collection(db, 'faskes'),
-          where('tipe', '==', 'fktp')
-        );
-        const fktpSnapshot = await getDocs(fktpQuery);
-        const fktpData = fktpSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setFktpList(fktpData);
-      } catch (error) {
-        console.error('Error loading facilities:', error);
-      }
-    };
-
-    loadFacilities();
-  }, []);
 
   const puskesauMenuItems = [
     { icon: Home, label: 'Dashboard Pengawasan', path: '/' },
@@ -60,14 +32,13 @@ const Layout = ({ children }) => {
     { icon: Users, label: 'Database Pasien', path: '/patients' },
     { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
     { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
-    { icon: Building2, label: 'Poliklinik', path: '/poli' },
-    { icon: DollarSign, label: 'Billing', path: '/billing' },
     { icon: Activity, label: 'IGD', path: '/igd' },
     { icon: BedDouble, label: 'Rawat Inap', path: '/inpatient' },
     { icon: Calendar, label: 'Jadwal Operasi', path: '/surgery' },
     { icon: Activity, label: 'CSSD', path: '/cssd' },
     { icon: Droplet, label: 'Bank Darah', path: '/bloodbank' },
     { icon: Heart, label: 'Rikkes', path: '/rikkes' },
+    { icon: BarChart3, label: '└ Analitik Rikkes', path: '/rikkes/analytics', indent: true },
     { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
     { icon: TestTube, label: 'Laboratorium', path: '/lab' },
     { icon: Radio, label: 'Radiologi', path: '/radiology' },
@@ -85,12 +56,16 @@ const Layout = ({ children }) => {
     { icon: Home, label: 'Dashboard', path: '/' },
     { icon: Users, label: 'Database Pasien', path: '/patients' },
     { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
+    { icon: Stethoscope, label: 'Pemeriksaan Harian', path: '/daily-examination' },
+    { icon: Calendar, label: 'Manajemen Poli', path: '/poli' },
     { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
-    { icon: Building2, label: 'Poliklinik', path: '/poli' },
-    { icon: DollarSign, label: 'Billing', path: '/billing' },
     { icon: Heart, label: 'Rikkes', path: '/rikkes' },
+    { icon: BarChart3, label: '└ Analitik Rikkes', path: '/rikkes/analytics', indent: true },
+    { icon: Shield, label: 'Rikkes Personel', path: '/personnel-rikkes' },
     { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
     { icon: TestTube, label: 'Laboratorium', path: '/lab' },
+    { icon: BedDouble, label: 'Billing & Kasir', path: '/billing' },
+    { icon: Radio, label: 'Bridging', path: '/bridging' },
     { icon: UserCheck, label: 'SDM & Jadwal', path: '/hr' },
     { icon: Package, label: 'Logistik', path: '/logistics' },
     { icon: AlertTriangle, label: 'Laporan Insiden', path: '/incidents' },
@@ -114,11 +89,55 @@ const Layout = ({ children }) => {
 
   const menuItems = getMenuItems();
 
+  const loadFacilities = useCallback(async () => {
+    try {
+      if (!facilityType) return;
+      
+      const q = query(collection(db, 'faskes'), where('tipe', '==', facilityType));
+      const snapshot = await getDocs(q);
+      const facilities = [];
+      snapshot.forEach((doc) => {
+        facilities.push(doc.data());
+      });
+      setAvailableFacilities(facilities);
+    } catch (error) {
+      console.error('Error loading facilities:', error);
+    }
+  }, [facilityType]);
+
+  useEffect(() => {
+    if (userRole !== 'PUSKESAU') {
+      loadFacilities();
+    }
+  }, [userRole, facilityType, loadFacilities]);
+
+  const handleFacilitySwitch = (facilityName) => {
+    if (facilityType === 'rsau') {
+      switchToRSAU(facilityName);
+    } else if (facilityType === 'fktp') {
+      switchToFKTP(facilityName);
+    }
+    setFacilityDropdownOpen(false);
+    navigate('/');
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
+      {/* Mobile Backdrop */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside 
-        className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white shadow-lg transition-all duration-300 overflow-y-auto`}
+        className={`${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 ${
+          sidebarOpen ? 'w-64' : 'lg:w-20'
+        } w-64 bg-white shadow-lg transition-all duration-300 overflow-y-auto fixed lg:relative h-full z-50`}
         style={{ borderRight: `3px solid ${theme.primaryColor}` }}
       >
         <div className="p-4 flex items-center justify-between" style={{ backgroundColor: theme.primaryColor }}>
@@ -159,11 +178,13 @@ const Layout = ({ children }) => {
             <button
               key={index}
               onClick={() => navigate(item.path)}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors text-left mb-1`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors text-left mb-1 ${
+                item.indent ? 'pl-8' : ''
+              }`}
               title={!sidebarOpen ? item.label : ''}
             >
-              <item.icon size={20} style={{ color: theme.primaryColor }} />
-              {sidebarOpen && <span className="text-sm">{item.label}</span>}
+              <item.icon size={item.indent ? 16 : 20} style={{ color: theme.primaryColor }} />
+              {sidebarOpen && <span className={`${item.indent ? 'text-xs' : 'text-sm'}`}>{item.label}</span>}
             </button>
           ))}
         </nav>
@@ -174,70 +195,69 @@ const Layout = ({ children }) => {
         {/* Header */}
         <header className="bg-white shadow-sm z-10">
           <div className="flex items-center justify-between p-4">
-            <div>
-              <h2 className="text-xl font-bold" style={{ color: theme.primaryColor }}>
-                {userRole === 'PUSKESAU' 
-                  ? 'Dashboard Pengawasan Puskesau' 
-                  : userRole === 'RSAU'
-                  ? `SIMRS - ${selectedFaskes}`
-                  : `SIM Klinik - ${selectedFaskes}`
-                }
-              </h2>
-              <p className="text-sm text-gray-600">
-                {userRole === 'PUSKESAU' 
-                  ? 'Pusat Kesehatan Angkatan Udara' 
-                  : userRole === 'RSAU'
-                  ? 'Sistem Informasi Manajemen Rumah Sakit'
-                  : 'Sistem Informasi Manajemen Klinik'
-                }
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              {/* Facility Dropdown (only shown when in RSAU or FKTP mode) */}
-              {userRole !== 'PUSKESAU' && (
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="lg:hidden p-2 hover:bg-gray-100 rounded-lg mr-2"
+            >
+              <Menu size={24} />
+            </button>
+
+            <div className="flex items-center gap-4 overflow-x-auto flex-1">
+              <div className="hidden md:block">
+                <h2 className="text-xl font-bold" style={{ color: theme.primaryColor }}>
+                  {userRole === 'PUSKESAU' 
+                    ? 'Dashboard Pengawasan Puskesau' 
+                    : userRole === 'RSAU'
+                    ? `SIMRS`
+                    : `SIM Klinik`
+                  }
+                </h2>
+                <p className="text-sm text-gray-600">
+                  {userRole === 'PUSKESAU' 
+                    ? 'Pusat Kesehatan Angkatan Udara' 
+                    : userRole === 'RSAU'
+                    ? 'Sistem Informasi Manajemen Rumah Sakit'
+                    : 'Sistem Informasi Manajemen Klinik'
+                  }
+                </p>
+              </div>
+              <div className="md:hidden">
+                <h2 className="text-lg font-bold" style={{ color: theme.primaryColor }}>
+                  {userRole === 'PUSKESAU' ? 'PUSKESAU' : userRole === 'RSAU' ? 'SIMRS' : 'SIM Klinik'}
+                </h2>
+              </div>
+
+              {/* Facility Dropdown - Shown when in RSAU or FKTP mode */}
+              {userRole !== 'PUSKESAU' && selectedFaskes && (
                 <div className="relative">
-                  <button 
+                  <button
                     onClick={() => setFacilityDropdownOpen(!facilityDropdownOpen)}
-                    className="flex items-center gap-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors border border-blue-200"
+                    className="flex items-center gap-2 px-3 md:px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
                   >
-                    <span className="text-sm font-medium text-blue-800">
-                      {userRole === 'RSAU' ? '🏥 RSAU' : '🏥 FKTP'}
+                    <span className="font-semibold text-blue-800 text-xs md:text-sm max-w-[120px] md:max-w-xs truncate">
+                      {selectedFaskes}
                     </span>
-                    <ChevronDown size={16} className="text-blue-600" />
+                    <ChevronDown size={16} className="text-blue-600 flex-shrink-0" />
                   </button>
 
                   {facilityDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border max-h-96 overflow-y-auto z-50">
-                      <div className="p-3 bg-gray-50 border-b sticky top-0">
-                        <h3 className="font-bold text-gray-800">
+                    <div className="absolute top-full left-0 right-0 md:left-0 md:right-auto mt-2 w-screen md:w-96 max-w-sm md:max-w-none bg-white rounded-lg shadow-xl border z-50 max-h-96 overflow-y-auto">
+                      <div className="p-2 border-b bg-gray-50">
+                        <p className="text-xs font-semibold text-gray-600 uppercase px-2">
                           {userRole === 'RSAU' ? 'Pilih RSAU' : 'Pilih FKTP'}
-                        </h3>
-                        <p className="text-xs text-gray-600">
-                          {userRole === 'RSAU' 
-                            ? `${rsauList.length} Rumah Sakit TNI AU` 
-                            : `${fktpList.length} Klinik TNI AU`
-                          }
                         </p>
                       </div>
                       <div className="p-2">
-                        {(userRole === 'RSAU' ? rsauList : fktpList).map((facility) => (
+                        {availableFacilities.map((facility) => (
                           <button
                             key={facility.id}
-                            onClick={() => {
-                              if (userRole === 'RSAU') {
-                                switchToRSAU(facility.nama);
-                              } else {
-                                switchToFKTP(facility.nama);
-                              }
-                              setFacilityDropdownOpen(false);
-                              navigate('/');
-                            }}
-                            className={`w-full text-left p-2 hover:bg-blue-50 rounded transition-colors mb-1 ${
+                            onClick={() => handleFacilitySwitch(facility.nama)}
+                            className={`w-full text-left p-3 rounded hover:bg-blue-50 transition-colors mb-1 ${
                               selectedFaskes === facility.nama ? 'bg-blue-100 border border-blue-300' : ''
                             }`}
                           >
-                            <div className="font-medium text-sm text-gray-800">{facility.nama}</div>
+                            <div className="font-semibold text-sm text-gray-800">{facility.nama}</div>
                             <div className="text-xs text-gray-600">{facility.lokasi}</div>
                           </button>
                         ))}
@@ -247,6 +267,50 @@ const Layout = ({ children }) => {
                 </div>
               )}
 
+              {/* Rikkes Role Selector */}
+              {userRole !== 'PUSKESAU' && selectedFaskes && (
+                <div className="relative">
+                  <button
+                    onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
+                    className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-2 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
+                  >
+                    <Shield size={16} className="text-green-600 flex-shrink-0" />
+                    <span className="font-semibold text-green-800 text-xs md:text-sm hidden sm:inline">
+                      {rikkesRole}
+                    </span>
+                    <ChevronDown size={16} className="text-green-600 flex-shrink-0" />
+                  </button>
+
+                  {roleDropdownOpen && (
+                    <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border z-50">
+                      <div className="p-2 border-b bg-gray-50">
+                        <p className="text-xs font-semibold text-gray-600 uppercase px-2">
+                          Role Rikkes
+                        </p>
+                      </div>
+                      <div className="p-2">
+                        {['Admin', 'Dokter Umum', 'Dokter Gigi', 'ATLM Lab', 'Radiografer', 'Reviewer'].map((role) => (
+                          <button
+                            key={role}
+                            onClick={() => {
+                              setRikkesRole(role);
+                              setRoleDropdownOpen(false);
+                            }}
+                            className={`w-full text-left p-2 rounded hover:bg-green-50 transition-colors mb-1 text-sm ${
+                              rikkesRole === role ? 'bg-green-100 border border-green-300 font-semibold' : ''
+                            }`}
+                          >
+                            {role}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            <div className="flex items-center gap-4">
               {/* Notifications */}
               <button className="p-2 hover:bg-gray-100 rounded-lg relative">
                 <Activity size={20} />
@@ -266,7 +330,7 @@ const Layout = ({ children }) => {
                 </button>
 
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border">
                     <div className="p-2">
                       <button className="w-full text-left p-2 hover:bg-gray-100 rounded">
                         Profil

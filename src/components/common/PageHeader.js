@@ -13,8 +13,10 @@ const PageHeader = ({
 }) => {
   return (
     <div className="mb-6">
+      {/* Breadcrumb */}
       {breadcrumbItems && <Breadcrumb items={breadcrumbItems} />}
 
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">{title}</h1>

@@ -5,6 +5,7 @@ import { ChevronRight, Home } from 'lucide-react';
 const Breadcrumb = ({ items }) => {
   const location = useLocation();
 
+  // Auto-generate breadcrumb from path if items not provided
   const getBreadcrumbItems = () => {
     if (items) return items;
 

@@ -1,35 +1,40 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Download, FileText, Copy, Eye, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Download, FileText, Copy, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 import { saveAs } from 'file-saver';
 
-const DataTable = ({
-  columns,
-  data,
-  title,
+const DataTable = ({ 
+  columns, 
+  data, 
+  title = 'Data',
   searchable = true,
   exportable = true,
   pagination = true,
   itemsPerPage = 10,
-  onView,
   onEdit,
-  onDelete
+  onDelete,
+  onView
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
+  // Filter data based on search query
   const filteredData = useMemo(() => {
-    if (!searchTerm) return data;
+    if (!searchQuery) return data;
+    
+    return data.filter(row => {
+      return columns.some(column => {
+        const value = row[column.key];
+        if (value === null || value === undefined) return false;
+        return value.toString().toLowerCase().includes(searchQuery.toLowerCase());
+      });
+    });
+  }, [data, searchQuery, columns]);
 
-    return data.filter((row) =>
-      columns.some((col) => {
-        const value = row[col.key];
-        return value && value.toString().toLowerCase().includes(searchTerm.toLowerCase());
-      })
-    );
-  }, [data, searchTerm, columns]);
-
+  // Sort data
   const sortedData = useMemo(() => {
     if (!sortConfig.key) return filteredData;
 
@@ -37,126 +42,208 @@ const DataTable = ({
       const aValue = a[sortConfig.key];
       const bValue = b[sortConfig.key];
 
-      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-      return 0;
+      if (aValue === null || aValue === undefined) return 1;
+      if (bValue === null || bValue === undefined) return -1;
+
+      if (typeof aValue === 'string') {
+        return sortConfig.direction === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      return sortConfig.direction === 'asc' 
+        ? aValue > bValue ? 1 : -1
+        : bValue > aValue ? 1 : -1;
     });
 
     return sorted;
   }, [filteredData, sortConfig]);
 
+  // Pagination
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
   const paginatedData = useMemo(() => {
     if (!pagination) return sortedData;
-
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return sortedData.slice(startIndex, endIndex);
+    return sortedData.slice(startIndex, startIndex + itemsPerPage);
   }, [sortedData, currentPage, itemsPerPage, pagination]);
 
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-
   const handleSort = (key) => {
-    setSortConfig((prev) => ({
+    setSortConfig({
       key,
-      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
-    }));
+      direction: sortConfig.key === key && sortConfig.direction === 'asc' ? 'desc' : 'asc'
+    });
   };
 
+  // Export to Excel
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(sortedData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Data');
-    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(blob, `${title || 'data'}.xlsx`);
+    const worksheet = XLSX.utils.json_to_sheet(
+      filteredData.map(row => {
+        const obj = {};
+        columns.forEach(col => {
+          if (!col.actions) {
+            obj[col.label] = row[col.key];
+          }
+        });
+        return obj;
+      })
+    );
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, title);
+    XLSX.writeFile(workbook, `${title}_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
+  // Export to PDF
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(16);
+    doc.text(title, 14, 15);
+    
+    const tableColumns = columns
+      .filter(col => !col.actions)
+      .map(col => col.label);
+    
+    const tableData = filteredData.map(row => 
+      columns
+        .filter(col => !col.actions)
+        .map(col => row[col.key] || '')
+    );
+
+    doc.autoTable({
+      head: [tableColumns],
+      body: tableData,
+      startY: 25,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [59, 130, 246] }
+    });
+
+    doc.save(`${title}_${new Date().toISOString().split('T')[0]}.pdf`);
+  };
+
+  // Export to CSV (as DOC alternative)
   const exportToCSV = () => {
-    const ws = XLSX.utils.json_to_sheet(sortedData);
-    const csv = XLSX.utils.sheet_to_csv(ws);
+    const headers = columns.filter(col => !col.actions).map(col => col.label).join(',');
+    const rows = filteredData.map(row => 
+      columns
+        .filter(col => !col.actions)
+        .map(col => {
+          const value = row[col.key] || '';
+          // Escape commas and quotes
+          return `"${value.toString().replace(/"/g, '""')}"`;
+        })
+        .join(',')
+    );
+    
+    const csv = [headers, ...rows].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, `${title || 'data'}.csv`);
+    saveAs(blob, `${title}_${new Date().toISOString().split('T')[0]}.csv`);
   };
 
+  // Copy to Clipboard
   const copyToClipboard = () => {
-    const text = sortedData.map((row) =>
-      columns.map((col) => row[col.key]).join('\t')
-    ).join('\n');
-    navigator.clipboard.writeText(text);
-    alert('Data copied to clipboard!');
+    const headers = columns.filter(col => !col.actions).map(col => col.label).join('\t');
+    const rows = filteredData.map(row => 
+      columns
+        .filter(col => !col.actions)
+        .map(col => row[col.key] || '')
+        .join('\t')
+    );
+    
+    const text = [headers, ...rows].join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Data berhasil disalin ke clipboard!');
+    });
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border">
-      <div className="p-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          {title && <h3 className="text-lg font-bold text-gray-800">{title}</h3>}
-          <p className="text-sm text-gray-600">{sortedData.length} data</p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-2">
+    <div className="bg-white rounded-lg shadow">
+      {/* Header with Search and Export */}
+      <div className="p-4 border-b">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          {/* Search */}
           {searchable && (
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-              <input
-                type="text"
-                placeholder="Cari..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+            <div className="flex-1 max-w-md">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <input
+                  type="text"
+                  placeholder="Cari data..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
           )}
 
+          {/* Export Buttons */}
           {exportable && (
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <button
-                onClick={exportToExcel}
-                className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2 transition-colors text-sm"
-                title="Export to Excel"
+                onClick={copyToClipboard}
+                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                title="Copy to Clipboard"
               >
-                <FileText size={18} />
-                <span className="hidden sm:inline">Excel</span>
+                <Copy size={16} />
+                <span className="hidden sm:inline">Copy</span>
               </button>
               <button
                 onClick={exportToCSV}
-                className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 transition-colors text-sm"
+                className="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
                 title="Export to CSV"
               >
-                <Download size={18} />
+                <FileText size={16} />
                 <span className="hidden sm:inline">CSV</span>
               </button>
               <button
-                onClick={copyToClipboard}
-                className="px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg flex items-center gap-2 transition-colors text-sm"
-                title="Copy to clipboard"
+                onClick={exportToExcel}
+                className="px-3 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                title="Export to Excel"
               >
-                <Copy size={18} />
+                <Download size={16} />
+                <span className="hidden sm:inline">Excel</span>
+              </button>
+              <button
+                onClick={exportToPDF}
+                className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                title="Export to PDF"
+              >
+                <FileText size={16} />
+                <span className="hidden sm:inline">PDF</span>
               </button>
             </div>
           )}
         </div>
+
+        {/* Results Info */}
+        <div className="mt-3 text-sm text-gray-600">
+          Menampilkan {paginatedData.length} dari {filteredData.length} data
+          {searchQuery && ` (difilter dari ${data.length} total)`}
+        </div>
       </div>
 
+      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b">
+          <thead className="bg-gray-50">
             <tr>
-              {columns.map((col, index) => (
+              {columns.map((column, index) => (
                 <th
                   key={index}
-                  className={`px-4 py-3 text-left text-sm font-semibold text-gray-700 ${
-                    col.sortable !== false ? 'cursor-pointer hover:bg-gray-100' : ''
-                  } ${col.className || ''}`}
-                  onClick={() => col.sortable !== false && handleSort(col.key)}
+                  onClick={() => !column.actions && handleSort(column.key)}
+                  className={`text-left py-3 px-4 font-semibold text-gray-700 ${
+                    !column.actions ? 'cursor-pointer hover:bg-gray-100' : ''
+                  } ${column.className || ''}`}
                 >
                   <div className="flex items-center gap-2">
-                    {col.label}
-                    {sortConfig.key === col.key && (
-                      <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                    {column.label}
+                    {!column.actions && sortConfig.key === column.key && (
+                      <span className="text-blue-600">
+                        {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                      </span>
                     )}
                   </div>
                 </th>
@@ -166,49 +253,46 @@ const DataTable = ({
           <tbody>
             {paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-8 text-center text-gray-500">
-                  Tidak ada data
+                <td colSpan={columns.length} className="text-center py-8 text-gray-600">
+                  {searchQuery ? 'Tidak ada data yang ditemukan' : 'Belum ada data'}
                 </td>
               </tr>
             ) : (
               paginatedData.map((row, rowIndex) => (
                 <tr key={rowIndex} className="border-b hover:bg-gray-50 transition-colors">
-                  {columns.map((col, colIndex) => (
-                    <td key={colIndex} className={`px-4 py-3 text-sm text-gray-800 ${col.className || ''}`}>
-                      {col.actions ? (
+                  {columns.map((column, colIndex) => (
+                    <td key={colIndex} className={`py-3 px-4 ${column.className || ''}`}>
+                      {column.render ? (
+                        column.render(row, rowIndex)
+                      ) : column.actions ? (
                         <div className="flex gap-2 justify-center">
                           {onView && (
                             <button
                               onClick={() => onView(row)}
-                              className="p-1.5 text-blue-600 hover:bg-blue-100 rounded transition-colors"
-                              title="View"
+                              className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-sm transition-colors"
                             >
-                              <Eye size={18} />
+                              Lihat
                             </button>
                           )}
                           {onEdit && (
                             <button
                               onClick={() => onEdit(row)}
-                              className="p-1.5 text-green-600 hover:bg-green-100 rounded transition-colors"
-                              title="Edit"
+                              className="px-3 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded text-sm transition-colors"
                             >
-                              <Edit size={18} />
+                              Edit
                             </button>
                           )}
                           {onDelete && (
                             <button
                               onClick={() => onDelete(row)}
-                              className="p-1.5 text-red-600 hover:bg-red-100 rounded transition-colors"
-                              title="Delete"
+                              className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm transition-colors"
                             >
-                              <Trash2 size={18} />
+                              Hapus
                             </button>
                           )}
                         </div>
-                      ) : col.render ? (
-                        col.render(row)
                       ) : (
-                        row[col.key]
+                        row[column.key]
                       )}
                     </td>
                   ))}
@@ -219,33 +303,81 @@ const DataTable = ({
         </table>
       </div>
 
+      {/* Pagination */}
       {pagination && totalPages > 1 && (
-        <div className="p-4 border-t flex items-center justify-between">
-          <p className="text-sm text-gray-600">
-            Showing {(currentPage - 1) * itemsPerPage + 1} to{' '}
-            {Math.min(currentPage * itemsPerPage, sortedData.length)} of {sortedData.length} entries
-          </p>
+        <div className="p-4 border-t">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-sm text-gray-600">
+              Halaman {currentPage} dari {totalPages}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Halaman Pertama"
+              >
+                <ChevronsLeft size={20} />
+              </button>
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Halaman Sebelumnya"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              
+              {/* Page Numbers */}
+              <div className="flex gap-1">
+                {[...Array(totalPages)].map((_, index) => {
+                  const pageNum = index + 1;
+                  // Show first, last, current, and adjacent pages
+                  if (
+                    pageNum === 1 ||
+                    pageNum === totalPages ||
+                    (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                  ) {
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`px-3 py-1 rounded-lg transition-colors ${
+                          currentPage === pageNum
+                            ? 'bg-blue-600 text-white'
+                            : 'hover:bg-gray-100'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  } else if (
+                    pageNum === currentPage - 2 ||
+                    pageNum === currentPage + 2
+                  ) {
+                    return <span key={pageNum} className="px-2">...</span>;
+                  }
+                  return null;
+                })}
+              </div>
 
-          <div className="flex gap-2">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
-            >
-              <ChevronLeft size={16} />
-              Previous
-            </button>
-            <span className="px-4 py-1.5 bg-blue-100 text-blue-700 rounded font-medium">
-              {currentPage} / {totalPages}
-            </span>
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
-            >
-              Next
-              <ChevronRight size={16} />
-            </button>
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Halaman Selanjutnya"
+              >
+                <ChevronRight size={20} />
+              </button>
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Halaman Terakhir"
+              >
+                <ChevronsRight size={20} />
+              </button>
+            </div>
           </div>
         </div>
       )}

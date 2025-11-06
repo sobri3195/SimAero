@@ -7,6 +7,7 @@ import Layout from './components/common/Layout';
 import HomePage from './pages/HomePage';
 import PatientsPage from './pages/PatientsPage';
 import RegistrationPage from './pages/RegistrationPage';
+import QueueMonitorPage from './pages/QueueMonitorPage';
 import EHRPage from './pages/EHRPage';
 import IGDPage from './pages/IGDPage';
 import InpatientPage from './pages/InpatientPage';
@@ -17,8 +18,6 @@ import RikkesPage from './pages/RikkesPage';
 import PharmacyPage from './pages/PharmacyPage';
 import LabPage from './pages/LabPage';
 import RadiologyPage from './pages/RadiologyPage';
-import PoliPage from './pages/PoliPage';
-import BillingPage from './pages/BillingPage';
 import HRPage from './pages/HRPage';
 import AssetsPage from './pages/AssetsPage';
 import LogisticsPage from './pages/LogisticsPage';
@@ -27,6 +26,10 @@ import ReportsPage from './pages/ReportsPage';
 import BridgingPage from './pages/BridgingPage';
 import BroadcastPage from './pages/BroadcastPage';
 import SettingsPage from './pages/SettingsPage';
+import PoliPage from './pages/PoliPage';
+import BillingPage from './pages/BillingPage';
+import DailyExaminationPage from './pages/DailyExaminationPage';
+import PersonnelRikkesPage from './pages/PersonnelRikkesPage';
 
 import './App.css';
 
@@ -40,18 +43,17 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/patients" element={<PatientsPage />} />
               <Route path="/registration" element={<RegistrationPage />} />
+              <Route path="/queue-monitor/:poliName" element={<QueueMonitorPage />} />
               <Route path="/ehr" element={<EHRPage />} />
               <Route path="/igd" element={<IGDPage />} />
               <Route path="/inpatient" element={<InpatientPage />} />
               <Route path="/surgery" element={<SurgeryPage />} />
               <Route path="/cssd" element={<CssdPage />} />
               <Route path="/bloodbank" element={<BloodBankPage />} />
-              <Route path="/rikkes" element={<RikkesPage />} />
+              <Route path="/rikkes/*" element={<RikkesPage />} />
               <Route path="/pharmacy" element={<PharmacyPage />} />
               <Route path="/lab" element={<LabPage />} />
               <Route path="/radiology" element={<RadiologyPage />} />
-              <Route path="/poli" element={<PoliPage />} />
-              <Route path="/billing" element={<BillingPage />} />
               <Route path="/hr" element={<HRPage />} />
               <Route path="/assets" element={<AssetsPage />} />
               <Route path="/logistics" element={<LogisticsPage />} />
@@ -59,6 +61,10 @@ function App() {
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/bridging" element={<BridgingPage />} />
               <Route path="/broadcast" element={<BroadcastPage />} />
+              <Route path="/poli" element={<PoliPage />} />
+              <Route path="/billing" element={<BillingPage />} />
+              <Route path="/daily-examination" element={<DailyExaminationPage />} />
+              <Route path="/personnel-rikkes" element={<PersonnelRikkesPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </Layout>
