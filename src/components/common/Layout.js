@@ -6,7 +6,7 @@ import {
   Menu, X, Home, Users, ClipboardList, FileText, Activity, 
   BedDouble, Calendar, Droplet, Heart, Pill, TestTube, 
   UserCheck, Package, AlertTriangle, BarChart3, Settings,
-  Radio, MessageSquare, ChevronDown, Shield 
+  Radio, MessageSquare, ChevronDown, Shield, Stethoscope 
 } from 'lucide-react';
 import { collection, getDocs, query, where } from '../../mockDb';
 import { db } from '../../mockDb';
@@ -56,6 +56,7 @@ const Layout = ({ children }) => {
     { icon: Home, label: 'Dashboard', path: '/' },
     { icon: Users, label: 'Database Pasien', path: '/patients' },
     { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
+    { icon: Stethoscope, label: 'Pemeriksaan Harian', path: '/daily-examination' },
     { icon: Calendar, label: 'Manajemen Poli', path: '/poli' },
     { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
     { icon: Heart, label: 'Rikkes', path: '/rikkes' },
