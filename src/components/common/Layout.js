@@ -1,20 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
+import { collection, getDocs, query, where } from '../../mockDb';
+import { db } from '../../mockDb';
 import { 
   Menu, X, Home, Users, ClipboardList, FileText, Activity, 
   BedDouble, Calendar, Droplet, Heart, Pill, TestTube, 
   UserCheck, Package, AlertTriangle, BarChart3, Settings,
-  Radio, MessageSquare, ChevronDown, Shield 
+  Radio, MessageSquare, ChevronDown, Shield, Building2, DollarSign 
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { userRole, selectedFaskes, switchToPuskesau } = useAuth();
+  const [facilityDropdownOpen, setFacilityDropdownOpen] = useState(false);
+  const [rsauList, setRsauList] = useState([]);
+  const [fktpList, setFktpList] = useState([]);
+  const { userRole, selectedFaskes, switchToPuskesau, switchToRSAU, switchToFKTP } = useAuth();
   const { theme } = useApp();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadFacilities = async () => {
+      try {
+        // Load RSAU
+        const rsauQuery = query(
+          collection(db, 'faskes'),
+          where('tipe', '==', 'rsau')
+        );
+        const rsauSnapshot = await getDocs(rsauQuery);
+        const rsauData = rsauSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setRsauList(rsauData);
+
+        // Load FKTP
+        const fktpQuery = query(
+          collection(db, 'faskes'),
+          where('tipe', '==', 'fktp')
+        );
+        const fktpSnapshot = await getDocs(fktpQuery);
+        const fktpData = fktpSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setFktpList(fktpData);
+      } catch (error) {
+        console.error('Error loading facilities:', error);
+      }
+    };
+
+    loadFacilities();
+  }, []);
 
   const puskesauMenuItems = [
     { icon: Home, label: 'Dashboard Pengawasan', path: '/' },
@@ -27,6 +60,8 @@ const Layout = ({ children }) => {
     { icon: Users, label: 'Database Pasien', path: '/patients' },
     { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
     { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
+    { icon: Building2, label: 'Poliklinik', path: '/poli' },
+    { icon: DollarSign, label: 'Billing', path: '/billing' },
     { icon: Activity, label: 'IGD', path: '/igd' },
     { icon: BedDouble, label: 'Rawat Inap', path: '/inpatient' },
     { icon: Calendar, label: 'Jadwal Operasi', path: '/surgery' },
@@ -51,6 +86,8 @@ const Layout = ({ children }) => {
     { icon: Users, label: 'Database Pasien', path: '/patients' },
     { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
     { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
+    { icon: Building2, label: 'Poliklinik', path: '/poli' },
+    { icon: DollarSign, label: 'Billing', path: '/billing' },
     { icon: Heart, label: 'Rikkes', path: '/rikkes' },
     { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
     { icon: TestTube, label: 'Laboratorium', path: '/lab' },
@@ -157,6 +194,59 @@ const Layout = ({ children }) => {
             </div>
             
             <div className="flex items-center gap-4">
+              {/* Facility Dropdown (only shown when in RSAU or FKTP mode) */}
+              {userRole !== 'PUSKESAU' && (
+                <div className="relative">
+                  <button 
+                    onClick={() => setFacilityDropdownOpen(!facilityDropdownOpen)}
+                    className="flex items-center gap-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors border border-blue-200"
+                  >
+                    <span className="text-sm font-medium text-blue-800">
+                      {userRole === 'RSAU' ? '🏥 RSAU' : '🏥 FKTP'}
+                    </span>
+                    <ChevronDown size={16} className="text-blue-600" />
+                  </button>
+
+                  {facilityDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border max-h-96 overflow-y-auto z-50">
+                      <div className="p-3 bg-gray-50 border-b sticky top-0">
+                        <h3 className="font-bold text-gray-800">
+                          {userRole === 'RSAU' ? 'Pilih RSAU' : 'Pilih FKTP'}
+                        </h3>
+                        <p className="text-xs text-gray-600">
+                          {userRole === 'RSAU' 
+                            ? `${rsauList.length} Rumah Sakit TNI AU` 
+                            : `${fktpList.length} Klinik TNI AU`
+                          }
+                        </p>
+                      </div>
+                      <div className="p-2">
+                        {(userRole === 'RSAU' ? rsauList : fktpList).map((facility) => (
+                          <button
+                            key={facility.id}
+                            onClick={() => {
+                              if (userRole === 'RSAU') {
+                                switchToRSAU(facility.nama);
+                              } else {
+                                switchToFKTP(facility.nama);
+                              }
+                              setFacilityDropdownOpen(false);
+                              navigate('/');
+                            }}
+                            className={`w-full text-left p-2 hover:bg-blue-50 rounded transition-colors mb-1 ${
+                              selectedFaskes === facility.nama ? 'bg-blue-100 border border-blue-300' : ''
+                            }`}
+                          >
+                            <div className="font-medium text-sm text-gray-800">{facility.nama}</div>
+                            <div className="text-xs text-gray-600">{facility.lokasi}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Notifications */}
               <button className="p-2 hover:bg-gray-100 rounded-lg relative">
                 <Activity size={20} />
@@ -176,7 +266,7 @@ const Layout = ({ children }) => {
                 </button>
 
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-50">
                     <div className="p-2">
                       <button className="w-full text-left p-2 hover:bg-gray-100 rounded">
                         Profil
