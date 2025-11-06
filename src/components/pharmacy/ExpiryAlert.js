@@ -7,13 +7,13 @@ import DataTable from '../common/DataTable';
 
 const ExpiryAlert = () => {
   const { selectedFaskes } = useAuth();
-  const [drugs, setDrugs] = useState([]);
   const [expiredDrugs, setExpiredDrugs] = useState([]);
   const [expiringDrugs, setExpiringDrugs] = useState([]);
   const [filterType, setFilterType] = useState('all');
 
   useEffect(() => {
     loadDrugs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFaskes]);
 
   const loadDrugs = async () => {
@@ -31,7 +31,6 @@ const ExpiryAlert = () => {
         drugList.push({ id: doc.id, ...doc.data() });
       });
 
-      setDrugs(drugList);
       categorizeDrugs(drugList);
     } catch (error) {
       console.error('Error loading drugs:', error);

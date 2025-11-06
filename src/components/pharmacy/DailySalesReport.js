@@ -26,6 +26,7 @@ const DailySalesReport = () => {
 
   useEffect(() => {
     loadReport();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFaskes, selectedDate]);
 
   const loadReport = async () => {

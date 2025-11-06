@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, updateDoc, doc, getDocs, orderBy } from '../../mockDb';
+import { collection, query, where, onSnapshot, updateDoc, doc, orderBy } from '../../mockDb';
 import { db } from '../../mockDb';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
-import { Clock, CheckCircle, Package, AlertCircle, User, Calendar } from 'lucide-react';
+import { Clock, CheckCircle, Package, AlertCircle, User } from 'lucide-react';
 
 const PrescriptionQueue = () => {
   const { selectedFaskes } = useAuth();

@@ -20,6 +20,7 @@ const PharmacyCashier = () => {
 
   useEffect(() => {
     loadPrescriptions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFaskes]);
 
   const loadPrescriptions = async () => {

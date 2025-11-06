@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
 import { doc, getDoc } from '../../mockDb';
 import { db } from '../../mockDb';
@@ -16,6 +15,7 @@ const RikkesPDFPreview = () => {
 
   useEffect(() => {
     loadExamination();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const loadExamination = async () => {

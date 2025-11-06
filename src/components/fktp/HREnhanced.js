@@ -51,6 +51,7 @@ const HREnhanced = () => {
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFaskes]);
 
   const loadData = async () => {
