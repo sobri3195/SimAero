@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { collection, addDoc } from '../../mockDb';
+import React, { useState, useEffect } from 'react';
+import { collection, addDoc, query, where, getDocs } from '../../mockDb';
 import { db } from '../../mockDb';
+import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
 import { aiService } from '../../services/aiService';
-import { Sparkles, Save } from 'lucide-react';
+import { Sparkles, Save, AlertTriangle, Activity } from 'lucide-react';
 import Card from '../common/Card';
 
 const SOAPForm = ({ patientId, patientName }) => {
+  const { selectedFaskes } = useAuth();
   const { addNotification } = useApp();
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const [allergies, setAllergies] = useState([]);
+  const [diseases, setDiseases] = useState([]);
 
   const [formData, setFormData] = useState({
     subjective: '',
@@ -17,12 +21,57 @@ const SOAPForm = ({ patientId, patientName }) => {
     assessment: '',
     plan: '',
     chiefComplaint: '',
-    prescription: ''
+    prescription: '',
+    vitalSigns: {
+      bloodPressure: '',
+      heartRate: '',
+      temperature: '',
+      respiratoryRate: '',
+      weight: '',
+      height: ''
+    },
+    visitType: 'Kunjungan Reguler',
+    additionalNotes: ''
   });
+
+  useEffect(() => {
+    loadPatientAlerts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patientId, selectedFaskes]);
+
+  const loadPatientAlerts = async () => {
+    try {
+      const allergiesQuery = query(
+        collection(db, 'patient_allergies'),
+        where('patientId', '==', patientId),
+        where('faskesId', '==', selectedFaskes)
+      );
+      const allergiesSnap = await getDocs(allergiesQuery);
+      setAllergies(allergiesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+      const diseasesQuery = query(
+        collection(db, 'patient_chronic_diseases'),
+        where('patientId', '==', patientId),
+        where('faskesId', '==', selectedFaskes)
+      );
+      const diseasesSnap = await getDocs(diseasesQuery);
+      setDiseases(diseasesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    } catch (error) {
+      console.error('Error loading patient alerts:', error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleVitalSignChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      vitalSigns: { ...prev.vitalSigns, [name]: value }
+    }));
   };
 
   const fillWithAI = async (section = 'all') => {
@@ -70,6 +119,7 @@ const SOAPForm = ({ patientId, patientName }) => {
         patientId,
         patientName,
         ...formData,
+        faskesId: selectedFaskes,
         createdAt: new Date(),
         createdBy: 'Current User'
       });
@@ -82,7 +132,17 @@ const SOAPForm = ({ patientId, patientName }) => {
         assessment: '',
         plan: '',
         chiefComplaint: '',
-        prescription: ''
+        prescription: '',
+        vitalSigns: {
+          bloodPressure: '',
+          heartRate: '',
+          temperature: '',
+          respiratoryRate: '',
+          weight: '',
+          height: ''
+        },
+        visitType: 'Kunjungan Reguler',
+        additionalNotes: ''
       });
     } catch (error) {
       console.error('Error saving medical record:', error);
@@ -95,6 +155,61 @@ const SOAPForm = ({ patientId, patientName }) => {
   return (
     <Card title={`Rekam Medis Elektronik - ${patientName}`}>
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Allergy Alert */}
+        {allergies.length > 0 && (
+          <div className="bg-red-50 border-2 border-red-500 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle className="text-red-600" size={24} />
+              <h3 className="font-bold text-red-900 text-lg">PERHATIAN! PASIEN MEMILIKI ALERGI</h3>
+            </div>
+            <div className="space-y-2">
+              {allergies.map(allergy => (
+                <div key={allergy.id} className="bg-white rounded p-2 border border-red-300">
+                  <div className="font-semibold text-red-900">
+                    {allergy.allergen} ({allergy.type})
+                  </div>
+                  <div className="text-sm text-red-700">
+                    Reaksi: {allergy.reaction} | Keparahan: {allergy.severity}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Chronic Disease Info */}
+        {diseases.length > 0 && (
+          <div className="bg-amber-50 border border-amber-300 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Activity className="text-amber-600" size={20} />
+              <h3 className="font-semibold text-amber-900">Riwayat Penyakit Kronis</h3>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {diseases.filter(d => d.status === 'active').map(disease => (
+                <span key={disease.id} className="px-3 py-1 bg-white border border-amber-300 rounded-full text-sm text-amber-900">
+                  {disease.disease} {disease.icdCode && `(${disease.icdCode})`}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Visit Type */}
+        <div>
+          <label className="block text-sm font-medium mb-2">Jenis Kunjungan</label>
+          <select
+            name="visitType"
+            value={formData.visitType}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          >
+            <option value="Kunjungan Reguler">Kunjungan Reguler</option>
+            <option value="Kunjungan Kontrol">Kunjungan Kontrol</option>
+            <option value="Kunjungan Darurat">Kunjungan Darurat</option>
+            <option value="Pemeriksaan Berkala">Pemeriksaan Berkala</option>
+          </select>
+        </div>
+
         {/* Chief Complaint */}
         <div className="bg-blue-50 p-4 rounded-lg">
           <label className="block text-sm font-medium mb-2">Keluhan Utama</label>
@@ -116,6 +231,81 @@ const SOAPForm = ({ patientId, patientName }) => {
             <Sparkles size={16} />
             {aiLoading ? 'Menghasilkan...' : 'Isi Seluruh Form dengan AI'}
           </button>
+        </div>
+
+        {/* Vital Signs */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-sm font-semibold mb-3">Tanda Vital</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-medium mb-1">Tekanan Darah (mmHg)</label>
+              <input
+                type="text"
+                name="bloodPressure"
+                value={formData.vitalSigns.bloodPressure}
+                onChange={handleVitalSignChange}
+                className="w-full p-2 border rounded text-sm"
+                placeholder="120/80"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1">Nadi (bpm)</label>
+              <input
+                type="number"
+                name="heartRate"
+                value={formData.vitalSigns.heartRate}
+                onChange={handleVitalSignChange}
+                className="w-full p-2 border rounded text-sm"
+                placeholder="80"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1">Suhu (°C)</label>
+              <input
+                type="number"
+                step="0.1"
+                name="temperature"
+                value={formData.vitalSigns.temperature}
+                onChange={handleVitalSignChange}
+                className="w-full p-2 border rounded text-sm"
+                placeholder="36.5"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1">Pernafasan (x/menit)</label>
+              <input
+                type="number"
+                name="respiratoryRate"
+                value={formData.vitalSigns.respiratoryRate}
+                onChange={handleVitalSignChange}
+                className="w-full p-2 border rounded text-sm"
+                placeholder="20"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1">Berat Badan (kg)</label>
+              <input
+                type="number"
+                step="0.1"
+                name="weight"
+                value={formData.vitalSigns.weight}
+                onChange={handleVitalSignChange}
+                className="w-full p-2 border rounded text-sm"
+                placeholder="70"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1">Tinggi Badan (cm)</label>
+              <input
+                type="number"
+                name="height"
+                value={formData.vitalSigns.height}
+                onChange={handleVitalSignChange}
+                className="w-full p-2 border rounded text-sm"
+                placeholder="170"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Subjective */}
@@ -231,6 +421,19 @@ const SOAPForm = ({ patientId, patientName }) => {
           />
         </div>
 
+        {/* Additional Notes */}
+        <div>
+          <label className="block text-sm font-medium mb-2">Catatan Tambahan</label>
+          <textarea
+            name="additionalNotes"
+            value={formData.additionalNotes}
+            onChange={handleChange}
+            className="w-full p-3 border rounded"
+            rows="3"
+            placeholder="Catatan tambahan atau instruksi khusus..."
+          />
+        </div>
+
         <div className="flex justify-end gap-2">
           <button
             type="button"
@@ -240,7 +443,17 @@ const SOAPForm = ({ patientId, patientName }) => {
               assessment: '',
               plan: '',
               chiefComplaint: '',
-              prescription: ''
+              prescription: '',
+              vitalSigns: {
+                bloodPressure: '',
+                heartRate: '',
+                temperature: '',
+                respiratoryRate: '',
+                weight: '',
+                height: ''
+              },
+              visitType: 'Kunjungan Reguler',
+              additionalNotes: ''
             })}
             className="px-6 py-2 border rounded hover:bg-gray-50"
           >

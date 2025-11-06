@@ -337,7 +337,46 @@ export const mockDb = new MockDB();
 export const collection = (db, collectionName) => ({ _collectionName: collectionName });
 
 export const getDocs = (collectionRef) => {
-  const data = mockDb.getCollection(collectionRef._collectionName);
+  let data = mockDb.getCollection(collectionRef._collectionName);
+  
+  if (collectionRef._filters) {
+    collectionRef._filters.forEach(filter => {
+      if (filter) {
+        const [field, operator, value] = filter;
+        data = data.filter(doc => {
+          if (operator === '==') return doc[field] === value;
+          if (operator === '!=') return doc[field] !== value;
+          if (operator === '>') return doc[field] > value;
+          if (operator === '>=') return doc[field] >= value;
+          if (operator === '<') return doc[field] < value;
+          if (operator === '<=') return doc[field] <= value;
+          return true;
+        });
+      }
+    });
+  }
+  
+  if (collectionRef._orderBy) {
+    const { field, direction } = collectionRef._orderBy;
+    data = [...data].sort((a, b) => {
+      const aVal = a[field];
+      const bVal = b[field];
+      
+      if (aVal === bVal) return 0;
+      
+      if (aVal === null || aVal === undefined) return 1;
+      if (bVal === null || bVal === undefined) return -1;
+      
+      if (aVal instanceof Date && bVal instanceof Date) {
+        return direction === 'desc' ? bVal - aVal : aVal - bVal;
+      }
+      
+      if (aVal < bVal) return direction === 'desc' ? 1 : -1;
+      if (aVal > bVal) return direction === 'desc' ? -1 : 1;
+      return 0;
+    });
+  }
+  
   return Promise.resolve({
     size: data.length,
     docs: data.map(doc => ({
@@ -379,11 +418,16 @@ export const getDoc = async (docRef) => {
 
 export const query = (collectionRef, ...filters) => ({
   _collectionName: collectionRef._collectionName,
-  _filters: filters.map(f => f._filter)
+  _filters: filters.filter(f => f._filter).map(f => f._filter),
+  _orderBy: filters.find(f => f._orderBy)?._orderBy
 });
 
 export const where = (field, operator, value) => ({
   _filter: [field, operator, value]
+});
+
+export const orderBy = (field, direction = 'asc') => ({
+  _orderBy: { field, direction }
 });
 
 export const onSnapshot = (queryOrCollection, callback) => {
