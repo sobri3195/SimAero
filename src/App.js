@@ -13,6 +13,7 @@ import InpatientPage from './pages/InpatientPage';
 import SurgeryPage from './pages/SurgeryPage';
 import CssdPage from './pages/CssdPage';
 import BloodBankPage from './pages/BloodBankPage';
+import RikkesPage from './pages/RikkesPage';
 import PharmacyPage from './pages/PharmacyPage';
 import LabPage from './pages/LabPage';
 import RadiologyPage from './pages/RadiologyPage';
@@ -26,7 +27,6 @@ import BroadcastPage from './pages/BroadcastPage';
 import SettingsPage from './pages/SettingsPage';
 import PoliPage from './pages/PoliPage';
 import BillingPage from './pages/BillingPage';
-import PlaceholderPage from './pages/PlaceholderPage';
 
 import './App.css';
 
@@ -46,10 +46,7 @@ function App() {
               <Route path="/surgery" element={<SurgeryPage />} />
               <Route path="/cssd" element={<CssdPage />} />
               <Route path="/bloodbank" element={<BloodBankPage />} />
-              <Route 
-                path="/rikkes" 
-                element={<PlaceholderPage title="Pemeriksaan Kesehatan (Rikkes)" />} 
-              />
+              <Route path="/rikkes/*" element={<RikkesPage />} />
               <Route path="/pharmacy" element={<PharmacyPage />} />
               <Route path="/lab" element={<LabPage />} />
               <Route path="/radiology" element={<RadiologyPage />} />

@@ -178,6 +178,7 @@ class MockDB {
       this.saveCollection('schedules', []);
       this.saveCollection('assets', []);
       this.saveCollection('calibrations', []);
+      this.saveCollection('rikkes_examinations', []);
       this.saveCollection('supplies', []);
       this.saveCollection('supply_orders', []);
       this.saveCollection('logistics', []);
