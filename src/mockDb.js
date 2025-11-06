@@ -620,6 +620,12 @@ class MockDB {
     return Promise.resolve();
   }
 
+  getDoc(collectionName, docId) {
+    const collection = this.getCollection(collectionName);
+    const doc = collection.find(d => d.id === docId);
+    return Promise.resolve(doc || null);
+  }
+
   query(collectionName, filters = []) {
     let collection = this.getCollection(collectionName);
     
@@ -683,8 +689,25 @@ export const mockDb = new MockDB();
 // Mock Firebase Firestore API
 export const collection = (db, collectionName) => ({ _collectionName: collectionName });
 
-export const getDocs = (collectionRef) => {
-  const data = mockDb.getCollection(collectionRef._collectionName);
+export const getDocs = (queryOrCollection) => {
+  const collectionName = queryOrCollection._collectionName;
+  const filters = queryOrCollection._filters || [];
+  const orderByClause = queryOrCollection._orderBy;
+  
+  let data = mockDb.query(collectionName, filters);
+  
+  // Apply orderBy if present
+  if (orderByClause) {
+    data = [...data].sort((a, b) => {
+      const aVal = a[orderByClause.field];
+      const bVal = b[orderByClause.field];
+      
+      if (aVal < bVal) return orderByClause.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return orderByClause.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+  
   return Promise.resolve({
     size: data.length,
     docs: data.map(doc => ({
@@ -714,10 +737,16 @@ export const doc = (db, collectionName, docId) => ({
   _docId: docId
 });
 
-export const query = (collectionRef, ...filters) => ({
-  _collectionName: collectionRef._collectionName,
-  _filters: filters.map(f => f._filter)
-});
+export const query = (collectionRef, ...constraints) => {
+  const filters = constraints.filter(c => c._filter).map(f => f._filter);
+  const orderByClause = constraints.find(c => c._orderBy)?._orderBy;
+  
+  return {
+    _collectionName: collectionRef._collectionName,
+    _filters: filters,
+    _orderBy: orderByClause
+  };
+};
 
 export const where = (field, operator, value) => ({
   _filter: [field, operator, value]
@@ -756,6 +785,26 @@ export const onSnapshot = (queryOrCollection, callback) => {
       }
     });
   });
+};
+
+export const orderBy = (field, direction = 'asc') => ({
+  _orderBy: { field, direction }
+});
+
+export const getDoc = async (docRef) => {
+  const result = await mockDb.getDoc(docRef._collectionName, docRef._docId);
+  if (result) {
+    return {
+      exists: () => true,
+      id: docRef._docId,
+      data: () => result
+    };
+  }
+  return {
+    exists: () => false,
+    id: docRef._docId,
+    data: () => null
+  };
 };
 
 // Mock db export
