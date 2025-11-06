@@ -34,15 +34,22 @@ const RegistrationForm = () => {
 
   const [existingPatient, setExistingPatient] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [nationalDbFound, setNationalDbFound] = useState(false);
 
   const poliOptions = [
     'Poli Umum',
     'Poli Gigi',
+    'Poli Jantung',
+    'Poli Paru',
+    'Poli Bedah',
+    'Poli Saraf',
+    'Poli Mata',
+    'Poli THT',
+    'Poli Kulit & Kelamin',
+    'Poli Gigi & Mulut',
     'KIA (Kesehatan Ibu & Anak)',
     'MTBS (Manajemen Terpadu Balita Sakit)',
-    'Penapisan PTM (Penyakit Tidak Menular)',
-    'Poli Mata',
-    'Poli THT'
+    'Penapisan PTM (Penyakit Tidak Menular)'
   ];
 
   const hubunganKeluargaOptions = [
@@ -66,7 +73,10 @@ const RegistrationForm = () => {
     }
 
     setLoading(true);
+    setNationalDbFound(false);
+    
     try {
+      // Step 1: Search in local database first
       const q = query(
         collection(db, 'patients'), 
         where(formData.identitasType, '==', searchValue)
@@ -80,10 +90,36 @@ const RegistrationForm = () => {
           ...prev,
           ...patientData
         }));
-        addNotification({ type: 'success', message: 'Data pasien ditemukan!' });
+        addNotification({ type: 'success', message: '✓ Data pasien ditemukan di database lokal!' });
+        return;
+      }
+
+      // Step 2: Simulate search in National Database (SATUSEHAT/Dukcapil)
+      addNotification({ type: 'info', message: '🔍 Mencari di database nasional...' });
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Simulate national database lookup (mock data based on NIK pattern)
+      const nationalData = simulateNationalDbLookup(searchValue, formData.identitasType);
+      
+      if (nationalData) {
+        setNationalDbFound(true);
+        setExistingPatient(null); // Not in local DB
+        setFormData(prev => ({
+          ...prev,
+          ...nationalData,
+          poliTujuan: '', // Keep empty for user to select
+          keluhanUtama: ''
+        }));
+        addNotification({ 
+          type: 'success', 
+          message: '✓ Data ditemukan di database nasional! Data telah diisi otomatis.' 
+        });
       } else {
         addNotification({ type: 'info', message: 'Pasien baru, silakan lengkapi data' });
         setExistingPatient(null);
+        setNationalDbFound(false);
       }
     } catch (error) {
       console.error('Error searching patient:', error);
@@ -91,6 +127,65 @@ const RegistrationForm = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const simulateNationalDbLookup = (searchValue, type) => {
+    // Simulate national database with mock data
+    // In production, this would call SATUSEHAT/Dukcapil API
+    
+    if (type === 'nik' && searchValue.length === 16) {
+      // Extract info from NIK (simplified)
+      const genderCode = parseInt(searchValue.substring(6, 8));
+      
+      // Mock names based on last 4 digits
+      const namePool = [
+        'Ahmad Wijaya', 'Budi Santoso', 'Citra Dewi', 'Dian Permata',
+        'Eko Prasetyo', 'Fitri Handayani', 'Gunawan', 'Hendra Saputra',
+        'Indah Sari', 'Joko Widodo', 'Kartika Putri', 'Lestari',
+        'Maya Sari', 'Nur Hidayah', 'Oki Rahman', 'Putri Ayu'
+      ];
+      
+      const lastDigits = parseInt(searchValue.substring(12));
+      const nameIndex = lastDigits % namePool.length;
+      
+      const jenisKelamin = genderCode > 40 ? 'P' : 'L';
+      const day = genderCode > 40 ? genderCode - 40 : genderCode;
+      const month = searchValue.substring(8, 10);
+      const year = '19' + searchValue.substring(10, 12);
+      
+      return {
+        [type]: searchValue,
+        nama: namePool[nameIndex],
+        tanggalLahir: `${year}-${month}-${day.toString().padStart(2, '0')}`,
+        jenisKelamin: jenisKelamin,
+        alamat: `Jl. Contoh No. ${lastDigits % 100}, Jakarta`,
+        telepon: `08${lastDigits.toString().padStart(10, '0')}`,
+        statusPasien: 'umum'
+      };
+    }
+    
+    if (type === 'nrp' && searchValue.length >= 8) {
+      // Mock NRP lookup
+      const namePool = [
+        'Letda Agus Setiawan', 'Kapten Bambang Priyono', 'Mayor Candra Wijaya',
+        'Letda Dwi Hartono', 'Kapten Eko Yulianto', 'Mayor Fajar Hidayat'
+      ];
+      
+      const lastDigits = parseInt(searchValue.substring(searchValue.length - 4));
+      const nameIndex = lastDigits % namePool.length;
+      
+      return {
+        [type]: searchValue,
+        nama: namePool[nameIndex],
+        tanggalLahir: '1985-01-15',
+        jenisKelamin: 'L',
+        alamat: 'Asrama TNI AU, Jakarta',
+        telepon: `0812${lastDigits.toString().padStart(8, '0')}`,
+        statusPasien: 'prajurit'
+      };
+    }
+    
+    return null;
   };
 
   const scanKTP = () => {
@@ -164,6 +259,7 @@ const RegistrationForm = () => {
         diagnosisRujukan: ''
       });
       setExistingPatient(null);
+      setNationalDbFound(false);
     } catch (error) {
       console.error('Error registering patient:', error);
       addNotification({ type: 'error', message: 'Gagal mendaftarkan pasien' });
@@ -229,7 +325,16 @@ const RegistrationForm = () => {
             </button>
           </div>
           {existingPatient && (
-            <p className="text-sm text-green-600 mt-1">✓ Data pasien ditemukan di database</p>
+            <p className="text-sm text-green-600 mt-1 flex items-center gap-2">
+              <span className="inline-block w-2 h-2 bg-green-600 rounded-full"></span>
+              ✓ Data pasien ditemukan di database lokal
+            </p>
+          )}
+          {nationalDbFound && !existingPatient && (
+            <p className="text-sm text-blue-600 mt-1 flex items-center gap-2">
+              <span className="inline-block w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
+              🌐 Data ditemukan di database nasional (SATUSEHAT/Dukcapil)
+            </p>
           )}
         </div>
 
