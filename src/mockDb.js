@@ -367,6 +367,16 @@ export const doc = (db, collectionName, docId) => ({
   _docId: docId
 });
 
+export const getDoc = async (docRef) => {
+  const data = mockDb.getCollection(docRef._collectionName);
+  const docData = data.find(item => item.id === docRef._docId);
+  return {
+    id: docRef._docId,
+    exists: () => !!docData,
+    data: () => docData
+  };
+};
+
 export const query = (collectionRef, ...filters) => ({
   _collectionName: collectionRef._collectionName,
   _filters: filters.map(f => f._filter)
