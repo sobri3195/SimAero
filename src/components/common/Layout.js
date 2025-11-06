@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
@@ -8,11 +8,15 @@ import {
   UserCheck, Package, AlertTriangle, BarChart3, Settings,
   Radio, MessageSquare, ChevronDown, Shield 
 } from 'lucide-react';
+import { collection, getDocs, query, where } from '../../mockDb';
+import { db } from '../../mockDb';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { userRole, selectedFaskes, switchToPuskesau } = useAuth();
+  const [facilityDropdownOpen, setFacilityDropdownOpen] = useState(false);
+  const [availableFacilities, setAvailableFacilities] = useState([]);
+  const { userRole, selectedFaskes, switchToPuskesau, switchToRSAU, switchToFKTP, facilityType } = useAuth();
   const { theme } = useApp();
   const navigate = useNavigate();
 
@@ -77,6 +81,38 @@ const Layout = ({ children }) => {
 
   const menuItems = getMenuItems();
 
+  const loadFacilities = useCallback(async () => {
+    try {
+      if (!facilityType) return;
+      
+      const q = query(collection(db, 'faskes'), where('tipe', '==', facilityType));
+      const snapshot = await getDocs(q);
+      const facilities = [];
+      snapshot.forEach((doc) => {
+        facilities.push(doc.data());
+      });
+      setAvailableFacilities(facilities);
+    } catch (error) {
+      console.error('Error loading facilities:', error);
+    }
+  }, [facilityType]);
+
+  useEffect(() => {
+    if (userRole !== 'PUSKESAU') {
+      loadFacilities();
+    }
+  }, [userRole, facilityType, loadFacilities]);
+
+  const handleFacilitySwitch = (facilityName) => {
+    if (facilityType === 'rsau') {
+      switchToRSAU(facilityName);
+    } else if (facilityType === 'fktp') {
+      switchToFKTP(facilityName);
+    }
+    setFacilityDropdownOpen(false);
+    navigate('/');
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -137,23 +173,64 @@ const Layout = ({ children }) => {
         {/* Header */}
         <header className="bg-white shadow-sm z-10">
           <div className="flex items-center justify-between p-4">
-            <div>
-              <h2 className="text-xl font-bold" style={{ color: theme.primaryColor }}>
-                {userRole === 'PUSKESAU' 
-                  ? 'Dashboard Pengawasan Puskesau' 
-                  : userRole === 'RSAU'
-                  ? `SIMRS - ${selectedFaskes}`
-                  : `SIM Klinik - ${selectedFaskes}`
-                }
-              </h2>
-              <p className="text-sm text-gray-600">
-                {userRole === 'PUSKESAU' 
-                  ? 'Pusat Kesehatan Angkatan Udara' 
-                  : userRole === 'RSAU'
-                  ? 'Sistem Informasi Manajemen Rumah Sakit'
-                  : 'Sistem Informasi Manajemen Klinik'
-                }
-              </p>
+            <div className="flex items-center gap-4">
+              <div>
+                <h2 className="text-xl font-bold" style={{ color: theme.primaryColor }}>
+                  {userRole === 'PUSKESAU' 
+                    ? 'Dashboard Pengawasan Puskesau' 
+                    : userRole === 'RSAU'
+                    ? `SIMRS`
+                    : `SIM Klinik`
+                  }
+                </h2>
+                <p className="text-sm text-gray-600">
+                  {userRole === 'PUSKESAU' 
+                    ? 'Pusat Kesehatan Angkatan Udara' 
+                    : userRole === 'RSAU'
+                    ? 'Sistem Informasi Manajemen Rumah Sakit'
+                    : 'Sistem Informasi Manajemen Klinik'
+                  }
+                </p>
+              </div>
+
+              {/* Facility Dropdown - Shown when in RSAU or FKTP mode */}
+              {userRole !== 'PUSKESAU' && selectedFaskes && (
+                <div className="relative">
+                  <button
+                    onClick={() => setFacilityDropdownOpen(!facilityDropdownOpen)}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+                  >
+                    <span className="font-semibold text-blue-800 text-sm max-w-xs truncate">
+                      {selectedFaskes}
+                    </span>
+                    <ChevronDown size={16} className="text-blue-600" />
+                  </button>
+
+                  {facilityDropdownOpen && (
+                    <div className="absolute top-full left-0 mt-2 w-96 bg-white rounded-lg shadow-xl border z-50 max-h-96 overflow-y-auto">
+                      <div className="p-2 border-b bg-gray-50">
+                        <p className="text-xs font-semibold text-gray-600 uppercase px-2">
+                          {userRole === 'RSAU' ? 'Pilih RSAU' : 'Pilih FKTP'}
+                        </p>
+                      </div>
+                      <div className="p-2">
+                        {availableFacilities.map((facility) => (
+                          <button
+                            key={facility.id}
+                            onClick={() => handleFacilitySwitch(facility.nama)}
+                            className={`w-full text-left p-3 rounded hover:bg-blue-50 transition-colors mb-1 ${
+                              selectedFaskes === facility.nama ? 'bg-blue-100 border border-blue-300' : ''
+                            }`}
+                          >
+                            <div className="font-semibold text-sm text-gray-800">{facility.nama}</div>
+                            <div className="text-xs text-gray-600">{facility.lokasi}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             
             <div className="flex items-center gap-4">

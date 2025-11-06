@@ -2,11 +2,17 @@
 class MockDB {
   constructor() {
     this.prefix = 'mockdb_';
+    this.version = 'v2.0'; // Update version untuk force refresh data FKTP
     this.initializeData();
   }
 
   initializeData() {
-    if (!localStorage.getItem(this.prefix + 'initialized')) {
+    const currentVersion = localStorage.getItem(this.prefix + 'version');
+    if (!localStorage.getItem(this.prefix + 'initialized') || currentVersion !== this.version) {
+      // Clear old data if version mismatch
+      if (currentVersion !== this.version) {
+        this.clearAllData();
+      }
       // Faskes TNI AU - RSAU (Rumah Sakit Angkatan Udara)
       const rsauData = [
         {
@@ -50,173 +56,67 @@ class MockDB {
         }
       ];
 
-      // Faskes TNI AU - FKTP (Fasilitas Kesehatan Tingkat Pertama / Klinik)
+      // Faskes TNI AU - FKTP (Fasilitas Kesehatan Tingkat Pertama / Klinik) - 58 FKTP
       const fktpData = [
-        {
-          id: 'fktp_1',
-          nama: 'Klinik Kesehatan Lanud Halim Perdanakusuma',
-          lokasi: 'Jakarta Timur',
-          alamat: 'Lanud Halim Perdanakusuma, Jakarta Timur',
-          tipe: 'fktp',
-          kapasitas: 50,
-          status: 'aktif',
-          lanud: 'Lanud Halim Perdanakusuma',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
-        },
-        {
-          id: 'fktp_2',
-          nama: 'Klinik Kesehatan Lanud Sulaiman',
-          lokasi: 'Bandung',
-          alamat: 'Lanud Sulaiman, Margahayu, Bandung',
-          tipe: 'fktp',
-          kapasitas: 40,
-          status: 'aktif',
-          lanud: 'Lanud Sulaiman',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
-        },
-        {
-          id: 'fktp_3',
-          nama: 'Klinik Kesehatan Lanud Abdulrachman Saleh',
-          lokasi: 'Malang',
-          alamat: 'Lanud Abdulrachman Saleh, Malang',
-          tipe: 'fktp',
-          kapasitas: 35,
-          status: 'aktif',
-          lanud: 'Lanud Abdulrachman Saleh',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
-        },
-        {
-          id: 'fktp_4',
-          nama: 'Klinik Kesehatan Lanud Iswahjudi',
-          lokasi: 'Madiun',
-          alamat: 'Lanud Iswahjudi, Madiun, Jawa Timur',
-          tipe: 'fktp',
-          kapasitas: 30,
-          status: 'aktif',
-          lanud: 'Lanud Iswahjudi',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
-        },
-        {
-          id: 'fktp_5',
-          nama: 'Klinik Kesehatan Lanud Adisutjipto',
-          lokasi: 'Yogyakarta',
-          alamat: 'Lanud Adisutjipto, Yogyakarta',
-          tipe: 'fktp',
-          kapasitas: 35,
-          status: 'aktif',
-          lanud: 'Lanud Adisutjipto',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
-        },
-        {
-          id: 'fktp_6',
-          nama: 'Klinik Kesehatan Lanud Ngurah Rai',
-          lokasi: 'Bali',
-          alamat: 'Lanud Ngurah Rai, Tuban, Bali',
-          tipe: 'fktp',
-          kapasitas: 40,
-          status: 'aktif',
-          lanud: 'Lanud Ngurah Rai',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
-        },
-        {
-          id: 'fktp_7',
-          nama: 'Klinik Kesehatan Lanud Sultan Hasanuddin',
-          lokasi: 'Makassar',
-          alamat: 'Lanud Sultan Hasanuddin, Makassar',
-          tipe: 'fktp',
-          kapasitas: 45,
-          status: 'aktif',
-          lanud: 'Lanud Sultan Hasanuddin',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
-        },
-        {
-          id: 'fktp_8',
-          nama: 'Klinik Kesehatan Lanud Sam Ratulangi',
-          lokasi: 'Manado',
-          alamat: 'Lanud Sam Ratulangi, Manado',
-          tipe: 'fktp',
-          kapasitas: 30,
-          status: 'aktif',
-          lanud: 'Lanud Sam Ratulangi',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
-        },
-        {
-          id: 'fktp_9',
-          nama: 'Klinik Kesehatan Lanud Roesmin Nurjadin',
-          lokasi: 'Pekanbaru',
-          alamat: 'Lanud Roesmin Nurjadin, Pekanbaru',
-          tipe: 'fktp',
-          kapasitas: 35,
-          status: 'aktif',
-          lanud: 'Lanud Roesmin Nurjadin',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
-        },
-        {
-          id: 'fktp_10',
-          nama: 'Klinik Kesehatan Lanud Sultan Mahmud Badaruddin II',
-          lokasi: 'Palembang',
-          alamat: 'Lanud SMB II, Palembang',
-          tipe: 'fktp',
-          kapasitas: 40,
-          status: 'aktif',
-          lanud: 'Lanud Sultan Mahmud Badaruddin II',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
-        },
-        {
-          id: 'fktp_11',
-          nama: 'Klinik Kesehatan Lanud Soewondo',
-          lokasi: 'Medan',
-          alamat: 'Lanud Soewondo, Medan',
-          tipe: 'fktp',
-          kapasitas: 35,
-          status: 'aktif',
-          lanud: 'Lanud Soewondo',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
-        },
-        {
-          id: 'fktp_12',
-          nama: 'Klinik Kesehatan Lanud Sjamsudin Noor',
-          lokasi: 'Banjarmasin',
-          alamat: 'Lanud Sjamsudin Noor, Banjarmasin',
-          tipe: 'fktp',
-          kapasitas: 30,
-          status: 'aktif',
-          lanud: 'Lanud Sjamsudin Noor',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
-        },
-        {
-          id: 'fktp_13',
-          nama: 'Klinik Kesehatan Lanud Supadio',
-          lokasi: 'Pontianak',
-          alamat: 'Lanud Supadio, Pontianak',
-          tipe: 'fktp',
-          kapasitas: 30,
-          status: 'aktif',
-          lanud: 'Lanud Supadio',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
-        },
-        {
-          id: 'fktp_14',
-          nama: 'Klinik Kesehatan Lanud Pattimura',
-          lokasi: 'Ambon',
-          alamat: 'Lanud Pattimura, Ambon',
-          tipe: 'fktp',
-          kapasitas: 25,
-          status: 'aktif',
-          lanud: 'Lanud Pattimura',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
-        },
-        {
-          id: 'fktp_15',
-          nama: 'Klinik Kesehatan Lanud Manuhua',
-          lokasi: 'Biak',
-          alamat: 'Lanud Manuhua, Biak, Papua',
-          tipe: 'fktp',
-          kapasitas: 25,
-          status: 'aktif',
-          lanud: 'Lanud Manuhua',
-          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
-        }
+        { id: 'fktp_1', nama: 'FKTP DIRGANTARA LAKESGILUT drg R. POERWANTO', lokasi: 'Jakarta', tipe: 'fktp', kapasitas: 50, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_2', nama: 'FKTP RAJAWALI LAKESPRA dr. SARYANTO', lokasi: 'Jakarta', tipe: 'fktp', kapasitas: 45, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_3', nama: 'FKTP DAKOTA LAKESPRA dr SARYANTO', lokasi: 'Jakarta', tipe: 'fktp', kapasitas: 40, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_4', nama: 'FKTP SATKES DENMABESAU', lokasi: 'Jakarta', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_5', nama: 'FKTP DADALI LAFIAU', lokasi: 'Jakarta', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_6', nama: 'FKTP CENDRAWASIH LANUD ADISUTJIPTO', lokasi: 'Yogyakarta', tipe: 'fktp', kapasitas: 40, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_7', nama: 'FKTP DENMA KODIKLATAU', lokasi: 'Surabaya', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_8', nama: 'FKTP PRATAMA COLIBRI LANUD ADI SOEMARMO', lokasi: 'Solo', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_9', nama: 'FKTP SETUKPA LANUD ADI SOEMARMO', lokasi: 'Solo', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_10', nama: 'FKTP LANUD SULAIMAN', lokasi: 'Bandung', tipe: 'fktp', kapasitas: 40, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Lab'] },
+        { id: 'fktp_11', nama: 'FKTPK KLINIK WING 800 KOPASGAT', lokasi: 'Jakarta', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_12', nama: 'FKTP SATKES DENMA KOOPSUDNAS', lokasi: 'Jakarta', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_13', nama: 'FKTP KLINIK PRATAMA LANUD ATANG SANDJAJA', lokasi: 'Bogor', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_14', nama: 'FKTP ANGKASA LANUD SURYADARMA', lokasi: 'Karawang', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_15', nama: 'FKTP PRATAMA TERPADU HUSEIN SASTRANEGARA', lokasi: 'Bandung', tipe: 'fktp', kapasitas: 40, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_16', nama: 'FKTP LANUD SULTAN ISKANDAR MUDA', lokasi: 'Aceh', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_17', nama: 'FKTP LANUD ROESMIN NURJADIN', lokasi: 'Pekanbaru', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Lab'] },
+        { id: 'fktp_18', nama: 'FKTP LANUD MAIMUN SALEH', lokasi: 'Sabang', tipe: 'fktp', kapasitas: 25, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_19', nama: 'FKTP SATKES DENMA KOOPSUD I', lokasi: 'Medan', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_20', nama: 'FKTP LANUD SRI MULYONO HERLAMBANG', lokasi: 'Kupang', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_21', nama: 'FKTP SATKES DENMA KOSEK I MEDAN', lokasi: 'Medan', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_22', nama: 'FKTP FLAMINGGO LANUD SOEWONDO', lokasi: 'Medan', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_23', nama: 'FKTP AMBARA ASASTA LANUD SUPADIO', lokasi: 'Pontianak', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_24', nama: 'FKTP LANUD HARRY HADISOEMANTRI', lokasi: 'Palembang', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_25', nama: 'FKTP LANUD SUTAN SJAHRIR', lokasi: 'Padang', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_26', nama: 'FKTP LANUD H A SANUSI HANANDJOEDDIN', lokasi: 'Bangka Belitung', tipe: 'fktp', kapasitas: 25, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_27', nama: 'FKTP PRATAMA LANUD R SADJAD', lokasi: 'Natuna', tipe: 'fktp', kapasitas: 25, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_28', nama: 'FKTP LANUD RAJA HAJI FISABILLILAH', lokasi: 'Tanjung Pinang', tipe: 'fktp', kapasitas: 25, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_29', nama: 'FKTP KLINIK GARUDA LANUD ABD SALEH MALANG', lokasi: 'Malang', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Lab'] },
+        { id: 'fktp_30', nama: 'FKTP PATARAJA LANUD HASANUDDIN', lokasi: 'Makassar', tipe: 'fktp', kapasitas: 40, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Lab'] },
+        { id: 'fktp_31', nama: 'FKTP PRINGGODANI LANUD ISWAHJUDI', lokasi: 'Madiun', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_32', nama: 'FKTP LANUD I GUSTI NGURAH RAI', lokasi: 'Bali', tipe: 'fktp', kapasitas: 40, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Lab'] },
+        { id: 'fktp_33', nama: 'FKTP PRATAMA LANUD ZAINUDIN ABDUL MADJID', lokasi: 'Lombok', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_34', nama: 'FKTP SOEMITRO LANUD MULJONO', lokasi: 'Surabaya', tipe: 'fktp', kapasitas: 40, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Lab'] },
+        { id: 'fktp_35', nama: 'FKTP MULAWARMAN LANUD DHOMBER', lokasi: 'Jayapura', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_36', nama: 'FKTP PRATAMA LANUD JENDERAL BESAR SOEDIRMAN', lokasi: 'Purbalingga', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_37', nama: 'FKTP LANUD HALUOLEO', lokasi: 'Kendari', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_38', nama: 'FKTP PRATAMA KOSEK II MAKASSAR', lokasi: 'Makassar', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_39', nama: 'FKTP LANUD SJAMSUDDIN NOOR', lokasi: 'Banjarmasin', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_40', nama: 'FKTP DENMA KOOPSUD II', lokasi: 'Makassar', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_41', nama: 'FKTP LANUD EL TARI KUPANG', lokasi: 'Kupang', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_42', nama: 'FKTP BHUWANA LANUD ANANG BUSRA TARAKAN', lokasi: 'Tarakan', tipe: 'fktp', kapasitas: 25, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_43', nama: 'FKTP LANUD SAM RATULANGI', lokasi: 'Manado', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Lab'] },
+        { id: 'fktp_44', nama: 'FKTP LANUD PATIMURA', lokasi: 'Ambon', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_45', nama: 'FKTP LANUD SILAS PAPARE', lokasi: 'Jayapura', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_46', nama: 'FKTP LANUD MANUHUA', lokasi: 'Biak', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_47', nama: 'FKTP BUANA LANUD YOHANIS KAPIYAU', lokasi: 'Timika', tipe: 'fktp', kapasitas: 25, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_48', nama: 'FKTP LANUD JOHANNES ABRAHAM DIMARA', lokasi: 'Merauke', tipe: 'fktp', kapasitas: 25, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_49', nama: 'FKTP LANUD LEO WATTIMENA', lokasi: 'Morotai', tipe: 'fktp', kapasitas: 20, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_50', nama: 'FKTP LANUD DOMINICUS DUMATUBUN', lokasi: 'Langgur', tipe: 'fktp', kapasitas: 20, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_51', nama: 'SATKES MAKO KOPASGAT', lokasi: 'Jakarta', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_52', nama: 'FKTP AKADEMI ANGKATAN UDARA', lokasi: 'Yogyakarta', tipe: 'fktp', kapasitas: 40, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Lab'] },
+        { id: 'fktp_53', nama: 'FKTP CATYA HUSADA SATBRAVO 90 KOPASGAT', lokasi: 'Jakarta', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_54', nama: 'FKTP LANUD WIRIADINATA', lokasi: 'Tasikmalaya', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_55', nama: 'FKTP LANUD SUGIRI SUKANI', lokasi: 'Cilacap', tipe: 'fktp', kapasitas: 25, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_56', nama: 'FKTP SATKES PUSDIKLAT KOOPSUDNAS / WINGDIK 700', lokasi: 'Jakarta', tipe: 'fktp', kapasitas: 30, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_57', nama: 'FKTP PRATAMA SESKOAU', lokasi: 'Lembang', tipe: 'fktp', kapasitas: 35, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek'] },
+        { id: 'fktp_58', nama: 'FKTP HADI SUMANTRI LANUD ISKANDAR', lokasi: 'Pangkalan Bun', tipe: 'fktp', kapasitas: 25, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] },
+        { id: 'fktp_59', nama: 'FKTP LANUD PANGERAN M BUN YAMIN', lokasi: 'Bangka', tipe: 'fktp', kapasitas: 25, status: 'aktif', fasilitasUtama: ['Poli Umum', 'Apotek'] }
       ];
 
       // Gabungkan semua faskes
@@ -286,7 +186,19 @@ class MockDB {
       this.saveCollection('broadcasts', []);
 
       localStorage.setItem(this.prefix + 'initialized', 'true');
+      localStorage.setItem(this.prefix + 'version', this.version);
     }
+  }
+
+  clearAllData() {
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(this.prefix)) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(key => localStorage.removeItem(key));
   }
 
   generateBeds() {
