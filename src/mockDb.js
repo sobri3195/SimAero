@@ -187,6 +187,8 @@ class MockDB {
       this.saveCollection('bridging_logs', []);
       this.saveCollection('broadcasts', []);
       this.saveCollection('daily_examinations', []);
+      this.saveCollection('drug_transactions', []);
+      this.saveCollection('personnel_rikkes', []);
 
       localStorage.setItem(this.prefix + 'initialized', 'true');
       localStorage.setItem(this.prefix + 'version', this.version);
