@@ -7,6 +7,7 @@ import Layout from './components/common/Layout';
 import HomePage from './pages/HomePage';
 import PatientsPage from './pages/PatientsPage';
 import RegistrationPage from './pages/RegistrationPage';
+import QueueMonitorPage from './pages/QueueMonitorPage';
 import EHRPage from './pages/EHRPage';
 import IGDPage from './pages/IGDPage';
 import InpatientPage from './pages/InpatientPage';
@@ -40,6 +41,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/patients" element={<PatientsPage />} />
               <Route path="/registration" element={<RegistrationPage />} />
+              <Route path="/queue-monitor/:poliName" element={<QueueMonitorPage />} />
               <Route path="/ehr" element={<EHRPage />} />
               <Route path="/igd" element={<IGDPage />} />
               <Route path="/inpatient" element={<InpatientPage />} />

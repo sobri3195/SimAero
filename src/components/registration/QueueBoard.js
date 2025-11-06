@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, where, onSnapshot, updateDoc, doc } from '../../mockDb';
 import { db } from '../../mockDb';
 import { useAuth } from '../../contexts/AuthContext';
-import { Clock, AlertCircle } from 'lucide-react';
+import { Clock, AlertCircle, ExternalLink } from 'lucide-react';
 import Card from '../common/Card';
 
 const QueueBoard = () => {
@@ -89,20 +89,36 @@ const QueueBoard = () => {
     ? queues 
     : { [selectedPoli]: queues[selectedPoli] || [] };
 
+  const openMonitorWindow = (poliName) => {
+    const url = `/queue-monitor/${encodeURIComponent(poliName)}`;
+    window.open(url, '_blank', 'width=1920,height=1080,fullscreen=yes');
+  };
+
   return (
     <div>
       <Card title="Antrean Real-time" className="mb-6">
-        <div className="mb-4">
-          <select
-            value={selectedPoli}
-            onChange={(e) => setSelectedPoli(e.target.value)}
-            className="p-2 border rounded"
-          >
-            <option value="all">Semua Poli</option>
-            {Object.keys(queues).map((poli, idx) => (
-              <option key={idx} value={poli}>{poli}</option>
-            ))}
-          </select>
+        <div className="mb-4 flex gap-4 flex-wrap items-center">
+          <div className="flex-1 min-w-[200px]">
+            <select
+              value={selectedPoli}
+              onChange={(e) => setSelectedPoli(e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="all">Semua Poli</option>
+              {Object.keys(queues).map((poli, idx) => (
+                <option key={idx} value={poli}>{poli}</option>
+              ))}
+            </select>
+          </div>
+          {selectedPoli !== 'all' && (
+            <button
+              onClick={() => openMonitorWindow(selectedPoli)}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+            >
+              <ExternalLink size={16} />
+              Buka Monitor Fullscreen
+            </button>
+          )}
         </div>
 
         {Object.entries(filteredQueues).map(([poli, queue]) => (
