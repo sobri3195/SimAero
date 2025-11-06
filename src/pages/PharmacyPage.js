@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from '../mockDb';
 import { db } from '../mockDb';
-import { Pill, Plus, AlertTriangle, ClipboardList, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
+import { Pill, Plus, AlertTriangle, ClipboardList, DollarSign, TrendingUp, AlertCircle, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useApp } from '../contexts/AppContext';
 import DataTable from '../components/common/DataTable';
@@ -11,6 +11,7 @@ import PrescriptionQueue from '../components/pharmacy/PrescriptionQueue';
 import PharmacyCashier from '../components/pharmacy/PharmacyCashier';
 import DailySalesReport from '../components/pharmacy/DailySalesReport';
 import ExpiryAlert from '../components/pharmacy/ExpiryAlert';
+import DrugLogistics from '../components/fktp/DrugLogistics';
 
 const PharmacyPage = () => {
   const [drugs, setDrugs] = useState([]);
@@ -244,6 +245,7 @@ const PharmacyPage = () => {
 
   const tabs = [
     { id: 'inventory', label: 'Stok Obat', icon: Pill },
+    { id: 'logistics', label: 'Logistik & Penerimaan', icon: Package },
     { id: 'prescriptions', label: 'Antrean Resep', icon: ClipboardList },
     { id: 'cashier', label: 'Kasir', icon: DollarSign },
     { id: 'reports', label: 'Laporan Harian', icon: TrendingUp },
@@ -343,6 +345,7 @@ const PharmacyPage = () => {
         </>
       )}
 
+      {activeTab === 'logistics' && <DrugLogistics />}
       {activeTab === 'prescriptions' && <PrescriptionQueue />}
       {activeTab === 'cashier' && <PharmacyCashier />}
       {activeTab === 'reports' && <DailySalesReport />}

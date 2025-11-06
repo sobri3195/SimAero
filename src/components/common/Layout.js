@@ -61,6 +61,7 @@ const Layout = ({ children }) => {
     { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
     { icon: Heart, label: 'Rikkes', path: '/rikkes' },
     { icon: BarChart3, label: '└ Analitik Rikkes', path: '/rikkes/analytics', indent: true },
+    { icon: Shield, label: 'Rikkes Personel', path: '/personnel-rikkes' },
     { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
     { icon: TestTube, label: 'Laboratorium', path: '/lab' },
     { icon: BedDouble, label: 'Billing & Kasir', path: '/billing' },
