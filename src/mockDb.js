@@ -160,9 +160,9 @@ class MockDB {
       // Initialize empty collections
       this.saveCollection('registrations', []);
       this.saveCollection('medical_records', []);
-      this.saveCollection('igd_patients', []);
+      this.saveCollection('igd_patients', this.generateSampleIGDPatients());
       this.saveCollection('beds', this.generateBeds());
-      this.saveCollection('inpatients', []);
+      this.saveCollection('inpatients', this.generateSampleInpatients());
       this.saveCollection('operating_rooms', this.generateOperatingRooms());
       this.saveCollection('surgeries', []);
       this.saveCollection('cssd_instruments', []);
@@ -204,26 +204,128 @@ class MockDB {
 
   generateBeds() {
     const beds = [];
+    const facilities = [
+      'RSAU dr. Esnawan Antariksa',
+      'RSAU dr. M. Salamun',
+      'RSAU dr. Siswondo Parman'
+    ];
     const roomTypes = ['VIP', 'Kelas 1', 'Kelas 2', 'Kelas 3', 'ICU'];
     let bedId = 1;
 
-    roomTypes.forEach(roomType => {
-      const bedCount = roomType === 'VIP' ? 5 : roomType === 'ICU' ? 4 : 10;
-      for (let i = 1; i <= bedCount; i++) {
-        beds.push({
-          id: `bed_${bedId}`,
-          roomType: roomType,
-          roomNumber: `${roomType}-${Math.ceil(i / 2)}`,
-          bedNumber: `Bed-${i}`,
-          status: 'kosong',
-          occupiedBy: null,
-          faskesId: 'RSAU Dr. Esnawan Antariksa'
-        });
-        bedId++;
-      }
+    facilities.forEach(faskesId => {
+      roomTypes.forEach(roomType => {
+        const bedCount = roomType === 'VIP' ? 5 : roomType === 'ICU' ? 6 : 10;
+        const roomCount = roomType === 'VIP' ? 3 : roomType === 'ICU' ? 2 : 5;
+        
+        for (let room = 1; room <= roomCount; room++) {
+          const bedsPerRoom = Math.ceil(bedCount / roomCount);
+          for (let bed = 1; bed <= bedsPerRoom; bed++) {
+            const randomStatus = Math.random();
+            let status = 'kosong';
+            
+            // Simulate some occupied beds for demo
+            if (randomStatus > 0.7) {
+              status = 'terisi';
+            } else if (randomStatus > 0.6) {
+              status = 'dibersihkan';
+            } else if (randomStatus > 0.55) {
+              status = 'maintenance';
+            }
+            
+            beds.push({
+              id: `bed_${bedId}`,
+              roomType: roomType,
+              roomNumber: `${roomType} ${room}0${room}`,
+              bedNumber: `TT-${bed}`,
+              status: status,
+              occupiedBy: status === 'terisi' ? `Pasien ${bedId}` : null,
+              faskesId: faskesId
+            });
+            bedId++;
+          }
+        }
+      });
     });
 
     return beds;
+  }
+
+  generateSampleIGDPatients() {
+    const facilities = ['RSAU dr. Esnawan Antariksa', 'RSAU dr. M. Salamun'];
+    const patients = [];
+    const triaseCategories = ['RESUSITASI', 'DARURAT', 'MENDESAK', 'TIDAK_MENDESAK'];
+    const samplePatients = [
+      { nama: 'Sersan Andi Wijaya', keluhan: 'Nyeri dada', tekananDarah: '160/100', nadi: '120', respirasi: '24', suhu: '37.5' },
+      { nama: 'Kopral Budi Santoso', keluhan: 'Sesak nafas', tekananDarah: '140/90', nadi: '100', respirasi: '28', suhu: '38.2' },
+      { nama: 'Pratu Siti Rahma', keluhan: 'Trauma kepala', tekananDarah: '110/70', nadi: '95', respirasi: '20', suhu: '36.8' },
+      { nama: 'Letda Ahmad Saputra', keluhan: 'Luka bakar', tekananDarah: '120/80', nadi: '88', respirasi: '18', suhu: '37.0' }
+    ];
+    
+    facilities.forEach((faskesId, idx) => {
+      samplePatients.forEach((patient, pIdx) => {
+        if (idx === 0 || pIdx < 2) {
+          patients.push({
+            id: `igd_${idx}_${pIdx}`,
+            ...patient,
+            faskesId: faskesId,
+            triase: triaseCategories[pIdx % 4],
+            status: 'aktif',
+            waktuMasuk: new Date(Date.now() - (pIdx * 30 * 60 * 1000)),
+            createdAt: new Date().toISOString()
+          });
+        }
+      });
+    });
+    
+    return patients;
+  }
+
+  generateSampleInpatients() {
+    const facilities = ['RSAU dr. Esnawan Antariksa', 'RSAU dr. M. Salamun'];
+    const inpatients = [];
+    const samplePatients = [
+      { patientName: 'Mayor Hendra Kusuma', diagnosis: 'Pneumonia', doctor: 'dr. Agus Salim, Sp.P' },
+      { patientName: 'Kapten Linda Wijaya', diagnosis: 'Post Operasi Apendisitis', doctor: 'dr. Rina Sari, Sp.B' },
+      { patientName: 'Sersan Dedi Prasetyo', diagnosis: 'Diabetes Mellitus', doctor: 'dr. Bambang, Sp.PD' }
+    ];
+    
+    let inpatientId = 1;
+    facilities.forEach((faskesId) => {
+      // Get some occupied beds for this facility
+      const allBeds = this.generateBeds();
+      const facilityBeds = allBeds.filter(b => b.faskesId === faskesId && b.status === 'terisi');
+      
+      facilityBeds.slice(0, 3).forEach((bed, idx) => {
+        if (idx < samplePatients.length) {
+          const patient = samplePatients[idx];
+          const admitDate = new Date(Date.now() - ((idx + 1) * 2 * 24 * 60 * 60 * 1000));
+          
+          inpatients.push({
+            id: `inp_${inpatientId}`,
+            ...patient,
+            faskesId: faskesId,
+            bedId: bed.id,
+            roomNumber: bed.roomNumber,
+            bedNumber: bed.bedNumber,
+            roomType: bed.roomType,
+            admitDate: admitDate.toISOString(),
+            status: 'aktif',
+            nurseNotes: [
+              {
+                timestamp: new Date(Date.now() - (12 * 60 * 60 * 1000)).toISOString(),
+                note: 'Pasien stabil, vital signs normal',
+                vitals: { bp: '120/80', pulse: '78', temp: '36.5', resp: '18' },
+                nurse: 'Perawat Jaga'
+              }
+            ],
+            createdAt: admitDate.toISOString()
+          });
+          inpatientId++;
+        }
+      });
+    });
+    
+    return inpatients;
   }
 
   generateOperatingRooms() {
