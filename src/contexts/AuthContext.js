@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
   const [userRole, setUserRole] = useState('PUSKESAU');
   const [selectedFaskes, setSelectedFaskes] = useState(null);
   const [facilityType, setFacilityType] = useState(null);
+  const [rikkesRole, setRikkesRole] = useState('Admin'); // Admin, Dokter Umum, Dokter Gigi, ATLM Lab, Radiografer, Reviewer
   const loading = false;
 
   const switchToRSAU = (faskesName) => {
@@ -50,6 +51,8 @@ export const AuthProvider = ({ children }) => {
     switchToRSAU,
     switchToFKTP,
     switchToPuskesau,
+    rikkesRole,
+    setRikkesRole,
     loading
   };
 

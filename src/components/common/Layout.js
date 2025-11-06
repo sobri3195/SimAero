@@ -15,8 +15,9 @@ const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [facilityDropdownOpen, setFacilityDropdownOpen] = useState(false);
+  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [availableFacilities, setAvailableFacilities] = useState([]);
-  const { userRole, selectedFaskes, switchToPuskesau, switchToRSAU, switchToFKTP, facilityType } = useAuth();
+  const { userRole, selectedFaskes, switchToPuskesau, switchToRSAU, switchToFKTP, facilityType, rikkesRole, setRikkesRole } = useAuth();
   const { theme } = useApp();
   const navigate = useNavigate();
 
@@ -37,6 +38,7 @@ const Layout = ({ children }) => {
     { icon: Activity, label: 'CSSD', path: '/cssd' },
     { icon: Droplet, label: 'Bank Darah', path: '/bloodbank' },
     { icon: Heart, label: 'Rikkes', path: '/rikkes' },
+    { icon: BarChart3, label: '└ Analitik Rikkes', path: '/rikkes/analytics', indent: true },
     { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
     { icon: TestTube, label: 'Laboratorium', path: '/lab' },
     { icon: Radio, label: 'Radiologi', path: '/radiology' },
@@ -57,6 +59,7 @@ const Layout = ({ children }) => {
     { icon: Calendar, label: 'Manajemen Poli', path: '/poli' },
     { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
     { icon: Heart, label: 'Rikkes', path: '/rikkes' },
+    { icon: BarChart3, label: '└ Analitik Rikkes', path: '/rikkes/analytics', indent: true },
     { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
     { icon: TestTube, label: 'Laboratorium', path: '/lab' },
     { icon: BedDouble, label: 'Billing & Kasir', path: '/billing' },
@@ -161,11 +164,13 @@ const Layout = ({ children }) => {
             <button
               key={index}
               onClick={() => navigate(item.path)}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors text-left mb-1`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors text-left mb-1 ${
+                item.indent ? 'pl-8' : ''
+              }`}
               title={!sidebarOpen ? item.label : ''}
             >
-              <item.icon size={20} style={{ color: theme.primaryColor }} />
-              {sidebarOpen && <span className="text-sm">{item.label}</span>}
+              <item.icon size={item.indent ? 16 : 20} style={{ color: theme.primaryColor }} />
+              {sidebarOpen && <span className={`${item.indent ? 'text-xs' : 'text-sm'}`}>{item.label}</span>}
             </button>
           ))}
         </nav>
@@ -227,6 +232,48 @@ const Layout = ({ children }) => {
                           >
                             <div className="font-semibold text-sm text-gray-800">{facility.nama}</div>
                             <div className="text-xs text-gray-600">{facility.lokasi}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Rikkes Role Selector */}
+              {userRole !== 'PUSKESAU' && selectedFaskes && (
+                <div className="relative">
+                  <button
+                    onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
+                  >
+                    <Shield size={16} className="text-green-600" />
+                    <span className="font-semibold text-green-800 text-sm">
+                      {rikkesRole}
+                    </span>
+                    <ChevronDown size={16} className="text-green-600" />
+                  </button>
+
+                  {roleDropdownOpen && (
+                    <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border z-50">
+                      <div className="p-2 border-b bg-gray-50">
+                        <p className="text-xs font-semibold text-gray-600 uppercase px-2">
+                          Role Rikkes
+                        </p>
+                      </div>
+                      <div className="p-2">
+                        {['Admin', 'Dokter Umum', 'Dokter Gigi', 'ATLM Lab', 'Radiografer', 'Reviewer'].map((role) => (
+                          <button
+                            key={role}
+                            onClick={() => {
+                              setRikkesRole(role);
+                              setRoleDropdownOpen(false);
+                            }}
+                            className={`w-full text-left p-2 rounded hover:bg-green-50 transition-colors mb-1 text-sm ${
+                              rikkesRole === role ? 'bg-green-100 border border-green-300 font-semibold' : ''
+                            }`}
+                          >
+                            {role}
                           </button>
                         ))}
                       </div>
