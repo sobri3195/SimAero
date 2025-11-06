@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from '../mockDb';
 import { db } from '../mockDb';
-import { Pill, Plus, AlertTriangle } from 'lucide-react';
+import { Pill, Plus, AlertTriangle, ClipboardList, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useApp } from '../contexts/AppContext';
 import DataTable from '../components/common/DataTable';
 import PageHeader from '../components/common/PageHeader';
 import CRUDModal from '../components/common/CRUDModal';
+import PrescriptionQueue from '../components/pharmacy/PrescriptionQueue';
+import PharmacyCashier from '../components/pharmacy/PharmacyCashier';
+import DailySalesReport from '../components/pharmacy/DailySalesReport';
+import ExpiryAlert from '../components/pharmacy/ExpiryAlert';
 
 const PharmacyPage = () => {
   const [drugs, setDrugs] = useState([]);
@@ -14,6 +18,7 @@ const PharmacyPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedDrug, setSelectedDrug] = useState(null);
+  const [activeTab, setActiveTab] = useState('inventory');
   const [formData, setFormData] = useState({
     name: '',
     genericName: '',
@@ -204,6 +209,21 @@ const PharmacyPage = () => {
     { key: 'actions', label: 'Aksi', actions: true, className: 'text-center' }
   ];
 
+  const expiringDrugs = drugs.filter(drug => {
+    if (!drug.expiryDate) return false;
+    const expDate = new Date(drug.expiryDate);
+    const today = new Date();
+    const monthsUntilExp = (expDate - today) / (1000 * 60 * 60 * 24 * 30);
+    return monthsUntilExp < 6 && monthsUntilExp > 0;
+  });
+
+  const expiredDrugs = drugs.filter(drug => {
+    if (!drug.expiryDate) return false;
+    const expDate = new Date(drug.expiryDate);
+    const today = new Date();
+    return expDate < today;
+  });
+
   if (loading) {
     return (
       <div>
@@ -222,6 +242,14 @@ const PharmacyPage = () => {
     );
   }
 
+  const tabs = [
+    { id: 'inventory', label: 'Stok Obat', icon: Pill },
+    { id: 'prescriptions', label: 'Antrean Resep', icon: ClipboardList },
+    { id: 'cashier', label: 'Kasir', icon: DollarSign },
+    { id: 'reports', label: 'Laporan Harian', icon: TrendingUp },
+    { id: 'expiry', label: 'Peringatan Kedaluwarsa', icon: AlertCircle }
+  ];
+
   return (
     <div>
       <PageHeader 
@@ -231,38 +259,94 @@ const PharmacyPage = () => {
           { label: 'Home', path: '/' },
           { label: 'Farmasi', path: '/pharmacy' }
         ]}
-        actionLabel="Tambah Obat"
-        actionIcon={Pill}
-        onActionClick={handleAdd}
+        actionLabel={activeTab === 'inventory' ? 'Tambah Obat' : null}
+        actionIcon={activeTab === 'inventory' ? Pill : null}
+        onActionClick={activeTab === 'inventory' ? handleAdd : null}
       />
 
-      {/* Alert for low stock */}
-      {lowStockDrugs.length > 0 && (
-        <div className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="text-yellow-600" size={24} />
-            <div>
-              <p className="font-semibold text-yellow-800">Peringatan Stok Rendah</p>
-              <p className="text-sm text-yellow-700">
-                Terdapat {lowStockDrugs.length} obat dengan stok di bawah batas minimum
-              </p>
-            </div>
-          </div>
+      {/* Tab Navigation */}
+      <div className="mb-6 bg-white rounded-lg shadow-sm border">
+        <div className="flex overflow-x-auto">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-4 font-medium whitespace-nowrap transition-colors ${
+                  activeTab === tab.id
+                    ? 'border-b-2 border-blue-500 text-blue-600'
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                }`}
+              >
+                <Icon size={20} />
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'inventory' && (
+        <>
+          {/* Alert for low stock */}
+          {lowStockDrugs.length > 0 && (
+            <div className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="text-yellow-600" size={24} />
+                <div>
+                  <p className="font-semibold text-yellow-800">Peringatan Stok Rendah</p>
+                  <p className="text-sm text-yellow-700">
+                    Terdapat {lowStockDrugs.length} obat dengan stok di bawah batas minimum
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Alert for expiring drugs */}
+          {(expiringDrugs.length > 0 || expiredDrugs.length > 0) && (
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="text-red-600" size={24} />
+                <div>
+                  <p className="font-semibold text-red-800">Peringatan Kedaluwarsa</p>
+                  <p className="text-sm text-red-700">
+                    {expiredDrugs.length > 0 && `${expiredDrugs.length} obat sudah kadaluwarsa. `}
+                    {expiringDrugs.length > 0 && `${expiringDrugs.length} obat akan kadaluwarsa dalam 6 bulan.`}
+                    {' '}
+                    <button 
+                      onClick={() => setActiveTab('expiry')}
+                      className="underline font-medium hover:text-red-900"
+                    >
+                      Lihat detail
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DataTable
+            columns={columns}
+            data={drugs}
+            title="Data Obat"
+            searchable={true}
+            exportable={true}
+            pagination={true}
+            itemsPerPage={10}
+            onView={handleView}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </>
       )}
 
-      <DataTable
-        columns={columns}
-        data={drugs}
-        title="Data Obat"
-        searchable={true}
-        exportable={true}
-        pagination={true}
-        itemsPerPage={10}
-        onView={handleView}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {activeTab === 'prescriptions' && <PrescriptionQueue />}
+      {activeTab === 'cashier' && <PharmacyCashier />}
+      {activeTab === 'reports' && <DailySalesReport />}
+      {activeTab === 'expiry' && <ExpiryAlert />}
 
       {/* Create/Edit Modal */}
       <CRUDModal

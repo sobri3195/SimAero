@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs } from '../mockDb';
 import { db } from '../mockDb';
 import { useAuth } from '../contexts/AuthContext';
-import { Search, FileText, History, AlertCircle, Printer } from 'lucide-react';
+import { Search, FileText, History, AlertCircle, Printer, Pill } from 'lucide-react';
 import SOAPForm from '../components/ehr/SOAPForm';
 import ChronicDiseaseManager from '../components/ehr/ChronicDiseaseManager';
 import MedicalHistory from '../components/ehr/MedicalHistory';
 import MedicalRecordPrint from '../components/ehr/MedicalRecordPrint';
+import PrescriptionForm from '../components/ehr/PrescriptionForm';
 import PageHeader from '../components/common/PageHeader';
 
 const EHRPage = () => {
@@ -57,6 +58,7 @@ const EHRPage = () => {
 
   const tabs = [
     { id: 'soap', label: 'SOAP Note', icon: FileText },
+    { id: 'prescription', label: 'Resep Obat', icon: Pill },
     { id: 'chronic', label: 'Riwayat Kronis & Alergi', icon: AlertCircle },
     { id: 'history', label: 'Riwayat Kunjungan', icon: History },
     { id: 'print', label: 'Cetak Ringkasan', icon: Printer }
@@ -171,6 +173,14 @@ const EHRPage = () => {
             <SOAPForm
               patientId={selectedPatient.id}
               patientName={selectedPatient.nama}
+            />
+          )}
+          
+          {activeTab === 'prescription' && (
+            <PrescriptionForm
+              patientId={selectedPatient.id}
+              patientName={selectedPatient.nama}
+              onSuccess={() => setActiveTab('history')}
             />
           )}
           
