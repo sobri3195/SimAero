@@ -5,7 +5,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import { format } from 'date-fns';
 import { id as localeID } from 'date-fns/locale';
 import { Calendar, User, FileText, Activity, Pill, ExternalLink, ChevronDown, ChevronUp, Search } from 'lucide-react';
-import DataTable from '../common/DataTable';
 
 const ExaminationHistory = () => {
   const { selectedFaskes } = useAuth();
@@ -63,65 +62,6 @@ const ExaminationHistory = () => {
     exam.diagnosis?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     exam.keluhan?.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const columns = [
-    {
-      key: 'tanggalPemeriksaan',
-      label: 'Tanggal & Waktu',
-      render: (row) => (
-        <div>
-          <div className="font-medium">
-            {format(new Date(row.tanggalPemeriksaan), 'dd MMM yyyy', { locale: localeID })}
-          </div>
-          <div className="text-sm text-gray-500">
-            {row.waktuPemeriksaan || '-'}
-          </div>
-        </div>
-      )
-    },
-    {
-      key: 'patientName',
-      label: 'Nama Pasien',
-      render: (row) => (
-        <div>
-          <div className="font-medium">{row.patientName}</div>
-          <div className="text-sm text-gray-500">{row.poli}</div>
-        </div>
-      )
-    },
-    {
-      key: 'keluhan',
-      label: 'Keluhan',
-      render: (row) => (
-        <div className="max-w-xs truncate" title={row.keluhan}>
-          {row.keluhan}
-        </div>
-      )
-    },
-    {
-      key: 'diagnosis',
-      label: 'Diagnosis',
-      render: (row) => (
-        <div>
-          <div className="font-medium">{row.diagnosis}</div>
-          {row.diagnosisKode && (
-            <div className="text-sm text-gray-500">{row.diagnosisKode}</div>
-          )}
-        </div>
-      )
-    },
-    {
-      key: 'dokter',
-      label: 'Dokter',
-      render: (row) => row.dokter || '-'
-    },
-    {
-      key: 'actions',
-      label: 'Aksi',
-      actions: true,
-      className: 'text-center'
-    }
-  ];
 
   const handleView = (exam) => {
     setExpandedId(expandedId === exam.id ? null : exam.id);

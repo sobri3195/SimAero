@@ -11,12 +11,12 @@ import RikkesDentalSection from './RikkesDentalSection';
 import RikkesLabSection from './RikkesLabSection';
 import RikkesRadiologySection from './RikkesRadiologySection';
 import RikkesConclusionSection from './RikkesConclusionSection';
-import { ArrowLeft, Save, FileText, CheckCircle } from 'lucide-react';
+import { ArrowLeft, FileText, CheckCircle } from 'lucide-react';
 
 const RikkesExamForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { rikkesRole, selectedFaskes } = useAuth();
+  const { rikkesRole } = useAuth();
   const { theme, addNotification } = useApp();
   const [examination, setExamination] = useState(null);
   const [activeSection, setActiveSection] = useState('identity');
@@ -25,6 +25,7 @@ const RikkesExamForm = () => {
 
   useEffect(() => {
     loadExamination();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const loadExamination = async () => {

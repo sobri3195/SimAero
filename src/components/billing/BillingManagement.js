@@ -11,7 +11,6 @@ const BillingManagement = () => {
   const { addNotification } = useApp();
   
   const [bills, setBills] = useState([]);
-  const [payments, setPayments] = useState([]);
   const [activeTab, setActiveTab] = useState('pending');
   const [showNewBill, setShowNewBill] = useState(false);
   const [stats, setStats] = useState({ today: 0, month: 0, pending: 0 });
@@ -72,10 +71,8 @@ const BillingManagement = () => {
       setStats({ today: todayTotal, month: monthTotal, pending: pendingCount });
     });
 
-    const unsubPayments = onSnapshot(paymentsQuery, (snapshot) => {
-      const data = [];
-      snapshot.forEach((doc) => data.push({ id: doc.id, ...doc.data() }));
-      setPayments(data);
+    const unsubPayments = onSnapshot(paymentsQuery, () => {
+      // Not used but subscribed for consistency
     });
 
     return () => {

@@ -93,6 +93,7 @@ const PersonnelRikkes = () => {
 
   useEffect(() => {
     loadExaminations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFaskes]);
 
   const loadExaminations = async () => {

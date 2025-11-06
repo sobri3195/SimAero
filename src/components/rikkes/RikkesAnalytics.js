@@ -23,6 +23,7 @@ const RikkesAnalytics = () => {
       return;
     }
     loadAnalytics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFaskes, rikkesRole]);
 
   const loadAnalytics = async () => {

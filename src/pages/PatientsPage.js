@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from '../mockDb';
 import { db } from '../mockDb';
-import { UserPlus, Eye } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useApp } from '../contexts/AppContext';
 import DataTable from '../components/common/DataTable';
@@ -33,6 +33,7 @@ const PatientsPage = () => {
 
   useEffect(() => {
     loadPatients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFaskes]);
 
   const loadPatients = async () => {

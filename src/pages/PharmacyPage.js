@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from '../mockDb';
 import { db } from '../mockDb';
-import { Pill, Plus, AlertTriangle, ClipboardList, DollarSign, TrendingUp, AlertCircle, Package } from 'lucide-react';
+import { Pill, AlertTriangle, ClipboardList, DollarSign, TrendingUp, AlertCircle, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useApp } from '../contexts/AppContext';
 import DataTable from '../components/common/DataTable';
@@ -39,6 +39,7 @@ const PharmacyPage = () => {
 
   useEffect(() => {
     loadDrugs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFaskes]);
 
   const loadDrugs = async () => {

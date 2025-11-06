@@ -20,6 +20,7 @@ const PrescriptionForm = ({ patientId, patientName, onSuccess }) => {
 
   useEffect(() => {
     loadDrugs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFaskes]);
 
   const loadDrugs = async () => {
