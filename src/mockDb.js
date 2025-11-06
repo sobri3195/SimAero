@@ -171,7 +171,8 @@ class MockDB {
       this.saveCollection('blood_requests', []);
       this.saveCollection('blood_donations', []);
       this.saveCollection('drugs', []);
-      this.saveCollection('prescriptions', []);
+      this.saveCollection('prescriptions', this.generateSamplePrescriptions());
+      this.saveCollection('pharmacy_transactions', this.generateSampleTransactions());
       this.saveCollection('lab_orders', []);
       this.saveCollection('radiology_orders', []);
       this.saveCollection('employees', []);
@@ -326,6 +327,126 @@ class MockDB {
     });
     
     return inpatients;
+  }
+
+  generateSamplePrescriptions() {
+    const facilities = ['RSAU dr. Esnawan Antariksa', 'RSAU dr. M. Salamun', 'RSAU dr. Siswondo Parman'];
+    const prescriptions = [];
+    const samplePrescriptions = [
+      {
+        patientName: 'Lettu Rudi Hartono',
+        patientId: 'RM-001234',
+        doctorName: 'Susanto',
+        poli: 'Poli Umum',
+        items: [
+          { drugName: 'Amoksisilin 500mg', quantity: 15, unit: 'tablet', dosage: '3x1', instructions: 'Setelah makan', price: 5000 },
+          { drugName: 'Paracetamol 500mg', quantity: 10, unit: 'tablet', dosage: '3x1', instructions: 'Bila demam', price: 2000 }
+        ],
+        notes: 'Kontrol kembali 3 hari'
+      },
+      {
+        patientName: 'Serka Dewi Lestari',
+        patientId: 'RM-001235',
+        doctorName: 'Ratna Sari',
+        poli: 'Poli Gigi',
+        items: [
+          { drugName: 'Asam Mefenamat 500mg', quantity: 10, unit: 'tablet', dosage: '3x1', instructions: 'Setelah makan', price: 3000 },
+          { drugName: 'Chlorhexidine 0.2%', quantity: 1, unit: 'botol', dosage: '2x sehari', instructions: 'Kumur setelah sikat gigi', price: 15000 }
+        ],
+        notes: 'Jaga kebersihan mulut'
+      },
+      {
+        patientName: 'Mayor Andi Wijaya',
+        patientId: 'RM-001236',
+        doctorName: 'Bambang Susilo',
+        poli: 'Poli Jantung',
+        items: [
+          { drugName: 'Bisoprolol 5mg', quantity: 30, unit: 'tablet', dosage: '1x1', instructions: 'Pagi hari setelah sarapan', price: 8000 },
+          { drugName: 'Simvastatin 20mg', quantity: 30, unit: 'tablet', dosage: '1x1', instructions: 'Malam sebelum tidur', price: 6000 }
+        ],
+        notes: 'Kontrol rutin setiap bulan'
+      }
+    ];
+
+    const statuses = ['menunggu', 'disiapkan', 'selesai'];
+    
+    facilities.forEach((faskesId, fIdx) => {
+      samplePrescriptions.forEach((presc, pIdx) => {
+        const createdTime = new Date(Date.now() - ((fIdx * 3 + pIdx) * 30 * 60 * 1000));
+        const status = statuses[pIdx % 3];
+        
+        const prescription = {
+          id: `presc_${fIdx}_${pIdx}`,
+          ...presc,
+          faskesId: faskesId,
+          status: status,
+          isPaid: status === 'selesai' ? (Math.random() > 0.5) : false,
+          createdAt: createdTime.toISOString()
+        };
+
+        if (status === 'disiapkan') {
+          prescription.preparedAt = new Date(createdTime.getTime() + 15 * 60 * 1000).toISOString();
+        } else if (status === 'selesai') {
+          prescription.preparedAt = new Date(createdTime.getTime() + 15 * 60 * 1000).toISOString();
+          prescription.completedAt = new Date(createdTime.getTime() + 30 * 60 * 1000).toISOString();
+        }
+
+        prescriptions.push(prescription);
+      });
+    });
+
+    return prescriptions;
+  }
+
+  generateSampleTransactions() {
+    const facilities = ['RSAU dr. Esnawan Antariksa', 'RSAU dr. M. Salamun'];
+    const transactions = [];
+    const sampleTransactions = [
+      {
+        patientName: 'Kapten Budi Santoso',
+        patientId: 'RM-001240',
+        doctorName: 'Agus Salim',
+        items: [
+          { drugName: 'Amoksisilin 500mg', quantity: 20, unit: 'tablet', dosage: '3x1', instructions: 'Setelah makan', price: 5000 },
+          { drugName: 'Paracetamol 500mg', quantity: 15, unit: 'tablet', dosage: '3x1', instructions: 'Bila demam', price: 2000 }
+        ],
+        totalAmount: 130000,
+        amountPaid: 150000,
+        change: 20000,
+        paymentMethod: 'tunai'
+      },
+      {
+        patientName: 'Serda Siti Nurhaliza',
+        patientId: 'RM-001241',
+        doctorName: 'Ratna Dewi',
+        items: [
+          { drugName: 'Vitamin B Complex', quantity: 30, unit: 'tablet', dosage: '1x1', instructions: 'Setelah makan pagi', price: 3000 },
+          { drugName: 'Vitamin C 500mg', quantity: 30, unit: 'tablet', dosage: '1x1', instructions: 'Pagi hari', price: 2500 }
+        ],
+        totalAmount: 165000,
+        amountPaid: 165000,
+        change: 0,
+        paymentMethod: 'debit'
+      }
+    ];
+
+    facilities.forEach((faskesId, fIdx) => {
+      sampleTransactions.forEach((trans, tIdx) => {
+        const today = new Date();
+        today.setHours(8 + (fIdx * 2 + tIdx), 30, 0, 0);
+        
+        transactions.push({
+          id: `tx_${fIdx}_${tIdx}`,
+          prescriptionId: `presc_${fIdx}_${tIdx}_paid`,
+          ...trans,
+          faskesId: faskesId,
+          transactionDate: today.toISOString(),
+          cashierName: 'Kasir 1'
+        });
+      });
+    });
+
+    return transactions;
   }
 
   generateOperatingRooms() {
