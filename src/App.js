@@ -28,6 +28,7 @@ import BroadcastPage from './pages/BroadcastPage';
 import SettingsPage from './pages/SettingsPage';
 import PoliPage from './pages/PoliPage';
 import BillingPage from './pages/BillingPage';
+import DailyExaminationPage from './pages/DailyExaminationPage';
 
 import './App.css';
 
@@ -61,6 +62,7 @@ function App() {
               <Route path="/broadcast" element={<BroadcastPage />} />
               <Route path="/poli" element={<PoliPage />} />
               <Route path="/billing" element={<BillingPage />} />
+              <Route path="/daily-examination" element={<DailyExaminationPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </Layout>
