@@ -121,9 +121,21 @@ const Layout = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-gray-100">
+      {/* Mobile Backdrop */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside 
-        className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white shadow-lg transition-all duration-300 overflow-y-auto`}
+        className={`${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 ${
+          sidebarOpen ? 'w-64' : 'lg:w-20'
+        } w-64 bg-white shadow-lg transition-all duration-300 overflow-y-auto fixed lg:relative h-full z-50`}
         style={{ borderRight: `3px solid ${theme.primaryColor}` }}
       >
         <div className="p-4 flex items-center justify-between" style={{ backgroundColor: theme.primaryColor }}>
@@ -181,8 +193,16 @@ const Layout = ({ children }) => {
         {/* Header */}
         <header className="bg-white shadow-sm z-10">
           <div className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-4">
-              <div>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="lg:hidden p-2 hover:bg-gray-100 rounded-lg mr-2"
+            >
+              <Menu size={24} />
+            </button>
+
+            <div className="flex items-center gap-4 overflow-x-auto flex-1">
+              <div className="hidden md:block">
                 <h2 className="text-xl font-bold" style={{ color: theme.primaryColor }}>
                   {userRole === 'PUSKESAU' 
                     ? 'Dashboard Pengawasan Puskesau' 
@@ -200,22 +220,27 @@ const Layout = ({ children }) => {
                   }
                 </p>
               </div>
+              <div className="md:hidden">
+                <h2 className="text-lg font-bold" style={{ color: theme.primaryColor }}>
+                  {userRole === 'PUSKESAU' ? 'PUSKESAU' : userRole === 'RSAU' ? 'SIMRS' : 'SIM Klinik'}
+                </h2>
+              </div>
 
               {/* Facility Dropdown - Shown when in RSAU or FKTP mode */}
               {userRole !== 'PUSKESAU' && selectedFaskes && (
                 <div className="relative">
                   <button
                     onClick={() => setFacilityDropdownOpen(!facilityDropdownOpen)}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+                    className="flex items-center gap-2 px-3 md:px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
                   >
-                    <span className="font-semibold text-blue-800 text-sm max-w-xs truncate">
+                    <span className="font-semibold text-blue-800 text-xs md:text-sm max-w-[120px] md:max-w-xs truncate">
                       {selectedFaskes}
                     </span>
-                    <ChevronDown size={16} className="text-blue-600" />
+                    <ChevronDown size={16} className="text-blue-600 flex-shrink-0" />
                   </button>
 
                   {facilityDropdownOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-96 bg-white rounded-lg shadow-xl border z-50 max-h-96 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 md:left-0 md:right-auto mt-2 w-screen md:w-96 max-w-sm md:max-w-none bg-white rounded-lg shadow-xl border z-50 max-h-96 overflow-y-auto">
                       <div className="p-2 border-b bg-gray-50">
                         <p className="text-xs font-semibold text-gray-600 uppercase px-2">
                           {userRole === 'RSAU' ? 'Pilih RSAU' : 'Pilih FKTP'}
@@ -245,13 +270,13 @@ const Layout = ({ children }) => {
                 <div className="relative">
                   <button
                     onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
+                    className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-2 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
                   >
-                    <Shield size={16} className="text-green-600" />
-                    <span className="font-semibold text-green-800 text-sm">
+                    <Shield size={16} className="text-green-600 flex-shrink-0" />
+                    <span className="font-semibold text-green-800 text-xs md:text-sm hidden sm:inline">
                       {rikkesRole}
                     </span>
-                    <ChevronDown size={16} className="text-green-600" />
+                    <ChevronDown size={16} className="text-green-600 flex-shrink-0" />
                   </button>
 
                   {roleDropdownOpen && (

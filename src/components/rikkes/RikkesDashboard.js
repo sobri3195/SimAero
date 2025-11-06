@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
-import { collection, query, where, onSnapshot, orderBy } from '../../mockDb';
+import { collection, query, where, onSnapshot } from '../../mockDb';
 import { db } from '../../mockDb';
 import { 
   Search, Filter, Calendar, User, Shield, 
@@ -25,8 +25,7 @@ const RikkesDashboard = () => {
 
     const q = query(
       collection(db, 'rikkes_examinations'),
-      where('faskesId', '==', selectedFaskes),
-      orderBy('createdAt', 'desc')
+      where('faskesId', '==', selectedFaskes)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {

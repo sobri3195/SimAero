@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
 import { 
-  User, Activity, Tooth, TestTube, Radio, 
+  User, Activity, Smile, Beaker, Scan, 
   FileText, Lock, Check, AlertCircle, Edit3 
 } from 'lucide-react';
 
@@ -26,19 +26,19 @@ const RikkesFormSidebar = ({ examination, activeSection, onSectionChange }) => {
     { 
       id: 'dental', 
       label: 'Pemeriksaan Gigi', 
-      icon: Tooth,
+      icon: Smile,
       allowedRoles: ['Admin', 'Dokter Gigi', 'Reviewer']
     },
     { 
       id: 'lab', 
       label: 'Laboratorium', 
-      icon: TestTube,
+      icon: Beaker,
       allowedRoles: ['Admin', 'ATLM Lab', 'Reviewer']
     },
     { 
       id: 'radiology', 
       label: 'Radiologi', 
-      icon: Radio,
+      icon: Scan,
       allowedRoles: ['Admin', 'Radiografer', 'Reviewer']
     },
     { 
