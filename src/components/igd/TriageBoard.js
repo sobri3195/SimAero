@@ -119,39 +119,18 @@ const TriageBoard = () => {
     }
   };
 
-  const updateTriage = async (patientId, newTriase) => {
-    try {
-      await updateDoc(doc(db, 'igd_patients', patientId), {
-        triase: newTriase,
-        updatedAt: new Date()
-      });
-      addNotification({ type: 'success', message: 'Kategori triase berhasil diupdate' });
-    } catch (error) {
-      console.error('Error updating triage:', error);
-      addNotification({ type: 'error', message: 'Gagal mengupdate triase' });
-    }
-  };
-
-  const handleDragStart = (e, patient) => {
-    e.dataTransfer.setData('patientId', patient.id);
-    e.dataTransfer.setData('currentTriage', patient.triase);
-    e.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-  };
-
-  const handleDrop = async (e, targetTriage) => {
-    e.preventDefault();
-    const patientId = e.dataTransfer.getData('patientId');
-    const currentTriage = e.dataTransfer.getData('currentTriage');
-
-    if (currentTriage !== targetTriage) {
-      await updateTriage(patientId, targetTriage);
-    }
-  };
+  // Function for future drag-and-drop triage update
+  // const updateTriage = async (patientId, newTriase) => {
+  //   try {
+  //     await updateDoc(doc(db, 'igd_patients', patientId), {
+  //       triase: newTriase,
+  //       updatedAt: new Date()
+  //     });
+  //     addNotification({ type: 'success', message: 'Triase berhasil diupdate' });
+  //   } catch (error) {
+  //     console.error('Error updating triage:', error);
+  //   }
+  // };
 
   const completePatient = async (patientId) => {
     try {
@@ -267,15 +246,10 @@ const TriageBoard = () => {
           {Object.entries(patients).map(([level, patientList]) => {
             const colors = getTriageColor(level);
             return (
-              <div 
-                key={level} 
-                className={`${colors.bg} rounded-lg p-4 min-h-[300px] transition-all`}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, level)}
-              >
+              <div key={level} className={`${colors.bg} rounded-lg p-4 min-h-[300px]`}>
                 <div className="flex items-center gap-2 mb-4">
                   <div className={`${colors.badge} w-3 h-3 rounded-full`}></div>
-                  <h3 className={`font-bold ${colors.text}`}>{level.replace('_', ' ')}</h3>
+                  <h3 className={`font-bold ${colors.text}`}>{level}</h3>
                   <span className={`ml-auto ${colors.text} opacity-75`}>
                     {patientList.length}
                   </span>
@@ -285,9 +259,8 @@ const TriageBoard = () => {
                   {patientList.map((patient) => (
                     <div 
                       key={patient.id}
-                      className="bg-white p-3 rounded-lg shadow-sm cursor-move hover:shadow-md transition-shadow"
+                      className="bg-white p-3 rounded-lg shadow-sm"
                       draggable
-                      onDragStart={(e) => handleDragStart(e, patient)}
                     >
                       <h4 className="font-medium mb-1">{patient.nama}</h4>
                       <p className="text-sm text-gray-600 mb-2">{patient.keluhan}</p>

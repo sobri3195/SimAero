@@ -199,80 +199,30 @@ const BridgingManagement = () => {
         </div>
       </Card>
 
-      <Card title="Integrasi BPJS & Kemenkes">
+      <Card title="Integrasi BPJS">
         <div className="space-y-4">
           <div className="p-4 bg-blue-50 rounded-lg">
-            <h5 className="font-medium mb-2 flex items-center gap-2">
-              <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded">FKTP</span>
-              P-Care BPJS (FKTP)
-            </h5>
-            <p className="text-sm text-gray-600 mb-3">Integrasi khusus FKTP dengan P-Care BPJS untuk kunjungan, rujukan, dan kapitasi</p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-3">
-              <button className="px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
-                📋 Pendaftaran Kunjungan
-              </button>
-              <button className="px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
-                💊 Entry Tindakan & Obat
-              </button>
-              <button className="px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
-                🔄 Buat Rujukan Online
-              </button>
-              <button className="px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
-                👥 Cek Eligibilitas Peserta
-              </button>
-              <button className="px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
-                📊 Rekap Kapitasi
-              </button>
-              <button className="px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
-                📈 Laporan Non-Kapitasi
-              </button>
-            </div>
-            <div className="text-xs text-gray-500 bg-white p-2 rounded">
-              <strong>Catatan:</strong> P-Care khusus untuk FKTP, mencakup pendaftaran kunjungan, diagnosa ICD-10, tindakan, peresepan, dan rujukan ke FKRTL.
-            </div>
-          </div>
-
-          <div className="p-4 bg-purple-50 rounded-lg">
-            <h5 className="font-medium mb-2 flex items-center gap-2">
-              <span className="px-2 py-1 bg-purple-600 text-white text-xs rounded">RSAU</span>
-              VClaim BPJS (RSAU/FKRTL)
-            </h5>
-            <p className="text-sm text-gray-600 mb-2">Integrasi dengan sistem BPJS VClaim untuk verifikasi peserta dan klaim (untuk RSAU)</p>
+            <h5 className="font-medium mb-2">VClaim API</h5>
+            <p className="text-sm text-gray-600 mb-2">Integrasi dengan sistem BPJS VClaim untuk verifikasi peserta dan klaim</p>
             <div className="flex gap-2">
-              <button className="px-3 py-1 bg-purple-500 text-white rounded text-sm hover:bg-purple-600">
+              <button className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
                 Cek Eligibilitas
               </button>
-              <button className="px-3 py-1 bg-purple-500 text-white rounded text-sm hover:bg-purple-600">
+              <button className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
                 Submit Klaim
               </button>
             </div>
           </div>
-          
           <div className="p-4 bg-green-50 rounded-lg">
-            <h5 className="font-medium mb-2">SATUSEHAT (FHIR)</h5>
-            <p className="text-sm text-gray-600 mb-3">Integrasi dengan platform SATUSEHAT Kemenkes menggunakan standar FHIR</p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-3">
+            <h5 className="font-medium mb-2">SATUSEHAT</h5>
+            <p className="text-sm text-gray-600 mb-2">Integrasi dengan platform SATUSEHAT Kemenkes</p>
+            <div className="flex gap-2">
               <button className="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">
-                👤 Kirim Data Pasien
+                Kirim Data Pasien
               </button>
               <button className="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">
-                🏥 Kirim Data Kunjungan
+                Kirim Data Kunjungan
               </button>
-              <button className="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">
-                🩺 Kirim Data Observasi
-              </button>
-              <button className="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">
-                💉 Kirim Data Imunisasi
-              </button>
-              <button className="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">
-                🔬 Kirim Hasil Lab
-              </button>
-              <button className="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">
-                📊 Status Sinkronisasi
-              </button>
-            </div>
-            <div className="text-xs text-gray-500 bg-white p-2 rounded">
-              <strong>FHIR Resources:</strong> Patient, Encounter, Observation, Condition, Medication, Immunization, DiagnosticReport
             </div>
           </div>
         </div>

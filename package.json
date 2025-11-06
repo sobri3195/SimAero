@@ -5,8 +5,8 @@
   "dependencies": {
     "date-fns": "^2.30.0",
     "file-saver": "^2.0.5",
-    "jspdf": "^3.0.3",
-    "jspdf-autotable": "^5.0.2",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.3",
     "lucide-react": "^0.552.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

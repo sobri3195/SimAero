@@ -187,18 +187,21 @@ const DashboardPuskesau = () => {
           <span className="text-sm text-gray-600">{fktpList.length} Klinik</span>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {fktpList.map((fktp) => (
-            <div key={fktp.id} className="border rounded-lg p-3 hover:shadow-lg transition-shadow">
-              <div className="mb-2">
-                <h3 className="font-bold text-gray-800 text-xs mb-1 line-clamp-2">{fktp.nama}</h3>
+            <div key={fktp.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+              <div className="mb-3">
+                <h3 className="font-bold text-gray-800 text-sm mb-1">{fktp.nama}</h3>
                 <p className="text-xs text-gray-600 flex items-center gap-1">
-                  <MapPin size={10} />
+                  <MapPin size={12} />
                   {fktp.lokasi}
                 </p>
               </div>
               
-              <div className="space-y-1 mb-2">
+              <div className="space-y-1 mb-3">
+                <p className="text-xs text-gray-600">
+                  <span className="font-semibold">Lanud:</span> {fktp.lanud}
+                </p>
                 <p className="text-xs text-gray-600">
                   <span className="font-semibold">Kapasitas:</span> {fktp.kapasitas}
                 </p>
@@ -206,7 +209,7 @@ const DashboardPuskesau = () => {
               
               <button
                 onClick={() => handleAccessFKTP(fktp)}
-                className="w-full bg-green-600 text-white py-1.5 rounded-lg hover:bg-green-700 transition-colors text-xs"
+                className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors text-sm"
               >
                 Akses SIM Klinik
               </button>
