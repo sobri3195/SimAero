@@ -43,6 +43,26 @@ import PharmacyWarehousePage from './pages/PharmacyWarehousePage';
 import MedicalRecordsPage from './pages/MedicalRecordsPage';
 import InventoryPage from './pages/InventoryPage';
 import AdminSystemPage from './pages/AdminSystemPage';
+import InsurancePage from './pages/InsurancePage';
+import GeneralWarehousePage from './pages/GeneralWarehousePage';
+import ProcurementPage from './pages/ProcurementPage';
+import AccountingPage from './pages/AccountingPage';
+import FinancePage from './pages/FinancePage';
+import AmbulancePage from './pages/AmbulancePage';
+import MortuaryPage from './pages/MortuaryPage';
+import MaternityPage from './pages/MaternityPage';
+import NutritionPage from './pages/NutritionPage';
+import ExecutiveInfoPage from './pages/ExecutiveInfoPage';
+import NursingCarePage from './pages/NursingCarePage';
+import SterilizationPage from './pages/SterilizationPage';
+import IntensiveCarePage from './pages/IntensiveCarePage';
+import BloodBankServicePage from './pages/BloodBankServicePage';
+import RehabilitationPage from './pages/RehabilitationPage';
+import AnesthesiaPage from './pages/AnesthesiaPage';
+import InformationServicesPage from './pages/InformationServicesPage';
+import SMSGatewayPage from './pages/SMSGatewayPage';
+import MobilePatientsPage from './pages/MobilePatientsPage';
+import MobileDoctorPage from './pages/MobileDoctorPage';
 
 import './App.css';
 
@@ -91,6 +111,26 @@ function App() {
               <Route path="/medical-records" element={<MedicalRecordsPage />} />
               <Route path="/inventory" element={<InventoryPage />} />
               <Route path="/admin-system" element={<AdminSystemPage />} />
+              <Route path="/insurance" element={<InsurancePage />} />
+              <Route path="/general-warehouse" element={<GeneralWarehousePage />} />
+              <Route path="/procurement" element={<ProcurementPage />} />
+              <Route path="/accounting" element={<AccountingPage />} />
+              <Route path="/finance" element={<FinancePage />} />
+              <Route path="/ambulance" element={<AmbulancePage />} />
+              <Route path="/mortuary" element={<MortuaryPage />} />
+              <Route path="/maternity" element={<MaternityPage />} />
+              <Route path="/nutrition" element={<NutritionPage />} />
+              <Route path="/executive-info" element={<ExecutiveInfoPage />} />
+              <Route path="/nursing-care" element={<NursingCarePage />} />
+              <Route path="/sterilization" element={<SterilizationPage />} />
+              <Route path="/intensive-care" element={<IntensiveCarePage />} />
+              <Route path="/blood-bank-service" element={<BloodBankServicePage />} />
+              <Route path="/rehabilitation" element={<RehabilitationPage />} />
+              <Route path="/anesthesia" element={<AnesthesiaPage />} />
+              <Route path="/information-services" element={<InformationServicesPage />} />
+              <Route path="/sms-gateway" element={<SMSGatewayPage />} />
+              <Route path="/mobile-patients" element={<MobilePatientsPage />} />
+              <Route path="/mobile-doctor" element={<MobileDoctorPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </Layout>
