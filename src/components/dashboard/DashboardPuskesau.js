@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Building2, Activity, Users, AlertCircle, TrendingUp, MapPin } from 'lucide-react';
+import { Building2, Activity, Users, AlertCircle, TrendingUp, MapPin, List } from 'lucide-react';
 import { collection, getDocs } from '../../mockDb';
 import { db } from '../../mockDb';
 
 const DashboardPuskesau = () => {
+  const navigate = useNavigate();
   const { switchToRSAU, switchToFKTP } = useAuth();
   const [rsauList, setRsauList] = useState([]);
   const [fktpList, setFktpList] = useState([]);
@@ -124,7 +126,16 @@ const DashboardPuskesau = () => {
             <Building2 className="text-blue-600" />
             Rumah Sakit Angkatan Udara (RSAU)
           </h2>
-          <span className="text-sm text-gray-600">{rsauList.length} Rumah Sakit</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-600">{rsauList.length} Rumah Sakit</span>
+            <button
+              onClick={() => navigate('/rsau-list')}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            >
+              <List size={16} />
+              Lihat Semua RSAU
+            </button>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

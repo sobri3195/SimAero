@@ -30,6 +30,7 @@ import PoliPage from './pages/PoliPage';
 import BillingPage from './pages/BillingPage';
 import DailyExaminationPage from './pages/DailyExaminationPage';
 import PersonnelRikkesPage from './pages/PersonnelRikkesPage';
+import RSAUListPage from './pages/RSAUListPage';
 
 import './App.css';
 
@@ -65,6 +66,7 @@ function App() {
               <Route path="/billing" element={<BillingPage />} />
               <Route path="/daily-examination" element={<DailyExaminationPage />} />
               <Route path="/personnel-rikkes" element={<PersonnelRikkesPage />} />
+              <Route path="/rsau-list" element={<RSAUListPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </Layout>

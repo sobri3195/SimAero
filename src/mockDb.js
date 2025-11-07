@@ -2,11 +2,17 @@
 class MockDB {
   constructor() {
     this.prefix = 'mockdb_';
+    this.version = '2.0'; // Version untuk force reinitialize ketika ada update
     this.initializeData();
   }
 
   initializeData() {
-    if (!localStorage.getItem(this.prefix + 'initialized')) {
+    const currentVersion = localStorage.getItem(this.prefix + 'version');
+    if (!localStorage.getItem(this.prefix + 'initialized') || currentVersion !== this.version) {
+      // Clear old data if version mismatch
+      if (currentVersion !== this.version) {
+        this.clearAll();
+      }
       // Faskes TNI AU - RSAU (Rumah Sakit Angkatan Udara) - 23 RSAU
       const rsauData = [
         {
@@ -546,6 +552,7 @@ class MockDB {
       this.saveCollection('broadcasts', []);
 
       localStorage.setItem(this.prefix + 'initialized', 'true');
+      localStorage.setItem(this.prefix + 'version', this.version);
     }
   }
 
@@ -579,6 +586,15 @@ class MockDB {
       { id: 'or_2', name: 'Ruang Operasi 2', status: 'available', faskesId: 'RSAU Dr. Esnawan Antariksa' },
       { id: 'or_3', name: 'Ruang Operasi 3', status: 'available', faskesId: 'RSAU Dr. Esnawan Antariksa' }
     ];
+  }
+
+  clearAll() {
+    // Clear all localStorage items with this prefix
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith(this.prefix)) {
+        localStorage.removeItem(key);
+      }
+    });
   }
 
   getCollection(collectionName) {
