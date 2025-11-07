@@ -127,40 +127,42 @@ const DashboardPuskesau = () => {
           <span className="text-sm text-gray-600">{rsauList.length} Rumah Sakit</span>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {rsauList.map((rsau) => (
             <div key={rsau.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h3 className="font-bold text-gray-800 mb-1">{rsau.nama}</h3>
-                  <p className="text-sm text-gray-600 flex items-center gap-1">
-                    <MapPin size={14} />
+                  <h3 className="font-bold text-gray-800 mb-1 text-sm">{rsau.nama}</h3>
+                  <p className="text-xs text-gray-600 flex items-center gap-1">
+                    <MapPin size={12} />
                     {rsau.lokasi}
                   </p>
                 </div>
                 <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                  rsau.tingkat === 'A' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                  rsau.tingkat === 'A' ? 'bg-blue-100 text-blue-800' : 
+                  rsau.tingkat === 'B' ? 'bg-green-100 text-green-800' : 
+                  'bg-yellow-100 text-yellow-800'
                 }`}>
                   Tingkat {rsau.tingkat}
                 </span>
               </div>
               
-              <div className="space-y-2 mb-3">
-                <p className="text-sm text-gray-600">
+              <div className="space-y-1 mb-3">
+                <p className="text-xs text-gray-600">
                   <span className="font-semibold">Lanud:</span> {rsau.lanud}
                 </p>
-                <p className="text-sm text-gray-600">
-                  <span className="font-semibold">Kapasitas:</span> {rsau.kapasitas} Tempat Tidur
+                <p className="text-xs text-gray-600">
+                  <span className="font-semibold">Kapasitas:</span> {rsau.kapasitas} TT
                 </p>
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {rsau.fasilitasUtama?.slice(0, 3).map((fasilitas, idx) => (
+                  {rsau.fasilitasUtama?.slice(0, 2).map((fasilitas, idx) => (
                     <span key={idx} className="text-xs bg-gray-100 px-2 py-1 rounded">
                       {fasilitas}
                     </span>
                   ))}
-                  {rsau.fasilitasUtama?.length > 3 && (
+                  {rsau.fasilitasUtama?.length > 2 && (
                     <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                      +{rsau.fasilitasUtama.length - 3} lainnya
+                      +{rsau.fasilitasUtama.length - 2}
                     </span>
                   )}
                 </div>
@@ -168,7 +170,7 @@ const DashboardPuskesau = () => {
               
               <button
                 onClick={() => handleAccessRSAU(rsau)}
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
               >
                 Akses SIMRS
               </button>
