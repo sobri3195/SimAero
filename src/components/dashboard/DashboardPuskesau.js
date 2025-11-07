@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Building2, Activity, Users, AlertCircle, TrendingUp, MapPin } from 'lucide-react';
 import { collection, getDocs } from '../../mockDb';
@@ -24,11 +24,7 @@ const DashboardPuskesau = () => {
     totalCapacity: 0
   });
 
-  useEffect(() => {
-    loadFaskesData();
-  }, [branch]);
-
-  const loadFaskesData = async () => {
+  const loadFaskesData = useCallback(async () => {
     try {
       const faskesSnapshot = await getDocs(collection(db, 'faskes'));
       const allFaskes = [];
@@ -68,7 +64,11 @@ const DashboardPuskesau = () => {
       console.error('Error loading faskes data:', error);
       setLoading(false);
     }
-  };
+  }, [branch]);
+
+  useEffect(() => {
+    loadFaskesData();
+  }, [loadFaskesData]);
 
   const handleAccessHospital = (hospital) => {
     if (branch === 'AU') {
