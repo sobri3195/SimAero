@@ -1,60 +1,83 @@
-# Platform Komando dan Kontrol Kesehatan Puskesau
+# Healthcare Platform for TNI (Indonesian Armed Forces)
 
-Platform terintegrasi untuk TNI Angkatan Udara yang mengintegrasikan seluruh aspek operasional kesehatan dari Pusat hingga Faskes (Rumah Sakit dan Klinik).
+A comprehensive healthcare management system designed for the Indonesian Armed Forces (TNI), supporting all three branches: TNI AU (Air Force), TNI AD (Army), and TNI AL (Navy).
 
-⚠️ **PERHATIAN**: Aplikasi ini adalah **DEMO TANPA BACKEND**. Semua data disimpan di browser menggunakan localStorage. Data akan hilang jika browser cache dibersihkan.
+## 🏥 Overview
 
-## 🎯 Fitur Utama
+This platform provides a complete healthcare management solution with specialized features for each military branch:
 
-### Dashboard Komando Terintegrasi
-- **Dashboard Pusat**: Monitoring agregat dari seluruh Faskes dengan statistik real-time, status kesiapan RS, analitik SDM & logistik
-- **Dashboard Faskes**: Operasional harian dengan akses cepat ke modul penting dan notifikasi tugas
+- **TNI AU (Angkatan Udara)** - Air Force: 23 RSAU hospitals + 59 FKTP clinics
+- **TNI AD (Angkatan Darat)** - Army: 10 RSAD hospitals + 8 clinics
+- **TNI AL (Angkatan Laut)** - Navy: 8 RSAL hospitals + 10 clinics
 
-### Modul Kesehatan
-- ✅ **Database Pasien Terpusat**: Pencarian dan manajemen data pasien
-- ✅ **Pendaftaran & Antrean**: Sistem antrean real-time dengan integrasi NIK dan scan KTP
-- ✅ **Rekam Medis Elektronik (EHR)**: Form SOAP dengan AI Assistant untuk pengisian otomatis
-- ✅ **IGD**: Papan triase digital dengan saran AI dan manajemen pasien drag-and-drop
-- 🚧 **Rawat Inap**: Peta visual tempat tidur dan manajemen pasien inap
-- 🚧 **Jadwal Operasi**: Penjadwalan dan monitoring operasi
-- 🚧 **CSSD**: Pelacakan siklus sterilisasi instrumen
-- 🚧 **Bank Darah**: Monitoring stok dan transaksi darah
-- 🚧 **Rikkes**: Pemeriksaan kesehatan dengan odontogram interaktif
-- 🚧 **Farmasi**: Inventaris, resep elektronik, dan pemeriksaan interaksi obat AI
-- 🚧 **Laboratorium**: Manajemen order dan input hasil
-- 🚧 **Radiologi**: Analisis gambar dengan AI
+## ✨ Key Features
 
-### Fitur AI (Opsional)
-- 🤖 Pengisian otomatis Form SOAP berdasarkan keluhan
-- 🤖 Saran triase IGD berdasarkan keluhan dan vital signs
-- 🤖 Rekomendasi tempat tidur untuk rawat inap
-- 🤖 Pemeriksaan interaksi obat
-- 🤖 Analisis gambar radiologi
-- 🤖 Penjadwalan shift otomatis
-- 🤖 Analisis data kesehatan natural language
+### Core Modules
+- 📋 Patient Registration & Management
+- 🏥 Electronic Health Records (EHR)
+- 🚑 Emergency Department (IGD)
+- 🛏️ Inpatient Management
+- 💊 Pharmacy & Medication Management
+- 🧪 Laboratory Information System
+- 📸 Radiology & Imaging
+- 💰 Billing & Financial Management
+- 📊 Analytics & Reporting Dashboard
 
-### Manajemen
-- 🚧 **SDM & Penjadwalan**: Penjadwalan shift dengan AI
-- 🚧 **Aset & Kalibrasi**: Pelacakan aset medis dan jadwal pemeliharaan
-- 🚧 **Logistik**: Pengadaan dan distribusi antar Faskes
-- 🚧 **Laporan Insiden**: Pelaporan dan pelacakan insiden
-- 🚧 **Laporan & Analitik**: Dashboard analitik dengan AI
-- 🚧 **Bridging**: Integrasi BPJS VClaim dan SATUSEHAT
-- 🚧 **Broadcast**: Pengumuman ke seluruh Faskes
-- 🚧 **Pengaturan**: Whitelabel branding dan manajemen user
+### Branch-Specific Features
 
-## 🚀 Setup dan Instalasi
+#### TNI AU (Air Force)
+- ✈️ Aerospace Medicine
+- 🛫 Flight Fitness Assessment (Rikkes Terbang)
+- 🚁 Aviation Health Management
+
+#### TNI AD (Army)
+- ⚔️ Field Medicine
+- 🎖️ Combat Casualty Care
+- 💪 Tactical Medicine
+- 🏃 Medical Fitness Assessment
+- 🎯 Combat Medical Training
+
+#### TNI AL (Navy)
+- 🤿 Diving Medicine
+- 🌊 Submarine Medical Fitness
+- 🏥 Hyperbaric Medicine
+- ⚓ Maritime Health Management
+- 🌡️ Diving Medical Check-ups
+
+### Advanced Features
+- 🔒 Role-based Access Control (RBAC)
+- 🏢 Multi-facility Support
+- 📱 Responsive Mobile Design
+- 📤 Export to Excel, CSV, PDF
+- 🔄 Real-time Data Updates
+- 🤖 AI-powered Health Assistant (OpenAI Integration)
+- 🔔 Notification System
+- 📡 SATUSEHAT Integration Ready
+
+## 🚀 Technology Stack
+
+- **Frontend**: React 19
+- **Routing**: React Router v7
+- **Styling**: Tailwind CSS 3.4.1
+- **Charts**: Recharts
+- **Icons**: Lucide React
+- **Data Storage**: localStorage (Demo/Testing)
+- **Export**: xlsx, jspdf, jspdf-autotable, file-saver
+- **Date Handling**: date-fns 2.30.0
+- **AI**: OpenAI GPT-4 API (Optional)
+
+## 📦 Installation
 
 ### Prerequisites
-- Node.js v18 atau lebih tinggi
-- (Opsional) API Key OpenAI - untuk fitur AI
+- Node.js (v16 or higher)
+- npm or yarn
 
-### Instalasi Lokal
+### Setup
 
-1. Clone repository:
+1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd <project-folder>
+git clone https://github.com/sobri3195/healthcare-tni.git
+cd healthcare-tni
 ```
 
 2. Install dependencies:
@@ -62,115 +85,184 @@ cd <project-folder>
 npm install
 ```
 
-3. (Opsional) Setup AI Features:
-```bash
-cp .env.example .env
+3. (Optional) Configure OpenAI API for AI features:
+Create a `.env` file in the root directory:
+```env
+REACT_APP_OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-Edit `.env` dan isi dengan API Key OpenAI jika ingin menggunakan fitur AI:
-```
-REACT_APP_OPENAI_API_KEY=your-openai-api-key
-```
-
-4. Jalankan development server:
+4. Start the development server:
 ```bash
 npm start
 ```
 
-Aplikasi akan berjalan di `http://localhost:3000`
-
-## 🌐 Deploy ke Netlify
-
-### Deploy Otomatis (Recommended)
-
-1. Push repository ke GitHub
-2. Login ke [Netlify](https://netlify.com)
-3. Click "New site from Git"
-4. Pilih repository
-5. (Opsional) Tambahkan `REACT_APP_OPENAI_API_KEY` di Netlify:
-   - Settings → Build & deploy → Environment
-6. Deploy!
-
-### Deploy Manual
-
+5. Build for production:
 ```bash
 npm run build
-netlify deploy --prod
 ```
 
-## 💾 Penyimpanan Data
+## 🏗️ Project Structure
 
-Aplikasi ini **TIDAK menggunakan backend atau database eksternal**. Semua data disimpan di browser menggunakan `localStorage`:
-
-- Data akan tetap ada selama browser tidak membersihkan cache
-- Data bersifat lokal untuk setiap browser/device
-- Cocok untuk demo dan testing
-- **TIDAK untuk production** - data tidak persistent dan tidak terbackup
-
-### Sample Data
-Aplikasi sudah dilengkapi dengan sample data:
-- 3 Faskes (RSAU Jakarta, Bandung, dan Klinik Halim)
-- 3 Pasien sample
-- Data akan otomatis ter-load saat pertama kali membuka aplikasi
-
-### Reset Data
-Untuk reset semua data, buka browser console dan jalankan:
-```javascript
-localStorage.clear()
 ```
-Kemudian refresh halaman.
+src/
+├── components/          # React components
+│   ├── common/         # Reusable components (DataTable, Modal, etc.)
+│   ├── dashboard/      # Dashboard components
+│   ├── registration/   # Patient registration
+│   ├── ehr/           # Electronic Health Records
+│   ├── igd/           # Emergency Department
+│   ├── pharmacy/      # Pharmacy management
+│   └── ...
+├── pages/             # Page components
+├── contexts/          # React contexts (Auth, App)
+├── services/          # API services (AI)
+├── utils/            # Utility functions
+├── mockDb.js         # Mock database (localStorage)
+└── App.js            # Main app component
+```
 
-## 🎨 Kustomisasi
+## 🎯 Usage
 
-### Whitelabel Branding
-Ubah logo dan warna di halaman Settings untuk menyesuaikan tampilan aplikasi.
+### Default Login Credentials
 
-### Role Management
-Dua role utama:
-- **PUSAT**: Akses penuh monitoring dan analitik seluruh Faskes
-- **FASKES**: Akses operasional untuk Faskes tertentu
+**Supervision Centers:**
+- PUSKESAU (TNI AU): Username: `puskesau`, Password: `password`
+- PUSKESAD (TNI AD): Username: `puskesad`, Password: `password`
+- PUSKESAL (TNI AL): Username: `puskesal`, Password: `password`
 
-Switch role di header aplikasi untuk melihat tampilan yang berbeda.
+**Hospitals (RSAU/RSAD/RSAL):**
+- Username: `admin`, Password: `password`
 
-## 🔧 Teknologi
+**Clinics (FKTP/Klinik AD/Klinik AL):**
+- Username: `admin`, Password: `password`
 
-- **Frontend**: React.js 19
-- **Routing**: React Router v7
-- **Storage**: localStorage (Mock Database)
-- **Charts**: Recharts
-- **Icons**: Lucide React
-- **Styling**: Tailwind CSS
-- **AI**: OpenAI GPT-4 API (opsional)
-- **Hosting**: Netlify
+### Switching Between Branches
 
-## 📝 Catatan Pengembangan
+1. Login to any Puskes (supervision center)
+2. Use the branch selector dropdown in the header
+3. Select TNI AU, TNI AD, or TNI AL
+4. View facilities specific to that branch
 
-Aplikasi ini adalah versi MVP dengan modul-modul utama yang sudah berfungsi:
-- ✅ Dashboard Pusat & Faskes
-- ✅ Pendaftaran & Antrean Real-time
-- ✅ Rekam Medis dengan AI
-- ✅ IGD Triase dengan AI
+### Switching Between Facilities
 
-Modul lainnya masih dalam tahap pengembangan dan menampilkan placeholder.
+1. Login to any facility or Puskes
+2. Use the facility dropdown in the header
+3. Select the hospital or clinic you want to manage
 
-### Mengintegrasikan Backend
-Untuk mengintegrasikan dengan backend real:
-1. Replace `src/mockDb.js` dengan API calls ke backend Anda
-2. Update semua import dari `mockDb` ke service API baru
-3. Implementasikan authentication dengan backend
+## 🔐 Security Features
 
-## 🤝 Kontribusi
+- Role-based access control
+- Separate databases per facility
+- Secure authentication
+- Data isolation between facilities
 
-Untuk menambahkan fitur atau modul baru:
-1. Buat component di folder `src/components/{module}/`
-2. Buat page di folder `src/pages/`
-3. Tambahkan route di `src/App.js`
-4. Update menu di `src/components/common/Layout.js`
+## 📊 Data Management
 
-## 📄 Lisensi
+**Note:** This is a demo/testing application using localStorage for data persistence. Data is stored locally in the browser and is NOT suitable for production use.
 
-Internal TNI Angkatan Udara
+For production deployment, integrate with a proper backend database (Firebase, PostgreSQL, MongoDB, etc.).
 
-## 📞 Kontak
+## 🌐 Deployment
 
-Untuk pertanyaan dan dukungan, hubungi tim Puskesau.
+The application is configured for deployment on Netlify:
+
+1. Connect your GitHub repository to Netlify
+2. Configure build settings:
+   - Build command: `npm run build`
+   - Publish directory: `build`
+3. Add environment variables (if using AI features)
+4. Deploy!
+
+## 👨‍⚕️ Author
+
+**Lettu Kes dr. Muhammad Sobri Maulana, S.Kom, CEH, OSCP, OSCE**
+
+A military healthcare professional and software engineer dedicated to improving healthcare technology for the Indonesian Armed Forces.
+
+### 📧 Contact
+- Email: [muhammadsobrimaulana31@gmail.com](mailto:muhammadsobrimaulana31@gmail.com)
+- GitHub: [github.com/sobri3195](https://github.com/sobri3195)
+
+### 🌐 Connect with Me
+- 🎥 YouTube: [@muhammadsobrimaulana6013](https://www.youtube.com/@muhammadsobrimaulana6013)
+- 📱 Telegram: [@winlin_exploit](https://t.me/winlin_exploit)
+- 🎵 TikTok: [@dr.sobri](https://www.tiktok.com/@dr.sobri)
+- 💬 WhatsApp Group: [Join Community](https://chat.whatsapp.com/B8nwRZOBMo64GjTwdXV8Bl)
+- 🌐 Website: [muhammadsobrimaulana.netlify.app](https://muhammadsobrimaulana.netlify.app)
+- 🌐 Portfolio: [muhammad-sobri-maulana.sevalla.page](https://muhammad-sobri-maulana-kvr6a.sevalla.page/)
+
+## 💝 Support This Project
+
+If you find this project helpful, consider supporting the development:
+
+### Donation Links
+- 💳 Lynk.id: [lynk.id/muhsobrimaulana](https://lynk.id/muhsobrimaulana)
+- ☕ Trakteer: [trakteer.id/g9mkave5gauns962u07t](https://trakteer.id/g9mkave5gauns962u07t)
+- 🎨 Karya Karsa: [karyakarsa.com/muhammadsobrimaulana](https://karyakarsa.com/muhammadsobrimaulana)
+- 💰 Nyawer: [nyawer.co/MuhammadSobriMaulana](https://nyawer.co/MuhammadSobriMaulana)
+- 🛍️ Gumroad: [maulanasobri.gumroad.com](https://maulanasobri.gumroad.com/)
+
+Your support helps maintain and improve this project! 🙏
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/sobri3195/healthcare-tni/issues).
+
+### How to Contribute
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is developed for the Indonesian Armed Forces (TNI) healthcare system.
+
+## 🙏 Acknowledgments
+
+- TNI AU, TNI AD, and TNI AL for their service to Indonesia
+- All healthcare professionals serving in military hospitals and clinics
+- Open source community for amazing tools and libraries
+
+## 📚 Documentation
+
+For detailed documentation on specific modules:
+- [Patient Management](docs/patient-management.md)
+- [EHR System](docs/ehr-system.md)
+- [Emergency Department](docs/igd.md)
+- [Pharmacy](docs/pharmacy.md)
+- [Laboratory](docs/laboratory.md)
+- [API Integration](docs/api-integration.md)
+
+## 🐛 Known Issues
+
+- Data is stored in localStorage (browser-local only)
+- No real-time synchronization between devices
+- Not suitable for production use without backend integration
+
+## 🗺️ Roadmap
+
+- [ ] Backend API integration
+- [ ] Real-time synchronization
+- [ ] Mobile app (React Native)
+- [ ] SATUSEHAT full integration
+- [ ] Telemedicine features
+- [ ] Advanced analytics and ML predictions
+- [ ] Multi-language support
+- [ ] Offline mode support
+
+## 📞 Support
+
+Need help? Have questions?
+
+- 📧 Email: muhammadsobrimaulana31@gmail.com
+- 💬 Join WhatsApp Group: [Community Support](https://chat.whatsapp.com/B8nwRZOBMo64GjTwdXV8Bl)
+- 📱 Telegram: [@winlin_exploit](https://t.me/winlin_exploit)
+
+---
+
+**Made with ❤️ for TNI Healthcare by dr. Muhammad Sobri Maulana**
+
+*Serving those who serve the nation* 🇮🇩
