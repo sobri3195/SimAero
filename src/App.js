@@ -36,6 +36,13 @@ import DivingMedicinePage from './pages/DivingMedicinePage';
 import HyperbaricPage from './pages/HyperbaricPage';
 import MedicalFitnessPage from './pages/MedicalFitnessPage';
 import DivingMedicalPage from './pages/DivingMedicalPage';
+import QueueSystemPage from './pages/QueueSystemPage';
+import OutpatientPage from './pages/OutpatientPage';
+import CashierPage from './pages/CashierPage';
+import PharmacyWarehousePage from './pages/PharmacyWarehousePage';
+import MedicalRecordsPage from './pages/MedicalRecordsPage';
+import InventoryPage from './pages/InventoryPage';
+import AdminSystemPage from './pages/AdminSystemPage';
 
 import './App.css';
 
@@ -77,6 +84,13 @@ function App() {
               <Route path="/hyperbaric" element={<HyperbaricPage />} />
               <Route path="/medical-fitness" element={<MedicalFitnessPage />} />
               <Route path="/diving-medical" element={<DivingMedicalPage />} />
+              <Route path="/queue-system" element={<QueueSystemPage />} />
+              <Route path="/outpatient" element={<OutpatientPage />} />
+              <Route path="/cashier" element={<CashierPage />} />
+              <Route path="/pharmacy-warehouse" element={<PharmacyWarehousePage />} />
+              <Route path="/medical-records" element={<MedicalRecordsPage />} />
+              <Route path="/inventory" element={<InventoryPage />} />
+              <Route path="/admin-system" element={<AdminSystemPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </Layout>
