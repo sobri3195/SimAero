@@ -149,6 +149,17 @@ src/
 2. Use the facility dropdown in the header
 3. Select the hospital or clinic you want to manage
 
+### Viewing Hospital Directory
+
+As PUSKESAU, you can view the complete list of 23 RSAU:
+1. Login as PUSKESAU
+2. Navigate to "Direktori RSAU" from the menu
+3. View detailed information about all Air Force hospitals
+4. Filter by hospital level (A, B, C)
+5. Export or print the directory
+
+Documentation available at: `/docs/DAFTAR_RSAU_TNI_AU.md`
+
 ## 🔐 Security Features
 
 - Role-based access control

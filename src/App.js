@@ -43,6 +43,8 @@ import PharmacyWarehousePage from './pages/PharmacyWarehousePage';
 import MedicalRecordsPage from './pages/MedicalRecordsPage';
 import InventoryPage from './pages/InventoryPage';
 import AdminSystemPage from './pages/AdminSystemPage';
+import HospitalsListPage from './pages/HospitalsListPage';
+import RSAUDirectoryPage from './pages/RSAUDirectoryPage';
 
 import './App.css';
 
@@ -91,6 +93,8 @@ function App() {
               <Route path="/medical-records" element={<MedicalRecordsPage />} />
               <Route path="/inventory" element={<InventoryPage />} />
               <Route path="/admin-system" element={<AdminSystemPage />} />
+              <Route path="/hospitals-list" element={<HospitalsListPage />} />
+              <Route path="/rsau-directory" element={<RSAUDirectoryPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </Layout>

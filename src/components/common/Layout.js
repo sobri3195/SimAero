@@ -39,6 +39,8 @@ const Layout = ({ children }) => {
 
   const puskesauMenuItems = [
     { icon: Home, label: 'Dashboard Pengawasan', path: '/' },
+    { icon: Building2, label: 'Daftar Rumah Sakit', path: '/hospitals-list' },
+    { icon: Building2, label: 'Direktori RSAU', path: '/rsau-directory' },
     { icon: BarChart3, label: 'Laporan Konsolidasi', path: '/reports' },
     { icon: Settings, label: 'Pengaturan', path: '/settings' },
   ];
