@@ -479,8 +479,474 @@ class MockDB {
         }
       ];
 
+      // Faskes TNI AD - RSAD (Rumah Sakit Angkatan Darat)
+      const rsadData = [
+        {
+          id: 'rsad_1',
+          nama: 'RSPAD Gatot Soebroto',
+          lokasi: 'Jakarta Pusat',
+          alamat: 'Jl. Abdul Rahman Saleh No. 24, Jakarta Pusat 10410',
+          tipe: 'rsad',
+          tingkat: 'A',
+          kapasitas: 500,
+          status: 'aktif',
+          kesatuan: 'Pusat Kesehatan TNI AD',
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'ICCU', 'Operasi', 'Hemodialisa', 'CSSD', 'Laboratorium', 'Radiologi', 'Kedokteran Lapangan'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Kulit', 'Jiwa', 'Jantung', 'Paru', 'Saraf', 'Bedah Ortopedi', 'Kedokteran Taktis'],
+          fiturKhusus: ['Combat Casualty Care', 'Field Medical Training', 'Tactical Medicine', 'Military Trauma Center']
+        },
+        {
+          id: 'rsad_2',
+          nama: 'RSAD Udayana',
+          lokasi: 'Denpasar',
+          alamat: 'Jl. Pulau Moyo No. 1, Denpasar, Bali',
+          tipe: 'rsad',
+          tingkat: 'B',
+          kapasitas: 200,
+          status: 'aktif',
+          kesatuan: 'Kodam IX/Udayana',
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi', 'Kedokteran Lapangan'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Bedah Ortopedi'],
+          fiturKhusus: ['Field Medicine', 'Tactical Evacuation Training']
+        },
+        {
+          id: 'rsad_3',
+          nama: 'RSAD Tk. II Putri Hijau',
+          lokasi: 'Medan',
+          alamat: 'Jl. Putri Hijau No. 1, Medan, Sumatera Utara',
+          tipe: 'rsad',
+          tingkat: 'B',
+          kapasitas: 180,
+          status: 'aktif',
+          kesatuan: 'Kodam I/Bukit Barisan',
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Bedah Ortopedi'],
+          fiturKhusus: ['Field Medicine', 'Combat Medical Support']
+        },
+        {
+          id: 'rsad_4',
+          nama: 'RSAD Tk. II dr. Soepraoen',
+          lokasi: 'Malang',
+          alamat: 'Jl. Sudanco Supriyadi No. 22, Malang, Jawa Timur',
+          tipe: 'rsad',
+          tingkat: 'B',
+          kapasitas: 190,
+          status: 'aktif',
+          kesatuan: 'Kodam V/Brawijaya',
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi', 'Kedokteran Lapangan'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Bedah Ortopedi', 'Jantung'],
+          fiturKhusus: ['Field Medicine', 'Tactical Medical Training']
+        },
+        {
+          id: 'rsad_5',
+          nama: 'RSAD Tk. II dr. Slamet Riyadi',
+          lokasi: 'Surakarta',
+          alamat: 'Jl. Jend. Ahmad Yani No. 254, Surakarta, Jawa Tengah',
+          tipe: 'rsad',
+          tingkat: 'C',
+          kapasitas: 150,
+          status: 'aktif',
+          kesatuan: 'Kodam IV/Diponegoro',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT'],
+          fiturKhusus: ['Field Medicine']
+        },
+        {
+          id: 'rsad_6',
+          nama: 'RSAD Tk. II Pelamonia',
+          lokasi: 'Makassar',
+          alamat: 'Jl. Jend. Urip Sumoharjo, Makassar, Sulawesi Selatan',
+          tipe: 'rsad',
+          tingkat: 'B',
+          kapasitas: 175,
+          status: 'aktif',
+          kesatuan: 'Kodam XIV/Hasanuddin',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'ICU', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata'],
+          fiturKhusus: ['Field Medicine', 'Combat Medical Support']
+        },
+        {
+          id: 'rsad_7',
+          nama: 'RSAD Tk. II Robert Wolter Mongisidi',
+          lokasi: 'Manado',
+          alamat: 'Jl. 17 Agustus, Manado, Sulawesi Utara',
+          tipe: 'rsad',
+          tingkat: 'C',
+          kapasitas: 140,
+          status: 'aktif',
+          kesatuan: 'Kodam XIII/Merdeka',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT'],
+          fiturKhusus: ['Field Medicine']
+        },
+        {
+          id: 'rsad_8',
+          nama: 'RSAD Tk. II Dustira',
+          lokasi: 'Cimahi',
+          alamat: 'Jl. Dustira No. 1, Cimahi, Jawa Barat',
+          tipe: 'rsad',
+          tingkat: 'A',
+          kapasitas: 300,
+          status: 'aktif',
+          kesatuan: 'Kodam III/Siliwangi',
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'ICCU', 'Operasi', 'Hemodialisa', 'CSSD', 'Laboratorium', 'Radiologi', 'Kedokteran Lapangan'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Kulit', 'Jantung', 'Paru', 'Bedah Ortopedi'],
+          fiturKhusus: ['Combat Casualty Care', 'Field Medical Training', 'Tactical Medicine']
+        },
+        {
+          id: 'rsad_9',
+          nama: 'RSAD Tk. II Kartika Husada',
+          lokasi: 'Kubu Raya',
+          alamat: 'Jl. Ahmad Yani, Kubu Raya, Kalimantan Barat',
+          tipe: 'rsad',
+          tingkat: 'C',
+          kapasitas: 120,
+          status: 'aktif',
+          kesatuan: 'Kodam XII/Tanjungpura',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'Operasi', 'CSSD', 'Laboratorium'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan'],
+          fiturKhusus: ['Field Medicine']
+        },
+        {
+          id: 'rsad_10',
+          nama: 'RSAD Tk. II dr. Soedono',
+          lokasi: 'Magelang',
+          alamat: 'Jl. A. Yani No. 161, Magelang, Jawa Tengah',
+          tipe: 'rsad',
+          tingkat: 'C',
+          kapasitas: 160,
+          status: 'aktif',
+          kesatuan: 'Kodam IV/Diponegoro',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT'],
+          fiturKhusus: ['Field Medicine', 'Combat Medical Training']
+        }
+      ];
+
+      // Faskes TNI AD - Klinik AD
+      const klinikADData = [
+        {
+          id: 'klinik_ad_1',
+          nama: 'Klinik Kesehatan Kodam Jaya',
+          lokasi: 'Jakarta',
+          alamat: 'Kodam Jaya, Jakarta',
+          tipe: 'klinik_ad',
+          kapasitas: 50,
+          status: 'aktif',
+          kesatuan: 'Kodam Jaya',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana', 'Medical Fitness']
+        },
+        {
+          id: 'klinik_ad_2',
+          nama: 'Klinik Kesehatan Kodam I/Bukit Barisan',
+          lokasi: 'Medan',
+          alamat: 'Kodam I/Bukit Barisan, Medan',
+          tipe: 'klinik_ad',
+          kapasitas: 40,
+          status: 'aktif',
+          kesatuan: 'Kodam I/Bukit Barisan',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'klinik_ad_3',
+          nama: 'Klinik Kesehatan Kodam II/Sriwijaya',
+          lokasi: 'Palembang',
+          alamat: 'Kodam II/Sriwijaya, Palembang',
+          tipe: 'klinik_ad',
+          kapasitas: 35,
+          status: 'aktif',
+          kesatuan: 'Kodam II/Sriwijaya',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'klinik_ad_4',
+          nama: 'Klinik Kesehatan Kodam III/Siliwangi',
+          lokasi: 'Bandung',
+          alamat: 'Kodam III/Siliwangi, Bandung',
+          tipe: 'klinik_ad',
+          kapasitas: 45,
+          status: 'aktif',
+          kesatuan: 'Kodam III/Siliwangi',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'klinik_ad_5',
+          nama: 'Klinik Kesehatan Kodam IV/Diponegoro',
+          lokasi: 'Semarang',
+          alamat: 'Kodam IV/Diponegoro, Semarang',
+          tipe: 'klinik_ad',
+          kapasitas: 40,
+          status: 'aktif',
+          kesatuan: 'Kodam IV/Diponegoro',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'klinik_ad_6',
+          nama: 'Klinik Kesehatan Kodam V/Brawijaya',
+          lokasi: 'Surabaya',
+          alamat: 'Kodam V/Brawijaya, Surabaya',
+          tipe: 'klinik_ad',
+          kapasitas: 45,
+          status: 'aktif',
+          kesatuan: 'Kodam V/Brawijaya',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'klinik_ad_7',
+          nama: 'Klinik Kesehatan Kodam VI/Mulawarman',
+          lokasi: 'Balikpapan',
+          alamat: 'Kodam VI/Mulawarman, Balikpapan',
+          tipe: 'klinik_ad',
+          kapasitas: 30,
+          status: 'aktif',
+          kesatuan: 'Kodam VI/Mulawarman',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'klinik_ad_8',
+          nama: 'Klinik Kesehatan Kodam IX/Udayana',
+          lokasi: 'Denpasar',
+          alamat: 'Kodam IX/Udayana, Denpasar',
+          tipe: 'klinik_ad',
+          kapasitas: 35,
+          status: 'aktif',
+          kesatuan: 'Kodam IX/Udayana',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        }
+      ];
+
+      // Faskes TNI AL - RSAL (Rumah Sakit Angkatan Laut)
+      const rsalData = [
+        {
+          id: 'rsal_1',
+          nama: 'RSAL dr. Mintohardjo',
+          lokasi: 'Jakarta Pusat',
+          alamat: 'Jl. Bendungan Hilir No. 17, Jakarta Pusat 10210',
+          tipe: 'rsal',
+          tingkat: 'A',
+          kapasitas: 450,
+          status: 'aktif',
+          kesatuan: 'Pusat Kesehatan TNI AL',
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'ICCU', 'Operasi', 'Hemodialisa', 'CSSD', 'Laboratorium', 'Radiologi', 'Kedokteran Selam', 'Hyperbaric Chamber'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Kulit', 'Jiwa', 'Jantung', 'Paru', 'Saraf', 'Kedokteran Kelautan'],
+          fiturKhusus: ['Diving Medicine', 'Submarine Medical Fitness', 'Hyperbaric Medicine', 'Maritime Health', 'Naval Trauma Center']
+        },
+        {
+          id: 'rsal_2',
+          nama: 'RSAL dr. Ramelan',
+          lokasi: 'Surabaya',
+          alamat: 'Jl. Gadung No. 1, Surabaya, Jawa Timur 60111',
+          tipe: 'rsal',
+          tingkat: 'A',
+          kapasitas: 400,
+          status: 'aktif',
+          kesatuan: 'Lantamal V',
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'ICCU', 'Operasi', 'Hemodialisa', 'CSSD', 'Laboratorium', 'Radiologi', 'Kedokteran Selam', 'Hyperbaric Chamber'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Kulit', 'Jantung', 'Paru', 'Kedokteran Kelautan'],
+          fiturKhusus: ['Diving Medicine', 'Submarine Medical Fitness', 'Hyperbaric Medicine', 'Maritime Health']
+        },
+        {
+          id: 'rsal_3',
+          nama: 'RSAL Tk. II dr. Midiyato S. Tanjungpinang',
+          lokasi: 'Tanjungpinang',
+          alamat: 'Jl. Yos Sudarso, Tanjungpinang, Kepulauan Riau',
+          tipe: 'rsal',
+          tingkat: 'B',
+          kapasitas: 150,
+          status: 'aktif',
+          kesatuan: 'Lantamal IV',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'ICU', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi', 'Kedokteran Selam'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata'],
+          fiturKhusus: ['Diving Medicine', 'Maritime Health']
+        },
+        {
+          id: 'rsal_4',
+          nama: 'RSAL Tk. III dr. Wahyu Tri Atmojo',
+          lokasi: 'Ambon',
+          alamat: 'Jl. Pantai Ambon, Ambon, Maluku',
+          tipe: 'rsal',
+          tingkat: 'C',
+          kapasitas: 120,
+          status: 'aktif',
+          kesatuan: 'Lantamal IX',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT'],
+          fiturKhusus: ['Diving Medicine', 'Maritime Health']
+        },
+        {
+          id: 'rsal_5',
+          nama: 'RSAL Tk. II Biak',
+          lokasi: 'Biak',
+          alamat: 'Jl. Selat Madura, Biak, Papua',
+          tipe: 'rsal',
+          tingkat: 'C',
+          kapasitas: 100,
+          status: 'aktif',
+          kesatuan: 'Lantamal XII',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'Operasi', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan'],
+          fiturKhusus: ['Diving Medicine', 'Maritime Health']
+        },
+        {
+          id: 'rsal_6',
+          nama: 'RSAL Tk. III dr. FX Suhardjo',
+          lokasi: 'Manokwari',
+          alamat: 'Jl. Pasar Sanggeng, Manokwari, Papua Barat',
+          tipe: 'rsal',
+          tingkat: 'C',
+          kapasitas: 90,
+          status: 'aktif',
+          kesatuan: 'Lantamal XIII',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'Operasi', 'Laboratorium'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak'],
+          fiturKhusus: ['Diving Medicine', 'Maritime Health']
+        },
+        {
+          id: 'rsal_7',
+          nama: 'RSAL Tk. IV dr. Sindhu Ananda',
+          lokasi: 'Sorong',
+          alamat: 'Jl. Yos Sudarso, Sorong, Papua Barat',
+          tipe: 'rsal',
+          tingkat: 'C',
+          kapasitas: 80,
+          status: 'aktif',
+          kesatuan: 'Lantamal XII',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'Operasi', 'Laboratorium'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak'],
+          fiturKhusus: ['Diving Medicine', 'Maritime Health']
+        },
+        {
+          id: 'rsal_8',
+          nama: 'RSAL Tk. II dr. Riyacudu',
+          lokasi: 'Lampung',
+          alamat: 'Jl. Yos Sudarso, Bandar Lampung',
+          tipe: 'rsal',
+          tingkat: 'B',
+          kapasitas: 140,
+          status: 'aktif',
+          kesatuan: 'Lantamal II',
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'ICU', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT'],
+          fiturKhusus: ['Diving Medicine', 'Maritime Health']
+        }
+      ];
+
+      // Faskes TNI AL - Klinik AL
+      const klinikALData = [
+        {
+          id: 'klinik_al_1',
+          nama: 'Klinik Kesehatan Lantamal I',
+          lokasi: 'Belawan',
+          alamat: 'Lantamal I, Belawan, Medan',
+          tipe: 'klinik_al',
+          kapasitas: 40,
+          status: 'aktif',
+          kesatuan: 'Lantamal I',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana', 'Diving Medical Check']
+        },
+        {
+          id: 'klinik_al_2',
+          nama: 'Klinik Kesehatan Lantamal II',
+          lokasi: 'Padang',
+          alamat: 'Lantamal II, Padang, Sumatera Barat',
+          tipe: 'klinik_al',
+          kapasitas: 35,
+          status: 'aktif',
+          kesatuan: 'Lantamal II',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Diving Medical Check']
+        },
+        {
+          id: 'klinik_al_3',
+          nama: 'Klinik Kesehatan Lantamal III',
+          lokasi: 'Jakarta',
+          alamat: 'Lantamal III, Jakarta',
+          tipe: 'klinik_al',
+          kapasitas: 50,
+          status: 'aktif',
+          kesatuan: 'Lantamal III',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana', 'Diving Medical Check']
+        },
+        {
+          id: 'klinik_al_4',
+          nama: 'Klinik Kesehatan Lantamal IV',
+          lokasi: 'Tanjungpinang',
+          alamat: 'Lantamal IV, Tanjungpinang',
+          tipe: 'klinik_al',
+          kapasitas: 30,
+          status: 'aktif',
+          kesatuan: 'Lantamal IV',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Diving Medical Check']
+        },
+        {
+          id: 'klinik_al_5',
+          nama: 'Klinik Kesehatan Lantamal V',
+          lokasi: 'Surabaya',
+          alamat: 'Lantamal V, Surabaya',
+          tipe: 'klinik_al',
+          kapasitas: 45,
+          status: 'aktif',
+          kesatuan: 'Lantamal V',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana', 'Diving Medical Check']
+        },
+        {
+          id: 'klinik_al_6',
+          nama: 'Klinik Kesehatan Lantamal VI',
+          lokasi: 'Makassar',
+          alamat: 'Lantamal VI, Makassar',
+          tipe: 'klinik_al',
+          kapasitas: 35,
+          status: 'aktif',
+          kesatuan: 'Lantamal VI',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Diving Medical Check']
+        },
+        {
+          id: 'klinik_al_7',
+          nama: 'Klinik Kesehatan Lantamal VII',
+          lokasi: 'Kupang',
+          alamat: 'Lantamal VII, Kupang',
+          tipe: 'klinik_al',
+          kapasitas: 30,
+          status: 'aktif',
+          kesatuan: 'Lantamal VII',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'klinik_al_8',
+          nama: 'Klinik Kesehatan Lantamal VIII',
+          lokasi: 'Manado',
+          alamat: 'Lantamal VIII, Manado',
+          tipe: 'klinik_al',
+          kapasitas: 30,
+          status: 'aktif',
+          kesatuan: 'Lantamal VIII',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Diving Medical Check']
+        },
+        {
+          id: 'klinik_al_9',
+          nama: 'Klinik Kesehatan Lantamal IX',
+          lokasi: 'Ambon',
+          alamat: 'Lantamal IX, Ambon',
+          tipe: 'klinik_al',
+          kapasitas: 30,
+          status: 'aktif',
+          kesatuan: 'Lantamal IX',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Diving Medical Check']
+        },
+        {
+          id: 'klinik_al_10',
+          nama: 'Klinik Kesehatan Lantamal X',
+          lokasi: 'Jayapura',
+          alamat: 'Lantamal X, Jayapura',
+          tipe: 'klinik_al',
+          kapasitas: 25,
+          status: 'aktif',
+          kesatuan: 'Lantamal X',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        }
+      ];
+
       // Gabungkan semua faskes
-      const allFaskes = [...rsauData, ...fktpData];
+      const allFaskes = [...rsauData, ...fktpData, ...rsadData, ...klinikADData, ...rsalData, ...klinikALData];
       this.saveCollection('faskes', allFaskes);
 
       // Sample Patients

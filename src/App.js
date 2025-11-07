@@ -30,6 +30,12 @@ import PoliPage from './pages/PoliPage';
 import BillingPage from './pages/BillingPage';
 import DailyExaminationPage from './pages/DailyExaminationPage';
 import PersonnelRikkesPage from './pages/PersonnelRikkesPage';
+import FieldMedicinePage from './pages/FieldMedicinePage';
+import CombatCarePage from './pages/CombatCarePage';
+import DivingMedicinePage from './pages/DivingMedicinePage';
+import HyperbaricPage from './pages/HyperbaricPage';
+import MedicalFitnessPage from './pages/MedicalFitnessPage';
+import DivingMedicalPage from './pages/DivingMedicalPage';
 
 import './App.css';
 
@@ -65,6 +71,12 @@ function App() {
               <Route path="/billing" element={<BillingPage />} />
               <Route path="/daily-examination" element={<DailyExaminationPage />} />
               <Route path="/personnel-rikkes" element={<PersonnelRikkesPage />} />
+              <Route path="/field-medicine" element={<FieldMedicinePage />} />
+              <Route path="/combat-care" element={<CombatCarePage />} />
+              <Route path="/diving-medicine" element={<DivingMedicinePage />} />
+              <Route path="/hyperbaric" element={<HyperbaricPage />} />
+              <Route path="/medical-fitness" element={<MedicalFitnessPage />} />
+              <Route path="/diving-medical" element={<DivingMedicalPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </Layout>

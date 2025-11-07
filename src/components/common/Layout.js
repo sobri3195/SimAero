@@ -16,8 +16,25 @@ const Layout = ({ children }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [facilityDropdownOpen, setFacilityDropdownOpen] = useState(false);
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
+  const [branchDropdownOpen, setBranchDropdownOpen] = useState(false);
   const [availableFacilities, setAvailableFacilities] = useState([]);
-  const { userRole, selectedFaskes, switchToPuskesau, switchToRSAU, switchToFKTP, facilityType, rikkesRole, setRikkesRole } = useAuth();
+  const { 
+    branch, 
+    switchBranch,
+    userRole, 
+    selectedFaskes, 
+    switchToPuskesau, 
+    switchToRSAU, 
+    switchToFKTP,
+    switchToRSAD,
+    switchToKlinikAD,
+    switchToRSAL,
+    switchToKlinikAL,
+    switchToPuskes,
+    facilityType, 
+    rikkesRole, 
+    setRikkesRole 
+  } = useAuth();
   const { theme } = useApp();
   const navigate = useNavigate();
 
@@ -74,6 +91,108 @@ const Layout = ({ children }) => {
     { icon: Settings, label: 'Pengaturan', path: '/settings' },
   ];
 
+  // TNI AD hospital menu items (with Field Medicine features)
+  const rsadMenuItems = [
+    { icon: Home, label: 'Dashboard', path: '/' },
+    { icon: Users, label: 'Database Pasien', path: '/patients' },
+    { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
+    { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
+    { icon: Activity, label: 'IGD', path: '/igd' },
+    { icon: BedDouble, label: 'Rawat Inap', path: '/inpatient' },
+    { icon: Calendar, label: 'Jadwal Operasi', path: '/surgery' },
+    { icon: Activity, label: 'CSSD', path: '/cssd' },
+    { icon: Droplet, label: 'Bank Darah', path: '/bloodbank' },
+    { icon: Shield, label: 'Kedokteran Lapangan', path: '/field-medicine' },
+    { icon: AlertTriangle, label: 'Combat Casualty Care', path: '/combat-care' },
+    { icon: Heart, label: 'Rikkes', path: '/rikkes' },
+    { icon: BarChart3, label: '└ Analitik Rikkes', path: '/rikkes/analytics', indent: true },
+    { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
+    { icon: TestTube, label: 'Laboratorium', path: '/lab' },
+    { icon: Radio, label: 'Radiologi', path: '/radiology' },
+    { icon: UserCheck, label: 'SDM & Jadwal', path: '/hr' },
+    { icon: Package, label: 'Aset & Kalibrasi', path: '/assets' },
+    { icon: Package, label: 'Logistik', path: '/logistics' },
+    { icon: AlertTriangle, label: 'Laporan Insiden', path: '/incidents' },
+    { icon: BarChart3, label: 'Laporan & Analitik', path: '/reports' },
+    { icon: Radio, label: 'Bridging', path: '/bridging' },
+    { icon: MessageSquare, label: 'Broadcast', path: '/broadcast' },
+    { icon: Settings, label: 'Pengaturan', path: '/settings' },
+  ];
+
+  // TNI AD clinic menu items
+  const klinikADMenuItems = [
+    { icon: Home, label: 'Dashboard', path: '/' },
+    { icon: Users, label: 'Database Pasien', path: '/patients' },
+    { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
+    { icon: Stethoscope, label: 'Pemeriksaan Harian', path: '/daily-examination' },
+    { icon: Calendar, label: 'Manajemen Poli', path: '/poli' },
+    { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
+    { icon: Shield, label: 'Medical Fitness', path: '/medical-fitness' },
+    { icon: Heart, label: 'Rikkes', path: '/rikkes' },
+    { icon: BarChart3, label: '└ Analitik Rikkes', path: '/rikkes/analytics', indent: true },
+    { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
+    { icon: TestTube, label: 'Laboratorium', path: '/lab' },
+    { icon: BedDouble, label: 'Billing & Kasir', path: '/billing' },
+    { icon: Radio, label: 'Bridging', path: '/bridging' },
+    { icon: UserCheck, label: 'SDM & Jadwal', path: '/hr' },
+    { icon: Package, label: 'Logistik', path: '/logistics' },
+    { icon: AlertTriangle, label: 'Laporan Insiden', path: '/incidents' },
+    { icon: BarChart3, label: 'Laporan & Analitik', path: '/reports' },
+    { icon: MessageSquare, label: 'Broadcast', path: '/broadcast' },
+    { icon: Settings, label: 'Pengaturan', path: '/settings' },
+  ];
+
+  // TNI AL hospital menu items (with Maritime Medicine features)
+  const rsalMenuItems = [
+    { icon: Home, label: 'Dashboard', path: '/' },
+    { icon: Users, label: 'Database Pasien', path: '/patients' },
+    { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
+    { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
+    { icon: Activity, label: 'IGD', path: '/igd' },
+    { icon: BedDouble, label: 'Rawat Inap', path: '/inpatient' },
+    { icon: Calendar, label: 'Jadwal Operasi', path: '/surgery' },
+    { icon: Activity, label: 'CSSD', path: '/cssd' },
+    { icon: Droplet, label: 'Bank Darah', path: '/bloodbank' },
+    { icon: Activity, label: 'Kedokteran Selam', path: '/diving-medicine' },
+    { icon: Shield, label: 'Hyperbaric Medicine', path: '/hyperbaric' },
+    { icon: Heart, label: 'Rikkes', path: '/rikkes' },
+    { icon: BarChart3, label: '└ Analitik Rikkes', path: '/rikkes/analytics', indent: true },
+    { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
+    { icon: TestTube, label: 'Laboratorium', path: '/lab' },
+    { icon: Radio, label: 'Radiologi', path: '/radiology' },
+    { icon: UserCheck, label: 'SDM & Jadwal', path: '/hr' },
+    { icon: Package, label: 'Aset & Kalibrasi', path: '/assets' },
+    { icon: Package, label: 'Logistik', path: '/logistics' },
+    { icon: AlertTriangle, label: 'Laporan Insiden', path: '/incidents' },
+    { icon: BarChart3, label: 'Laporan & Analitik', path: '/reports' },
+    { icon: Radio, label: 'Bridging', path: '/bridging' },
+    { icon: MessageSquare, label: 'Broadcast', path: '/broadcast' },
+    { icon: Settings, label: 'Pengaturan', path: '/settings' },
+  ];
+
+  // TNI AL clinic menu items
+  const klinikALMenuItems = [
+    { icon: Home, label: 'Dashboard', path: '/' },
+    { icon: Users, label: 'Database Pasien', path: '/patients' },
+    { icon: ClipboardList, label: 'Pendaftaran & Antrean', path: '/registration' },
+    { icon: Stethoscope, label: 'Pemeriksaan Harian', path: '/daily-examination' },
+    { icon: Calendar, label: 'Manajemen Poli', path: '/poli' },
+    { icon: FileText, label: 'Rekam Medis (EHR)', path: '/ehr' },
+    { icon: Activity, label: 'Diving Medical Check', path: '/diving-medical' },
+    { icon: Heart, label: 'Rikkes', path: '/rikkes' },
+    { icon: BarChart3, label: '└ Analitik Rikkes', path: '/rikkes/analytics', indent: true },
+    { icon: Pill, label: 'Farmasi', path: '/pharmacy' },
+    { icon: TestTube, label: 'Laboratorium', path: '/lab' },
+    { icon: BedDouble, label: 'Billing & Kasir', path: '/billing' },
+    { icon: Radio, label: 'Bridging', path: '/bridging' },
+    { icon: UserCheck, label: 'SDM & Jadwal', path: '/hr' },
+    { icon: Package, label: 'Logistik', path: '/logistics' },
+    { icon: AlertTriangle, label: 'Laporan Insiden', path: '/incidents' },
+    { icon: BarChart3, label: 'Laporan & Analitik', path: '/reports' },
+    { icon: MessageSquare, label: 'Broadcast', path: '/broadcast' },
+    { icon: Settings, label: 'Pengaturan', path: '/settings' },
+  ];
+
   const getMenuItems = () => {
     switch (userRole) {
       case 'PUSKESAU':
@@ -82,6 +201,14 @@ const Layout = ({ children }) => {
         return rsauMenuItems;
       case 'FKTP':
         return fktpMenuItems;
+      case 'RSAD':
+        return rsadMenuItems;
+      case 'KLINIK_AD':
+        return klinikADMenuItems;
+      case 'RSAL':
+        return rsalMenuItems;
+      case 'KLINIK_AL':
+        return klinikALMenuItems;
       default:
         return puskesauMenuItems;
     }
@@ -116,6 +243,14 @@ const Layout = ({ children }) => {
       switchToRSAU(facilityName);
     } else if (facilityType === 'fktp') {
       switchToFKTP(facilityName);
+    } else if (facilityType === 'rsad') {
+      switchToRSAD(facilityName);
+    } else if (facilityType === 'klinik_ad') {
+      switchToKlinikAD(facilityName);
+    } else if (facilityType === 'rsal') {
+      switchToRSAL(facilityName);
+    } else if (facilityType === 'klinik_al') {
+      switchToKlinikAL(facilityName);
     }
     setFacilityDropdownOpen(false);
     navigate('/');
@@ -143,10 +278,14 @@ const Layout = ({ children }) => {
         <div className="p-4 flex items-center justify-between" style={{ backgroundColor: theme.primaryColor }}>
           <div className={`${sidebarOpen ? 'block' : 'hidden'}`}>
             <h1 className="text-white font-bold text-xl">
-              {userRole === 'PUSKESAU' ? 'PUSKESAU' : userRole === 'RSAU' ? 'SIMRS' : 'SIM Klinik'}
+              {userRole === 'PUSKESAU' 
+                ? branch === 'AU' ? 'PUSKESAU' : branch === 'AD' ? 'PUSKESAD' : 'PUSKESAL'
+                : (userRole === 'RSAU' || userRole === 'RSAD' || userRole === 'RSAL') ? 'SIMRS' : 'SIM Klinik'}
             </h1>
             <p className="text-white text-xs opacity-90">
-              {userRole === 'PUSKESAU' ? 'Komando Kesehatan TNI AU' : 'TNI Angkatan Udara'}
+              {userRole === 'PUSKESAU' 
+                ? branch === 'AU' ? 'Komando Kesehatan TNI AU' : branch === 'AD' ? 'Komando Kesehatan TNI AD' : 'Komando Kesehatan TNI AL'
+                : branch === 'AU' ? 'TNI Angkatan Udara' : branch === 'AD' ? 'TNI Angkatan Darat' : 'TNI Angkatan Laut'}
             </p>
           </div>
           <button 
@@ -157,18 +296,18 @@ const Layout = ({ children }) => {
           </button>
         </div>
 
-        {/* Back to Puskesau Button (only shown when in RSAU or FKTP) */}
+        {/* Back to Puskes Button (only shown when in facility mode) */}
         {userRole !== 'PUSKESAU' && (
           <div className="p-4 border-b">
             <button
               onClick={() => {
-                switchToPuskesau();
+                switchToPuskes();
                 navigate('/');
               }}
               className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
             >
               <Shield size={16} />
-              <span className="text-sm">Kembali ke Puskesau</span>
+              <span className="text-sm">Kembali ke {branch === 'AU' ? 'Puskesau' : branch === 'AD' ? 'Puskesad' : 'Puskesal'}</span>
             </button>
           </div>
         )}
@@ -207,16 +346,16 @@ const Layout = ({ children }) => {
               <div className="hidden md:block">
                 <h2 className="text-xl font-bold" style={{ color: theme.primaryColor }}>
                   {userRole === 'PUSKESAU' 
-                    ? 'Dashboard Pengawasan Puskesau' 
-                    : userRole === 'RSAU'
+                    ? `Dashboard Pengawasan Puskes${branch}` 
+                    : (userRole === 'RSAU' || userRole === 'RSAD' || userRole === 'RSAL')
                     ? `SIMRS`
                     : `SIM Klinik`
                   }
                 </h2>
                 <p className="text-sm text-gray-600">
                   {userRole === 'PUSKESAU' 
-                    ? 'Pusat Kesehatan Angkatan Udara' 
-                    : userRole === 'RSAU'
+                    ? branch === 'AU' ? 'Pusat Kesehatan Angkatan Udara' : branch === 'AD' ? 'Pusat Kesehatan Angkatan Darat' : 'Pusat Kesehatan Angkatan Laut'
+                    : (userRole === 'RSAU' || userRole === 'RSAD' || userRole === 'RSAL')
                     ? 'Sistem Informasi Manajemen Rumah Sakit'
                     : 'Sistem Informasi Manajemen Klinik'
                   }
@@ -228,7 +367,52 @@ const Layout = ({ children }) => {
                 </h2>
               </div>
 
-              {/* Facility Dropdown - Shown when in RSAU or FKTP mode */}
+              {/* Branch Selector - Shown when in Puskes mode */}
+              {userRole === 'PUSKESAU' && (
+                <div className="relative">
+                  <button
+                    onClick={() => setBranchDropdownOpen(!branchDropdownOpen)}
+                    className="flex items-center gap-2 px-3 md:px-4 py-2 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors"
+                  >
+                    <Shield size={16} className="text-purple-600 flex-shrink-0" />
+                    <span className="font-semibold text-purple-800 text-xs md:text-sm">
+                      TNI {branch}
+                    </span>
+                    <ChevronDown size={16} className="text-purple-600 flex-shrink-0" />
+                  </button>
+
+                  {branchDropdownOpen && (
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl border z-50">
+                      <div className="p-2 border-b bg-gray-50">
+                        <p className="text-xs font-semibold text-gray-600 uppercase px-2">
+                          Pilih Matra
+                        </p>
+                      </div>
+                      <div className="p-2">
+                        {['AU', 'AD', 'AL'].map((matra) => (
+                          <button
+                            key={matra}
+                            onClick={() => {
+                              switchBranch(matra);
+                              setBranchDropdownOpen(false);
+                            }}
+                            className={`w-full text-left p-3 rounded hover:bg-purple-50 transition-colors mb-1 ${
+                              branch === matra ? 'bg-purple-100 border border-purple-300 font-semibold' : ''
+                            }`}
+                          >
+                            <div className="font-semibold text-sm text-gray-800">TNI {matra}</div>
+                            <div className="text-xs text-gray-600">
+                              {matra === 'AU' ? 'Angkatan Udara' : matra === 'AD' ? 'Angkatan Darat' : 'Angkatan Laut'}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Facility Dropdown - Shown when in facility mode */}
               {userRole !== 'PUSKESAU' && selectedFaskes && (
                 <div className="relative">
                   <button
@@ -245,7 +429,12 @@ const Layout = ({ children }) => {
                     <div className="absolute top-full left-0 right-0 md:left-0 md:right-auto mt-2 w-screen md:w-96 max-w-sm md:max-w-none bg-white rounded-lg shadow-xl border z-50 max-h-96 overflow-y-auto">
                       <div className="p-2 border-b bg-gray-50">
                         <p className="text-xs font-semibold text-gray-600 uppercase px-2">
-                          {userRole === 'RSAU' ? 'Pilih RSAU' : 'Pilih FKTP'}
+                          {userRole === 'RSAU' ? 'Pilih RSAU' : 
+                           userRole === 'FKTP' ? 'Pilih FKTP' :
+                           userRole === 'RSAD' ? 'Pilih RSAD' :
+                           userRole === 'KLINIK_AD' ? 'Pilih Klinik AD' :
+                           userRole === 'RSAL' ? 'Pilih RSAL' :
+                           userRole === 'KLINIK_AL' ? 'Pilih Klinik AL' : 'Pilih Faskes'}
                         </p>
                       </div>
                       <div className="p-2">

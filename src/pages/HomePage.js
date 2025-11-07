@@ -12,6 +12,10 @@ const HomePage = () => {
         return <DashboardPuskesau />;
       case 'RSAU':
       case 'FKTP':
+      case 'RSAD':
+      case 'KLINIK_AD':
+      case 'RSAL':
+      case 'KLINIK_AL':
         return <DashboardFaskes />;
       default:
         return <DashboardPuskesau />;
