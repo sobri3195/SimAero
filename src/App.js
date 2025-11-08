@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { AppProvider } from './contexts/AppContext';
 import Layout from './components/common/Layout';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 import HomePage from './pages/HomePage';
 import PatientsPage from './pages/PatientsPage';
@@ -68,12 +69,13 @@ import './App.css';
 
 function App() {
   return (
-    <AuthProvider>
-      <AppProvider>
-        <Router>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
+    <ErrorBoundary>
+      <AuthProvider>
+        <AppProvider>
+          <Router>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
               <Route path="/patients" element={<PatientsPage />} />
               <Route path="/registration" element={<RegistrationPage />} />
               <Route path="/queue-monitor/:poliName" element={<QueueMonitorPage />} />
@@ -137,6 +139,7 @@ function App() {
         </Router>
       </AppProvider>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
