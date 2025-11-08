@@ -32,21 +32,23 @@ class MockDB {
           kapasitas: 250,
           status: 'aktif',
           lanud: 'Lanud Halim Perdanakusuma',
-          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'Operasi', 'Hemodialisa', 'CSSD', 'Laboratorium', 'Radiologi'],
-          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Kulit', 'Jiwa', 'Jantung', 'Paru']
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'ICCU', 'Operasi', 'Hemodialisa', 'CSSD', 'Laboratorium', 'Radiologi', 'Farmasi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Kulit', 'Jiwa', 'Jantung', 'Paru', 'Saraf', 'Gigi & Mulut'],
+          fiturKhusus: ['SIMRS Terintegrasi', 'Aerospace Medicine', 'Aviation Health']
         },
         {
           id: 'rsau_3',
-          nama: 'RSAU dr. Moch. Salamun',
+          nama: 'RSAU dr. M. Salamun',
           lokasi: 'Bandung',
           alamat: 'Jl. Dr. Cipto No. 3, Bandung 40171',
           tipe: 'rsau',
           tingkat: 'A',
-          kapasitas: 220,
+          kapasitas: 200,
           status: 'aktif',
           lanud: 'Lanud Sulaiman',
-          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'Operasi', 'Hemodialisa', 'CSSD', 'Laboratorium', 'Radiologi'],
-          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Kulit', 'Jiwa', 'Jantung']
+          fasilitasUtama: ['IGD 24 Jam', 'Rawat Inap', 'ICU', 'ICCU', 'Operasi', 'Hemodialisa', 'CSSD', 'Laboratorium', 'Radiologi', 'Farmasi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata', 'Kulit', 'Jiwa', 'Jantung', 'Paru', 'Saraf'],
+          fiturKhusus: ['SIMRS Terintegrasi', 'Aerospace Medicine', 'Aviation Health']
         },
         {
           id: 'rsau_4',
@@ -115,16 +117,17 @@ class MockDB {
         },
         {
           id: 'rsau_9',
-          nama: 'RSAU dr. M. Munir Lanud Abdulrachman Saleh',
+          nama: 'RSAU dr. Siswondo Parman',
           lokasi: 'Malang',
           alamat: 'Lanud Abdulrachman Saleh, Malang, Jawa Timur',
           tipe: 'rsau',
           tingkat: 'B',
-          kapasitas: 135,
+          kapasitas: 120,
           status: 'aktif',
           lanud: 'Lanud Abdulrachman Saleh',
-          fasilitasUtama: ['IGD', 'Rawat Inap', 'ICU', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi'],
-          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata']
+          fasilitasUtama: ['IGD', 'Rawat Inap', 'ICU', 'Operasi', 'CSSD', 'Laboratorium', 'Radiologi', 'Farmasi'],
+          spesialisasi: ['Penyakit Dalam', 'Bedah', 'Anak', 'Kebidanan', 'THT', 'Mata'],
+          fiturKhusus: ['SIMRS Terintegrasi', 'Aerospace Medicine']
         },
         {
           id: 'rsau_10',
