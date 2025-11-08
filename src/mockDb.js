@@ -38,7 +38,7 @@ class MockDB {
         },
         {
           id: 'rsau_3',
-          nama: 'RSAU dr. M. Salamun',
+          nama: 'RSAU dr. Moch. Salamun',
           lokasi: 'Bandung',
           alamat: 'Jl. Dr. Cipto No. 3, Bandung 40171',
           tipe: 'rsau',
@@ -117,7 +117,7 @@ class MockDB {
         },
         {
           id: 'rsau_9',
-          nama: 'RSAU dr. Siswondo Parman',
+          nama: 'RSAU dr. M. Munir Lanud Abdulrachman Saleh',
           lokasi: 'Malang',
           alamat: 'Lanud Abdulrachman Saleh, Malang, Jawa Timur',
           tipe: 'rsau',
@@ -131,7 +131,7 @@ class MockDB {
         },
         {
           id: 'rsau_10',
-          nama: 'RSAU dr. Mohammad Moenir Lanud Abd',
+          nama: 'RSAU dr. Mohammad Moenir  Lanud Abd(Baru)',
           lokasi: 'Medan',
           alamat: 'Lanud Soewondo, Medan, Sumatera Utara',
           tipe: 'rsau',
