@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     setFacilityType('klinik_al');
   };
 
-  const switchToPuskesau = () => {
+  const switchToPuskes = () => {
     setUserRole('PUSKESAU');
     setSelectedFaskes(null);
     setFacilityType(null);
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
     switchToKlinikAD,
     switchToRSAL,
     switchToKlinikAL,
-    switchToPuskesau,
+    switchToPuskes,
     rikkesRole,
     setRikkesRole,
     loading
