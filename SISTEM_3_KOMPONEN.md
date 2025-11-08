@@ -248,7 +248,7 @@ Tombol "Kembali ke Puskesau" (tersedia di sidebar saat role RSAU/FKTP)
 ### Helper Functions
 - `switchToRSAU(faskesName)` - Switch ke mode RSAU dengan faskes tertentu
 - `switchToFKTP(faskesName)` - Switch ke mode FKTP dengan faskes tertentu
-- `switchToPuskesau()` - Kembali ke mode pengawasan Puskesau
+- `switchToPuskes()` - Kembali ke mode pengawasan Puskesau
 
 ## 📝 File Changes
 

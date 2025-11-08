@@ -20,7 +20,7 @@
 **New Features in AuthContext**
 - `switchToRSAU(faskesName)` - Switch to RSAU mode
 - `switchToFKTP(faskesName)` - Switch to FKTP mode  
-- `switchToPuskesau()` - Return to supervision mode
+- `switchToPuskes()` - Return to supervision mode
 - `facilityType` state - Track current facility type
 
 **Complete Facility Data**
@@ -139,7 +139,7 @@ setUserRole('FASKES')
 
 **New:**
 ```javascript
-switchToPuskesau()
+switchToPuskes()
 switchToRSAU('RSAU dr. Esnawan Antariksa')
 switchToFKTP('Klinik Kesehatan Lanud Halim')
 ```

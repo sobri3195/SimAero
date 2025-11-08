@@ -1,0 +1,33 @@
+npm warn Unknown env config "python". This will stop working in the next major version of npm.
+
+> project@0.1.0 build
+> react-scripts build
+
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  535.34 kB  build/static/js/main.e6e6bc20.js
+  46.35 kB   build/static/js/239.94aca4a1.chunk.js
+  43.28 kB   build/static/js/455.a53507db.chunk.js
+  8.71 kB    build/static/js/213.a742f27d.chunk.js
+  7.41 kB    build/static/css/main.c156ab35.css
+
+The bundle size is significantly larger than recommended.
+Consider reducing it with code splitting: https://goo.gl/9VhYWB
+You can also analyze the project dependencies: https://goo.gl/LeUzfb
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  npm install -g serve
+  serve -s build
+
+Find out more about deployment here:
+
+  https://cra.link/deployment
+

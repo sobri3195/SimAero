@@ -61,7 +61,7 @@ src/
 // Helper Functions
 switchToRSAU(faskesName)    // Switch to RSAU mode
 switchToFKTP(faskesName)    // Switch to FKTP mode
-switchToPuskesau()          // Back to supervision mode
+switchToPuskes()            // Back to supervision mode
 ```
 
 ### Role Transitions
@@ -76,7 +76,7 @@ switchToFKTP('Klinik Kesehatan Lanud Halim')
 // Result: userRole='FKTP', selectedFaskes='Klinik Kesehatan Lanud Halim', facilityType='fktp'
 
 // Back to Puskesau
-switchToPuskesau()
+switchToPuskes()
 // Result: userRole='PUSKESAU', selectedFaskes=null, facilityType=null
 ```
 
@@ -175,7 +175,7 @@ const menuItems = getMenuItems()
 ```javascript
 {userRole !== 'PUSKESAU' && (
   <button onClick={() => {
-    switchToPuskesau()
+    switchToPuskes()
     navigate('/')
   }}>
     <Shield size={16} />
@@ -376,7 +376,7 @@ User can navigate all RSAU modules
     ↓
 Clicks "Kembali ke Puskesau"
     ↓
-switchToPuskesau() called
+switchToPuskes() called
     ↓
 Role changes to 'PUSKESAU'
     ↓
