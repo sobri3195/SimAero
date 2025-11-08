@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Download, FileText, Copy, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { Search, Download, FileText, Copy, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Eye, EyeOff, Columns } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
@@ -15,11 +15,20 @@ const DataTable = ({
   itemsPerPage = 10,
   onEdit,
   onDelete,
-  onView
+  onView,
+  columnVisibility = true
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [showColumnMenu, setShowColumnMenu] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState(() => {
+    const initial = {};
+    columns.forEach((col, index) => {
+      initial[index] = true;
+    });
+    return initial;
+  });
 
   // Filter data based on search query
   const filteredData = useMemo(() => {
@@ -155,6 +164,31 @@ const DataTable = ({
     });
   };
 
+  // Toggle column visibility
+  const toggleColumnVisibility = (index) => {
+    setVisibleColumns(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
+  // Show/hide all columns
+  const toggleAllColumns = (show) => {
+    const newVisibility = {};
+    columns.forEach((col, index) => {
+      newVisibility[index] = show;
+    });
+    setVisibleColumns(newVisibility);
+  };
+
+  // Get visible columns
+  const displayColumns = useMemo(() => {
+    return columns.filter((col, index) => visibleColumns[index]);
+  }, [columns, visibleColumns]);
+
+  // Count visible columns
+  const visibleCount = Object.values(visibleColumns).filter(v => v).length;
+
   return (
     <div className="bg-white rounded-lg shadow">
       {/* Header with Search and Export */}
@@ -179,43 +213,120 @@ const DataTable = ({
             </div>
           )}
 
-          {/* Export Buttons */}
-          {exportable && (
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={copyToClipboard}
-                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
-                title="Copy to Clipboard"
-              >
-                <Copy size={16} />
-                <span className="hidden sm:inline">Copy</span>
-              </button>
-              <button
-                onClick={exportToCSV}
-                className="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
-                title="Export to CSV"
-              >
-                <FileText size={16} />
-                <span className="hidden sm:inline">CSV</span>
-              </button>
-              <button
-                onClick={exportToExcel}
-                className="px-3 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
-                title="Export to Excel"
-              >
-                <Download size={16} />
-                <span className="hidden sm:inline">Excel</span>
-              </button>
-              <button
-                onClick={exportToPDF}
-                className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
-                title="Export to PDF"
-              >
-                <FileText size={16} />
-                <span className="hidden sm:inline">PDF</span>
-              </button>
-            </div>
-          )}
+          {/* Export Buttons & Column Visibility */}
+          <div className="flex flex-wrap gap-2">
+            {/* Column Visibility Toggle */}
+            {columnVisibility && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowColumnMenu(!showColumnMenu)}
+                  className="px-3 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                  title="Tampilkan/Sembunyikan Kolom"
+                >
+                  <Columns size={16} />
+                  <span className="hidden sm:inline">Kolom ({visibleCount})</span>
+                </button>
+
+                {/* Column Menu Dropdown */}
+                {showColumnMenu && (
+                  <>
+                    {/* Backdrop */}
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setShowColumnMenu(false)}
+                    />
+                    
+                    {/* Menu */}
+                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border z-20 max-h-96 overflow-y-auto">
+                      <div className="p-3 border-b bg-gray-50">
+                        <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                          <Columns size={16} />
+                          Pilih Kolom
+                        </h3>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => toggleAllColumns(true)}
+                            className="flex-1 px-2 py-1 text-xs bg-green-100 hover:bg-green-200 text-green-700 rounded transition-colors"
+                          >
+                            Tampilkan Semua
+                          </button>
+                          <button
+                            onClick={() => toggleAllColumns(false)}
+                            className="flex-1 px-2 py-1 text-xs bg-red-100 hover:bg-red-200 text-red-700 rounded transition-colors"
+                          >
+                            Sembunyikan Semua
+                          </button>
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        {columns.map((column, index) => (
+                          <label
+                            key={index}
+                            className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer transition-colors"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={visibleColumns[index]}
+                              onChange={() => toggleColumnVisibility(index)}
+                              className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                            />
+                            <div className="flex items-center gap-2 flex-1">
+                              {visibleColumns[index] ? (
+                                <Eye size={14} className="text-green-600" />
+                              ) : (
+                                <EyeOff size={14} className="text-gray-400" />
+                              )}
+                              <span className="text-sm text-gray-700">
+                                {column.label}
+                              </span>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Export Buttons */}
+            {exportable && (
+              <>
+                <button
+                  onClick={copyToClipboard}
+                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                  title="Copy to Clipboard"
+                >
+                  <Copy size={16} />
+                  <span className="hidden sm:inline">Copy</span>
+                </button>
+                <button
+                  onClick={exportToCSV}
+                  className="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                  title="Export to CSV"
+                >
+                  <FileText size={16} />
+                  <span className="hidden sm:inline">CSV</span>
+                </button>
+                <button
+                  onClick={exportToExcel}
+                  className="px-3 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                  title="Export to Excel"
+                >
+                  <Download size={16} />
+                  <span className="hidden sm:inline">Excel</span>
+                </button>
+                <button
+                  onClick={exportToPDF}
+                  className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                  title="Export to PDF"
+                >
+                  <FileText size={16} />
+                  <span className="hidden sm:inline">PDF</span>
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
         {/* Results Info */}
@@ -230,7 +341,7 @@ const DataTable = ({
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              {columns.map((column, index) => (
+              {displayColumns.map((column, index) => (
                 <th
                   key={index}
                   onClick={() => !column.actions && handleSort(column.key)}
@@ -253,14 +364,14 @@ const DataTable = ({
           <tbody>
             {paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="text-center py-8 text-gray-600">
+                <td colSpan={displayColumns.length} className="text-center py-8 text-gray-600">
                   {searchQuery ? 'Tidak ada data yang ditemukan' : 'Belum ada data'}
                 </td>
               </tr>
             ) : (
               paginatedData.map((row, rowIndex) => (
                 <tr key={rowIndex} className="border-b hover:bg-gray-50 transition-colors">
-                  {columns.map((column, colIndex) => (
+                  {displayColumns.map((column, colIndex) => (
                     <td key={colIndex} className={`py-3 px-4 ${column.className || ''}`}>
                       {column.render ? (
                         column.render(row, rowIndex)
