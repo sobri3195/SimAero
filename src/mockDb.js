@@ -2,11 +2,15 @@
 class MockDB {
   constructor() {
     this.prefix = 'mockdb_';
+    this.dataVersion = 'v2.0';
     this.initializeData();
   }
 
   initializeData() {
-    if (!localStorage.getItem(this.prefix + 'initialized')) {
+    const currentVersion = localStorage.getItem(this.prefix + 'version');
+    const shouldReinitialize = !localStorage.getItem(this.prefix + 'initialized') || currentVersion !== this.dataVersion;
+    
+    if (shouldReinitialize) {
       // Faskes TNI AU - RSAU (Rumah Sakit Angkatan Udara) - 23 RSAU
       const rsauData = [
         {
@@ -478,6 +482,490 @@ class MockDB {
           kapasitas: 25,
           status: 'aktif',
           lanud: 'Lanud Manuhua',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_16',
+          nama: 'Klinik Kesehatan Lanud Adi Soemarmo',
+          lokasi: 'Solo',
+          alamat: 'Lanud Adi Soemarmo, Solo',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Adi Soemarmo',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_17',
+          nama: 'Klinik Kesehatan Lanud Atang Sendjaja',
+          lokasi: 'Bogor',
+          alamat: 'Lanud Atang Sendjaja, Bogor',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Atang Sendjaja',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_18',
+          nama: 'Klinik Kesehatan Lanud Suryadarma',
+          lokasi: 'Karawang',
+          alamat: 'Lanud Suryadarma, Karawang',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Suryadarma',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_19',
+          nama: 'Klinik Kesehatan Lanud Raden Sadjad',
+          lokasi: 'Natuna',
+          alamat: 'Lanud Raden Sadjad, Natuna',
+          tipe: 'fktp',
+          kapasitas: 20,
+          status: 'aktif',
+          lanud: 'Lanud Raden Sadjad',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_20',
+          nama: 'Klinik Kesehatan Lanud Dhomber',
+          lokasi: 'Timika',
+          alamat: 'Lanud Dhomber, Timika',
+          tipe: 'fktp',
+          kapasitas: 20,
+          status: 'aktif',
+          lanud: 'Lanud Dhomber',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_21',
+          nama: 'Klinik Kesehatan Lanud Silas Papare',
+          lokasi: 'Jayapura',
+          alamat: 'Lanud Silas Papare, Jayapura',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Silas Papare',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_22',
+          nama: 'Klinik Kesehatan Lanud Eltari',
+          lokasi: 'Kupang',
+          alamat: 'Lanud Eltari, Kupang',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Eltari',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_23',
+          nama: 'Klinik Kesehatan Lanud Juanda',
+          lokasi: 'Surabaya',
+          alamat: 'Lanud Juanda, Surabaya',
+          tipe: 'fktp',
+          kapasitas: 40,
+          status: 'aktif',
+          lanud: 'Lanud Juanda',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_24',
+          nama: 'Klinik Kesehatan Lanud Raja Haji Fisabilillah',
+          lokasi: 'Tanjungpinang',
+          alamat: 'Lanud Raja Haji Fisabilillah, Tanjungpinang',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Raja Haji Fisabilillah',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_25',
+          nama: 'Klinik Kesehatan Lanud Hang Nadim',
+          lokasi: 'Batam',
+          alamat: 'Lanud Hang Nadim, Batam',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Hang Nadim',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_26',
+          nama: 'Klinik Kesehatan Lanud El Tari',
+          lokasi: 'Kupang',
+          alamat: 'Lanud El Tari, Kupang',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud El Tari',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_27',
+          nama: 'Klinik Kesehatan Lanud H.A.S. Hanandjoeddin',
+          lokasi: 'Belitung',
+          alamat: 'Lanud H.A.S. Hanandjoeddin, Belitung',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud H.A.S. Hanandjoeddin',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_28',
+          nama: 'Klinik Kesehatan Lanud Pangeran M. Bun Yamin',
+          lokasi: 'Lampung',
+          alamat: 'Lanud Pangeran M. Bun Yamin, Lampung',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Pangeran M. Bun Yamin',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_29',
+          nama: 'Klinik Kesehatan Lanud Sultan Thaha',
+          lokasi: 'Jambi',
+          alamat: 'Lanud Sultan Thaha, Jambi',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Sultan Thaha',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_30',
+          nama: 'Klinik Kesehatan Lanud Batu Licin',
+          lokasi: 'Banjarbaru',
+          alamat: 'Lanud Batu Licin, Banjarbaru',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Batu Licin',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_31',
+          nama: 'Klinik Kesehatan Lanud Muljono',
+          lokasi: 'Surabaya',
+          alamat: 'Lanud Muljono, Surabaya',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Muljono',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_32',
+          nama: 'Klinik Kesehatan Lanud Wiriadinata',
+          lokasi: 'Tasikmalaya',
+          alamat: 'Lanud Wiriadinata, Tasikmalaya',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Wiriadinata',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_33',
+          nama: 'Klinik Kesehatan Lanud Anang Busra',
+          lokasi: 'Tarakan',
+          alamat: 'Lanud Anang Busra, Tarakan',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Anang Busra',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_34',
+          nama: 'Klinik Kesehatan Lanud Leo Wattimena',
+          lokasi: 'Morotai',
+          alamat: 'Lanud Leo Wattimena, Morotai',
+          tipe: 'fktp',
+          kapasitas: 20,
+          status: 'aktif',
+          lanud: 'Lanud Leo Wattimena',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_35',
+          nama: 'Klinik Kesehatan Lanud Frans Kaisiepo',
+          lokasi: 'Biak',
+          alamat: 'Lanud Frans Kaisiepo, Biak',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Frans Kaisiepo',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_36',
+          nama: 'Klinik Kesehatan Lanud Jalaluddin',
+          lokasi: 'Gorontalo',
+          alamat: 'Lanud Jalaluddin, Gorontalo',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Jalaluddin',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_37',
+          nama: 'Klinik Kesehatan Lanud Haluoleo',
+          lokasi: 'Kendari',
+          alamat: 'Lanud Haluoleo, Kendari',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Haluoleo',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_38',
+          nama: 'Klinik Kesehatan Lanud Pattimura',
+          lokasi: 'Ambon',
+          alamat: 'Lanud Pattimura, Ambon',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Pattimura',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_39',
+          nama: 'Klinik Kesehatan Lanud Dumatubun',
+          lokasi: 'Langgur',
+          alamat: 'Lanud Dumatubun, Langgur',
+          tipe: 'fktp',
+          kapasitas: 20,
+          status: 'aktif',
+          lanud: 'Lanud Dumatubun',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_40',
+          nama: 'Klinik Kesehatan Lanud Mopah',
+          lokasi: 'Merauke',
+          alamat: 'Lanud Mopah, Merauke',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Mopah',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_41',
+          nama: 'Klinik Kesehatan Lanud Sentani',
+          lokasi: 'Sentani',
+          alamat: 'Lanud Sentani, Sentani',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Sentani',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_42',
+          nama: 'Klinik Kesehatan Lanud Timika',
+          lokasi: 'Timika',
+          alamat: 'Lanud Timika, Timika',
+          tipe: 'fktp',
+          kapasitas: 20,
+          status: 'aktif',
+          lanud: 'Lanud Timika',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_43',
+          nama: 'Klinik Kesehatan Lanud Pondok Cabe',
+          lokasi: 'Tangerang Selatan',
+          alamat: 'Lanud Pondok Cabe, Tangerang Selatan',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Pondok Cabe',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_44',
+          nama: 'Klinik Kesehatan Lanud Husein Sastranegara',
+          lokasi: 'Bandung',
+          alamat: 'Lanud Husein Sastranegara, Bandung',
+          tipe: 'fktp',
+          kapasitas: 40,
+          status: 'aktif',
+          lanud: 'Lanud Husein Sastranegara',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_45',
+          nama: 'Klinik Kesehatan Lanud Sutan Sjahrir',
+          lokasi: 'Padang',
+          alamat: 'Lanud Sutan Sjahrir, Padang',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Sutan Sjahrir',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_46',
+          nama: 'Klinik Kesehatan Lanud Padang',
+          lokasi: 'Padang',
+          alamat: 'Lanud Padang, Padang',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Padang',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_47',
+          nama: 'Klinik Kesehatan Lanud Ranai',
+          lokasi: 'Ranai',
+          alamat: 'Lanud Ranai, Natuna',
+          tipe: 'fktp',
+          kapasitas: 20,
+          status: 'aktif',
+          lanud: 'Lanud Ranai',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_48',
+          nama: 'Klinik Kesehatan Lanud Supadio',
+          lokasi: 'Pontianak',
+          alamat: 'Lanud Supadio, Pontianak',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Supadio',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_49',
+          nama: 'Klinik Kesehatan Lanud Sugiri Sukani',
+          lokasi: 'Balikpapan',
+          alamat: 'Lanud Sugiri Sukani, Balikpapan',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Sugiri Sukani',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_50',
+          nama: 'Klinik Kesehatan Lanud Sepinggan',
+          lokasi: 'Balikpapan',
+          alamat: 'Lanud Sepinggan, Balikpapan',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Sepinggan',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_51',
+          nama: 'Klinik Kesehatan Lanud Palembang',
+          lokasi: 'Palembang',
+          alamat: 'Lanud Palembang, Palembang',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Palembang',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_52',
+          nama: 'Klinik Kesehatan Lanud Radin Inten II',
+          lokasi: 'Lampung',
+          alamat: 'Lanud Radin Inten II, Lampung',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Radin Inten II',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_53',
+          nama: 'Klinik Kesehatan Lanud Selajangar',
+          lokasi: 'Serang',
+          alamat: 'Lanud Selajangar, Serang',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Selajangar',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_54',
+          nama: 'Klinik Kesehatan Lanud Iswahyudi',
+          lokasi: 'Madiun',
+          alamat: 'Lanud Iswahyudi, Madiun',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Iswahyudi',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_55',
+          nama: 'Klinik Kesehatan Lanud Ahmad Yani',
+          lokasi: 'Semarang',
+          alamat: 'Lanud Ahmad Yani, Semarang',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Ahmad Yani',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_56',
+          nama: 'Klinik Kesehatan Lanud Abdulrahman Saleh',
+          lokasi: 'Malang',
+          alamat: 'Lanud Abdulrahman Saleh, Malang',
+          tipe: 'fktp',
+          kapasitas: 35,
+          status: 'aktif',
+          lanud: 'Lanud Abdulrahman Saleh',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek', 'Laboratorium Sederhana']
+        },
+        {
+          id: 'fktp_57',
+          nama: 'Klinik Kesehatan Lanud Yogyakarta',
+          lokasi: 'Yogyakarta',
+          alamat: 'Lanud Yogyakarta, Yogyakarta',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Yogyakarta',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_58',
+          nama: 'Klinik Kesehatan Lanud Andir',
+          lokasi: 'Bandung',
+          alamat: 'Lanud Andir, Bandung',
+          tipe: 'fktp',
+          kapasitas: 30,
+          status: 'aktif',
+          lanud: 'Lanud Andir',
+          fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
+        },
+        {
+          id: 'fktp_59',
+          nama: 'Klinik Kesehatan Lanud Cakrabhuwana',
+          lokasi: 'Cirebon',
+          alamat: 'Lanud Cakrabhuwana, Cirebon',
+          tipe: 'fktp',
+          kapasitas: 25,
+          status: 'aktif',
+          lanud: 'Lanud Cakrabhuwana',
           fasilitasUtama: ['Poli Umum', 'Poli Gigi', 'Apotek']
         }
       ];
@@ -1015,6 +1503,7 @@ class MockDB {
       this.saveCollection('broadcasts', []);
 
       localStorage.setItem(this.prefix + 'initialized', 'true');
+      localStorage.setItem(this.prefix + 'version', this.dataVersion);
     }
   }
 
