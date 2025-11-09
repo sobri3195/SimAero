@@ -158,13 +158,13 @@ const DataTable = ({
   return (
     <div className="bg-white rounded-lg shadow">
       {/* Header with Search and Export */}
-      <div className="p-4 border-b">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="p-3 sm:p-4 border-b">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
           {/* Search */}
           {searchable && (
             <div className="flex-1 max-w-md">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                 <input
                   type="text"
                   placeholder="Cari data..."
@@ -173,7 +173,7 @@ const DataTable = ({
                     setSearchQuery(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -181,37 +181,37 @@ const DataTable = ({
 
           {/* Export Buttons */}
           {exportable && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               <button
                 onClick={copyToClipboard}
-                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                className="px-2 sm:px-3 py-1.5 sm:py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg flex items-center gap-1 sm:gap-2 text-xs sm:text-sm transition-colors"
                 title="Copy to Clipboard"
               >
-                <Copy size={16} />
+                <Copy size={14} className="sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">Copy</span>
               </button>
               <button
                 onClick={exportToCSV}
-                className="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                className="px-2 sm:px-3 py-1.5 sm:py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg flex items-center gap-1 sm:gap-2 text-xs sm:text-sm transition-colors"
                 title="Export to CSV"
               >
-                <FileText size={16} />
+                <FileText size={14} className="sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">CSV</span>
               </button>
               <button
                 onClick={exportToExcel}
-                className="px-3 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                className="px-2 sm:px-3 py-1.5 sm:py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-lg flex items-center gap-1 sm:gap-2 text-xs sm:text-sm transition-colors"
                 title="Export to Excel"
               >
-                <Download size={16} />
+                <Download size={14} className="sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">Excel</span>
               </button>
               <button
                 onClick={exportToPDF}
-                className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg flex items-center gap-2 text-sm transition-colors"
+                className="px-2 sm:px-3 py-1.5 sm:py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg flex items-center gap-1 sm:gap-2 text-xs sm:text-sm transition-colors"
                 title="Export to PDF"
               >
-                <FileText size={16} />
+                <FileText size={14} className="sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">PDF</span>
               </button>
             </div>
@@ -219,7 +219,7 @@ const DataTable = ({
         </div>
 
         {/* Results Info */}
-        <div className="mt-3 text-sm text-gray-600">
+        <div className="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-600">
           Menampilkan {paginatedData.length} dari {filteredData.length} data
           {searchQuery && ` (difilter dari ${data.length} total)`}
         </div>
@@ -227,18 +227,20 @@ const DataTable = ({
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <div className="inline-block min-w-full align-middle">
+          <div className="overflow-hidden">
+        <table className="w-full min-w-[640px]">
           <thead className="bg-gray-50">
             <tr>
               {columns.map((column, index) => (
                 <th
                   key={index}
                   onClick={() => !column.actions && handleSort(column.key)}
-                  className={`text-left py-3 px-4 font-semibold text-gray-700 ${
+                  className={`text-left py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-700 text-xs sm:text-sm ${
                     !column.actions ? 'cursor-pointer hover:bg-gray-100' : ''
                   } ${column.className || ''}`}
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2 whitespace-nowrap">
                     {column.label}
                     {!column.actions && sortConfig.key === column.key && (
                       <span className="text-blue-600">
@@ -253,7 +255,7 @@ const DataTable = ({
           <tbody>
             {paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="text-center py-8 text-gray-600">
+                <td colSpan={columns.length} className="text-center py-6 sm:py-8 text-gray-600 text-xs sm:text-sm">
                   {searchQuery ? 'Tidak ada data yang ditemukan' : 'Belum ada data'}
                 </td>
               </tr>
@@ -261,15 +263,15 @@ const DataTable = ({
               paginatedData.map((row, rowIndex) => (
                 <tr key={rowIndex} className="border-b hover:bg-gray-50 transition-colors">
                   {columns.map((column, colIndex) => (
-                    <td key={colIndex} className={`py-3 px-4 ${column.className || ''}`}>
+                    <td key={colIndex} className={`py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm ${column.className || ''}`}>
                       {column.render ? (
                         column.render(row, rowIndex)
                       ) : column.actions ? (
-                        <div className="flex gap-2 justify-center">
+                        <div className="flex gap-1 sm:gap-2 justify-center flex-wrap">
                           {onView && (
                             <button
                               onClick={() => onView(row)}
-                              className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-sm transition-colors"
+                              className="px-2 sm:px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-xs sm:text-sm transition-colors whitespace-nowrap"
                             >
                               Lihat
                             </button>
@@ -277,7 +279,7 @@ const DataTable = ({
                           {onEdit && (
                             <button
                               onClick={() => onEdit(row)}
-                              className="px-3 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded text-sm transition-colors"
+                              className="px-2 sm:px-3 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded text-xs sm:text-sm transition-colors whitespace-nowrap"
                             >
                               Edit
                             </button>
@@ -285,7 +287,7 @@ const DataTable = ({
                           {onDelete && (
                             <button
                               onClick={() => onDelete(row)}
-                              className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm transition-colors"
+                              className="px-2 sm:px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-xs sm:text-sm transition-colors whitespace-nowrap"
                             >
                               Hapus
                             </button>
@@ -301,31 +303,33 @@ const DataTable = ({
             )}
           </tbody>
         </table>
+          </div>
+        </div>
       </div>
 
       {/* Pagination */}
       {pagination && totalPages > 1 && (
-        <div className="p-4 border-t">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-sm text-gray-600">
+        <div className="p-3 sm:p-4 border-t">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+            <div className="text-xs sm:text-sm text-gray-600">
               Halaman {currentPage} dari {totalPages}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <button
                 onClick={() => setCurrentPage(1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 title="Halaman Pertama"
               >
-                <ChevronsLeft size={20} />
+                <ChevronsLeft size={16} className="sm:w-5 sm:h-5" />
               </button>
               <button
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 title="Halaman Sebelumnya"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={16} className="sm:w-5 sm:h-5" />
               </button>
               
               {/* Page Numbers */}
@@ -342,7 +346,7 @@ const DataTable = ({
                       <button
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`px-3 py-1 rounded-lg transition-colors ${
+                        className={`px-2 sm:px-3 py-1 rounded-lg transition-colors text-xs sm:text-sm ${
                           currentPage === pageNum
                             ? 'bg-blue-600 text-white'
                             : 'hover:bg-gray-100'
@@ -355,7 +359,7 @@ const DataTable = ({
                     pageNum === currentPage - 2 ||
                     pageNum === currentPage + 2
                   ) {
-                    return <span key={pageNum} className="px-2">...</span>;
+                    return <span key={pageNum} className="px-1 sm:px-2 text-xs sm:text-sm">...</span>;
                   }
                   return null;
                 })}
@@ -364,18 +368,18 @@ const DataTable = ({
               <button
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 title="Halaman Selanjutnya"
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={16} className="sm:w-5 sm:h-5" />
               </button>
               <button
                 onClick={() => setCurrentPage(totalPages)}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 title="Halaman Terakhir"
               >
-                <ChevronsRight size={20} />
+                <ChevronsRight size={16} className="sm:w-5 sm:h-5" />
               </button>
             </div>
           </div>

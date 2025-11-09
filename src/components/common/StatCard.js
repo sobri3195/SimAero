@@ -11,19 +11,19 @@ const StatCard = ({ icon: Icon, title, value, trend, color = 'blue' }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white rounded-lg shadow p-3 sm:p-4 md:p-6">
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-gray-600 text-sm mb-1">{title}</p>
-          <p className="text-3xl font-bold">{value}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-gray-600 text-xs sm:text-sm mb-1 truncate">{title}</p>
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold">{value}</p>
           {trend && (
-            <p className={`text-sm mt-2 ${trend > 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <p className={`text-xs sm:text-sm mt-1 sm:mt-2 ${trend > 0 ? 'text-green-600' : 'text-red-600'}`}>
               {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}%
             </p>
           )}
         </div>
-        <div className={`${colors[color]} p-4 rounded-lg`}>
-          <Icon className="text-white" size={24} />
+        <div className={`${colors[color]} p-2 sm:p-3 md:p-4 rounded-lg flex-shrink-0 ml-2`}>
+          <Icon className="text-white" size={20} />
         </div>
       </div>
     </div>
