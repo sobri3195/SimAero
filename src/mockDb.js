@@ -2,7 +2,7 @@
 class MockDB {
   constructor() {
     this.prefix = 'mockdb_';
-    this.dataVersion = 'v2.0';
+    this.dataVersion = 'v2.1';
     this.initializeData();
   }
 
