@@ -358,12 +358,12 @@ const Layout = ({ children }) => {
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0 ${
           sidebarOpen ? 'w-64' : 'lg:w-20'
-        } w-64 bg-white shadow-lg transition-all duration-300 overflow-y-auto fixed lg:relative h-full z-50`}
+        } w-64 sm:w-72 bg-white shadow-lg transition-all duration-300 overflow-y-auto fixed lg:relative h-full z-50`}
         style={{ borderRight: `3px solid ${theme.primaryColor}` }}
       >
-        <div className="p-4 flex items-center justify-between" style={{ backgroundColor: theme.primaryColor }}>
+        <div className="p-3 sm:p-4 flex items-center justify-between" style={{ backgroundColor: theme.primaryColor }}>
           <div className={`${sidebarOpen ? 'block' : 'hidden'}`}>
-            <h1 className="text-white font-bold text-xl">
+            <h1 className="text-white font-bold text-lg sm:text-xl">
               {userRole === 'PUSKESAU' 
                 ? branch === 'AU' ? 'PUSKESAU' : branch === 'AD' ? 'PUSKESAD' : 'PUSKESAL'
                 : (userRole === 'RSAU' || userRole === 'RSAD' || userRole === 'RSAL') ? 'SIMRS' : 'SIM Klinik'}
@@ -384,16 +384,16 @@ const Layout = ({ children }) => {
 
         {/* Back to Puskes Button (only shown when in facility mode) */}
         {userRole !== 'PUSKESAU' && (
-          <div className="p-4 border-b">
+          <div className="p-3 sm:p-4 border-b">
             <button
               onClick={() => {
                 switchToPuskes();
                 navigate('/');
               }}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-2 sm:px-3 rounded-lg flex items-center justify-center gap-1 sm:gap-2 transition-colors text-xs sm:text-sm"
             >
-              <Shield size={16} />
-              <span className="text-sm">Kembali ke {branch === 'AU' ? 'Puskesau' : branch === 'AD' ? 'Puskesad' : 'Puskesal'}</span>
+              <Shield size={14} className="sm:w-4 sm:h-4" />
+              <span className="truncate">Ke {branch === 'AU' ? 'Puskesau' : branch === 'AD' ? 'Puskesad' : 'Puskesal'}</span>
             </button>
           </div>
         )}
@@ -403,13 +403,13 @@ const Layout = ({ children }) => {
             <button
               key={index}
               onClick={() => navigate(item.path)}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors text-left mb-1 ${
-                item.indent ? 'pl-8' : ''
+              className={`w-full flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors text-left mb-1 ${
+                item.indent ? 'pl-6 sm:pl-8' : ''
               }`}
               title={!sidebarOpen ? item.label : ''}
             >
-              <item.icon size={item.indent ? 16 : 20} style={{ color: theme.primaryColor }} />
-              {sidebarOpen && <span className={`${item.indent ? 'text-xs' : 'text-sm'}`}>{item.label}</span>}
+              <item.icon size={item.indent ? 16 : 20} className="flex-shrink-0" style={{ color: theme.primaryColor }} />
+              {sidebarOpen && <span className={`${item.indent ? 'text-xs' : 'text-xs sm:text-sm'} truncate`}>{item.label}</span>}
             </button>
           ))}
         </nav>
@@ -419,16 +419,16 @@ const Layout = ({ children }) => {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="bg-white shadow-sm z-10">
-          <div className="flex items-center justify-between p-4">
+          <div className="flex items-center justify-between p-2 sm:p-3 md:p-4">
             {/* Mobile Menu Button */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-2 hover:bg-gray-100 rounded-lg mr-2"
+              className="lg:hidden p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg mr-1 sm:mr-2"
             >
-              <Menu size={24} />
+              <Menu size={20} className="sm:w-6 sm:h-6" />
             </button>
 
-            <div className="flex items-center gap-4 overflow-x-auto flex-1">
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4 overflow-x-auto flex-1">
               <div className="hidden md:block">
                 <h2 className="text-xl font-bold" style={{ color: theme.primaryColor }}>
                   {userRole === 'PUSKESAU' 
@@ -448,8 +448,8 @@ const Layout = ({ children }) => {
                 </p>
               </div>
               <div className="md:hidden">
-                <h2 className="text-lg font-bold" style={{ color: theme.primaryColor }}>
-                  {userRole === 'PUSKESAU' ? 'PUSKESAU' : userRole === 'RSAU' ? 'SIMRS' : 'SIM Klinik'}
+                <h2 className="text-sm sm:text-base font-bold truncate" style={{ color: theme.primaryColor }}>
+                  {userRole === 'PUSKESAU' ? `Puskes${branch}` : userRole === 'RSAU' || userRole === 'RSAD' || userRole === 'RSAL' ? 'SIMRS' : 'Klinik'}
                 </h2>
               </div>
 
@@ -458,13 +458,13 @@ const Layout = ({ children }) => {
                 <div className="relative">
                   <button
                     onClick={() => setBranchDropdownOpen(!branchDropdownOpen)}
-                    className="flex items-center gap-2 px-3 md:px-4 py-2 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors"
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors"
                   >
-                    <Shield size={16} className="text-purple-600 flex-shrink-0" />
-                    <span className="font-semibold text-purple-800 text-xs md:text-sm">
+                    <Shield size={14} className="sm:w-4 sm:h-4 text-purple-600 flex-shrink-0" />
+                    <span className="font-semibold text-purple-800 text-xs sm:text-sm whitespace-nowrap">
                       TNI {branch}
                     </span>
-                    <ChevronDown size={16} className="text-purple-600 flex-shrink-0" />
+                    <ChevronDown size={14} className="sm:w-4 sm:h-4 text-purple-600 flex-shrink-0" />
                   </button>
 
                   {branchDropdownOpen && (
@@ -503,12 +503,12 @@ const Layout = ({ children }) => {
                 <div className="relative">
                   <button
                     onClick={() => setFacilityDropdownOpen(!facilityDropdownOpen)}
-                    className="flex items-center gap-2 px-3 md:px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
                   >
-                    <span className="font-semibold text-blue-800 text-xs md:text-sm max-w-[120px] md:max-w-xs truncate">
+                    <span className="font-semibold text-blue-800 text-xs sm:text-sm max-w-[80px] sm:max-w-[120px] md:max-w-xs truncate">
                       {selectedFaskes}
                     </span>
-                    <ChevronDown size={16} className="text-blue-600 flex-shrink-0" />
+                    <ChevronDown size={14} className="sm:w-4 sm:h-4 text-blue-600 flex-shrink-0" />
                   </button>
 
                   {facilityDropdownOpen && (
@@ -547,13 +547,13 @@ const Layout = ({ children }) => {
                 <div className="relative">
                   <button
                     onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
-                    className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-2 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
                   >
-                    <Shield size={16} className="text-green-600 flex-shrink-0" />
-                    <span className="font-semibold text-green-800 text-xs md:text-sm hidden sm:inline">
+                    <Shield size={14} className="sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
+                    <span className="font-semibold text-green-800 text-xs sm:text-sm hidden sm:inline truncate max-w-[100px]">
                       {rikkesRole}
                     </span>
-                    <ChevronDown size={16} className="text-green-600 flex-shrink-0" />
+                    <ChevronDown size={14} className="sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
                   </button>
 
                   {roleDropdownOpen && (
@@ -585,23 +585,23 @@ const Layout = ({ children }) => {
               )}
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
               {/* Notifications */}
-              <button className="p-2 hover:bg-gray-100 rounded-lg relative">
-                <Activity size={20} />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              <button className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg relative">
+                <Activity size={18} className="sm:w-5 sm:h-5" />
+                <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full"></span>
               </button>
 
               {/* User Menu */}
               <div className="relative">
                 <button 
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg"
+                  className="flex items-center gap-1 sm:gap-2 p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg"
                 >
-                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm sm:text-base">
                     A
                   </div>
-                  <ChevronDown size={16} />
+                  <ChevronDown size={14} className="sm:w-4 sm:h-4 hidden sm:block" />
                 </button>
 
                 {userMenuOpen && (
@@ -622,7 +622,7 @@ const Layout = ({ children }) => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
           {children}
         </main>
       </div>

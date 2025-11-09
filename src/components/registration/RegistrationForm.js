@@ -270,12 +270,12 @@ const RegistrationForm = () => {
 
   return (
     <Card title="Formulir Pendaftaran Pasien">
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
         {/* Identity Type & Search */}
         <div>
-          <label className="block text-sm font-medium mb-2">Tipe Identitas</label>
-          <div className="flex gap-4 mb-2">
-            <label className="flex items-center gap-2">
+          <label className="block text-xs sm:text-sm font-medium mb-2">Tipe Identitas</label>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-2">
+            <label className="flex items-center gap-2 text-xs sm:text-sm">
               <input
                 type="radio"
                 name="identitasType"
@@ -283,9 +283,9 @@ const RegistrationForm = () => {
                 checked={formData.identitasType === 'nik'}
                 onChange={handleChange}
               />
-              NIK (Nomor Induk Kependudukan)
+              <span>NIK (Nomor Induk Kependudukan)</span>
             </label>
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-2 text-xs sm:text-sm">
               <input
                 type="radio"
                 name="identitasType"
@@ -293,7 +293,7 @@ const RegistrationForm = () => {
                 checked={formData.identitasType === 'nrp'}
                 onChange={handleChange}
               />
-              NRP (Nomor Registrasi Prajurit)
+              <span>NRP (Nomor Registrasi Prajurit)</span>
             </label>
           </div>
           <div className="flex gap-2">

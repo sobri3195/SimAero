@@ -85,15 +85,15 @@ const DashboardFaskes = () => {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold mb-2">
           Dashboard {userRole === 'RSAU' ? 'SIMRS' : 'SIM Klinik'}
         </h1>
-        <p className="text-gray-600">{selectedFaskes || 'Pilih Faskes dari header'}</p>
+        <p className="text-sm sm:text-base text-gray-600 truncate">{selectedFaskes || 'Pilih Faskes dari header'}</p>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6">
         <StatCard
           icon={Users}
           title="Pasien Hari Ini"
@@ -123,18 +123,18 @@ const DashboardFaskes = () => {
       </div>
 
       {/* Quick Access */}
-      <Card title="Akses Cepat Modul" className="mb-6">
-        <div className={`grid grid-cols-2 md:grid-cols-3 ${userRole === 'RSAU' ? 'lg:grid-cols-4' : 'lg:grid-cols-4'} gap-4`}>
+      <Card title="Akses Cepat Modul" className="mb-4 sm:mb-6">
+        <div className={`grid grid-cols-2 md:grid-cols-3 ${userRole === 'RSAU' ? 'lg:grid-cols-4' : 'lg:grid-cols-4'} gap-3 sm:gap-4`}>
           {quickAccess.map((item, idx) => (
             <button
               key={idx}
               onClick={() => navigate(item.path)}
-              className="flex flex-col items-center gap-3 p-6 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 md:p-6 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              <div className={`${item.color} p-4 rounded-lg`}>
-                <item.icon className="text-white" size={24} />
+              <div className={`${item.color} p-2 sm:p-3 md:p-4 rounded-lg`}>
+                <item.icon className="text-white" size={20} />
               </div>
-              <span className="text-sm font-medium text-center">{item.label}</span>
+              <span className="text-xs sm:text-sm font-medium text-center">{item.label}</span>
             </button>
           ))}
         </div>
@@ -142,17 +142,17 @@ const DashboardFaskes = () => {
 
       {/* Pending Tasks */}
       <Card title="Tugas & Notifikasi Penting">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           {tasks.map(task => (
             <div 
               key={task.id}
-              className={`p-4 border-l-4 rounded ${getPriorityColor(task.priority)}`}
+              className={`p-3 sm:p-4 border-l-4 rounded ${getPriorityColor(task.priority)}`}
             >
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-medium">{task.title}</h4>
-                <span className="text-2xl font-bold">{task.count}</span>
+                <h4 className="font-medium text-sm sm:text-base truncate flex-1 mr-2">{task.title}</h4>
+                <span className="text-xl sm:text-2xl font-bold flex-shrink-0">{task.count}</span>
               </div>
-              <button className="text-sm text-blue-600 hover:underline">
+              <button className="text-xs sm:text-sm text-blue-600 hover:underline">
                 Lihat Detail →
               </button>
             </div>
